@@ -25,7 +25,7 @@ public:
    LifeForm(int life) { lifeExpectancy = life; }
    LifeForm(const LifeForm &form) 
        { lifeExpectancy = form.lifeExpectancy; }
-   virtual ~LifeForm() { }     // virtual destructor
+   virtual ~LifeForm() { }      // virtual destructor
    int GetLifeExpectancy() { return lifeExpectancy; }
    virtual void Print() = 0;   // pure virtual functions 
    virtual const char *IsA() = 0;   
@@ -44,9 +44,9 @@ public:
    virtual ~Cat() { delete name; }   // virtual destructor
    const char *GetName() { return name; }
    int GetNumberLivesLeft() { return numberLivesLeft; }
-   virtual void Print();   // redefine pure virtual functions
-   virtual const char *IsA() { return "Cat"; }
-   virtual const char *Speak() { return "Meow!"; }
+   virtual void Print() override;   // redefine pure virtual functions
+   virtual const char *IsA() override { return "Cat"; }
+   virtual const char *Speak() override { return "Meow!"; }
 };
 
 Cat::Cat(const char *n) : LifeForm(15)
@@ -81,9 +81,9 @@ public:
    const char *GetLastName() { return lastName; }    
    const char *GetTitle() { return title; } 
    char GetMiddleInitial(){ return middleInitial; }
-   virtual void Print();  // redefine pure virtual functions
-   virtual const char *IsA();   
-   virtual const char *Speak();
+   virtual void Print() override;  // redefine pure virtual functions
+   virtual const char *IsA() override;   
+   virtual const char *Speak() override;
 };
 
 Person::Person() : LifeForm(80)
@@ -164,8 +164,8 @@ public:
    const char *GetCurrentCourse() { return currentCourse; }
    const char *GetStudentId() { return studentId; }
    void SetCurrentCourse(const char *);
-   virtual void Print(); // redefine not all virtual functions
-   virtual const char *IsA();
+   virtual void Print() override; // redefine not all virtual functions
+   virtual const char *IsA() override;
 };
 
 inline void Student::SetCurrentCourse(const char *c)
@@ -222,7 +222,7 @@ void Student::Print()
    cout << "\t" << GetTitle() << " " << GetFirstName() << " ";
    cout << GetMiddleInitial() << ". " << GetLastName();
    cout << " with id: " << studentId << " has a gpa of: ";
-   cout << setprecision(2) <<  " " << gpa << "enrolled in: ";
+   cout << setprecision(2) <<  " " << gpa << " enrolled in: ";
    cout << currentCourse << endl;
 }
 
