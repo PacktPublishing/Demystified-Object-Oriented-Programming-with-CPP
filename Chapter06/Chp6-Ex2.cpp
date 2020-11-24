@@ -1,8 +1,8 @@
-#include <iostream>
-using namespace std;
-
 // (c) Dorothy R. Kirk. All Rights Reserved.
 // Purpose:  To illustrate a simple encapsulated LinkList. 
+
+#include <iostream>
+using namespace std;
 
 typedef int Item;  
 

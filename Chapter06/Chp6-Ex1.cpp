@@ -1,8 +1,3 @@
-#include <iostream>
-#include <iomanip>
-#include <cstring>
-using namespace std;
-
 // (c) Dorothy R. Kirk. All Rights Reserved.
 // Purpose: To illustrate single inheritance, how the member initilazation list
 // is used to specify which base class constructor should be implicitly invoked,
@@ -10,6 +5,12 @@ using namespace std;
 
 // Here, we've generalized the attributes and behaviors relevant to a Person
 // out of Student into the following class definition.    
+
+#include <iostream>
+#include <iomanip>
+#include <cstring>
+using namespace std;
+
 class Person
 {
 private: 
