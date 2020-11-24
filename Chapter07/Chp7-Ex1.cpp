@@ -120,8 +120,8 @@ public:
   
     // In the derived class, the keyword virtual is optional, 
     // but recommended for internal documentation
-    virtual void Print();
-    virtual void IsA();
+    virtual void Print() override;
+    virtual void IsA() override;
     // note: we choose not to redefine 
     // Person::Greeting(const char *)
 };
@@ -175,7 +175,7 @@ void Student::EarnPhD()
     ModifyTitle("Dr.");  
 }
 
-void Student::Print()
+void Student::Print() 
 {   // need to use access functions as these data members are
     // defined in Person as private
     cout << GetTitle() << " " << GetFirstName() << " ";
