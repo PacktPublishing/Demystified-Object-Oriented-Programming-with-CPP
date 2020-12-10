@@ -28,10 +28,10 @@ public:
    ~Person();  // destructor
 
    // inline function definitions
-   const char *GetFirstName() { return firstName; }  // firstName returned as const string  
-   const char *GetLastName() { return lastName; }    // so is lastName (via implicit cast)
-   const char *GetTitle() { return title; } 
-   char GetMiddleInitial(){ return middleInitial; }
+   const char *GetFirstName() const { return firstName; }  // firstName returned as const string  
+   const char *GetLastName() const { return lastName; }    // so is lastName (via implicit cast)
+   const char *GetTitle() const { return title; } 
+   char GetMiddleInitial() const { return middleInitial; }
 };
 
 Person::Person()
@@ -95,14 +95,14 @@ public:
    Student(const char *, const char *, char, const char *, float, const char *, const char *); // alt. constructor
    Student(const Student &);  // copy constructor
    ~Student();  // destructor
-   void Print();
+   void Print() const;
 
    void EarnPhD();  // public interface to inherited protected member
 
    // inline function definitions
-   float GetGpa() { return gpa; }
-   const char *GetCurrentCourse() { return currentCourse; }
-   const char *GetStudentId() { return studentId; }
+   float GetGpa()  const { return gpa; }
+   const char *GetCurrentCourse() const { return currentCourse; }
+   const char *GetStudentId() const { return studentId; }
 
    // prototype only, see inline function definiton below
    void SetCurrentCourse(const char *);
@@ -160,7 +160,7 @@ Student::~Student()
    delete (char *) studentId;
 }
 
-void Student::Print()
+void Student::Print() const
 {
    // Private members of Person are not directly accessible within
    // the scope of Student, hence access functions are utilized

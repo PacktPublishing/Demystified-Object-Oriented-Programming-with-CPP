@@ -70,7 +70,7 @@ void LinkList::DeleteAtFront()
    delete deallocate;    // destructor will delete data, set next to NULL
 }
  
-void LinkList::Print()
+void LinkList::Print() 
 {
    Item output;
 

@@ -163,6 +163,7 @@ private:
    // no new data members are necessary
 public:
    Queue() : LinkList() { }
+   virtual ~Queue() {} // we'll discuss virtual in Chp 7
    // Here, we specify the pubilc interface which Queue instances may utilize.
    // With protected inheritance, the protected and public members inherited 
    // from LinkList act as though they were defined by Queue as protected 
@@ -191,7 +192,7 @@ private:
    // no new data members are necessary
 public:
    PriorityQueue() : Queue() { }
-
+   virtual ~PriorityQueue() {} // we'll discuss virtual in Chp 7
    // Here, we specify the pubilc interface which PriorityQueue instances may utilize.
    // Since we are inherited from Queue publicly, we inherit the public interface
    // from Queue.  Since Queue is inherited protectedly from LinkList, the public
