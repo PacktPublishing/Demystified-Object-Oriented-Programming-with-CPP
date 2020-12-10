@@ -98,6 +98,7 @@ private:
    // no new data members are necessary
 public:
    Stack() : LinkList() { }
+   ~Stack() { }
    // Here, we specify the pubilc interface which Stack instances may utilize.
    // With private inheritance, the protected and public members inherited 
    // from LinkList act as though they were defined by Stack as private
