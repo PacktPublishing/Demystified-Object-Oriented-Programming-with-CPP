@@ -26,8 +26,8 @@ public:
    LifeForm(const LifeForm &form) 
        { lifeExpectancy = form.lifeExpectancy; }
    virtual ~LifeForm() { }      // virtual destructor
-   int GetLifeExpectancy() { return lifeExpectancy; }
-   virtual void Print() = 0;   // pure virtual functions 
+   int GetLifeExpectancy() const { return lifeExpectancy; }
+   virtual void Print() const = 0;   // pure virtual functions 
    virtual const char *IsA() = 0;   
    virtual const char *Speak() = 0;
 };
@@ -42,9 +42,9 @@ public:
    Cat(int lives) : LifeForm(15) { numberLivesLeft = lives; }
    Cat(const char *n);
    virtual ~Cat() { delete name; }   // virtual destructor
-   const char *GetName() { return name; }
-   int GetNumberLivesLeft() { return numberLivesLeft; }
-   virtual void Print() override;   // redefine pure virtual functions
+   const char *GetName() const { return name; }
+   int GetNumberLivesLeft() const { return numberLivesLeft; }
+   virtual void Print() const override;   // redefine pure virtual functions
    virtual const char *IsA() override { return "Cat"; }
    virtual const char *Speak() override { return "Meow!"; }
 };
@@ -56,9 +56,9 @@ Cat::Cat(const char *n) : LifeForm(15)
    numberLivesLeft = 9;
 }
 
-void Cat::Print()
+void Cat::Print() const
 {
-   cout << "\t" << name << " has " << GetNumberLivesLeft();
+   cout << "\t" << name << " has " << numberLivesLeft; 
    cout << " lives left" << endl;
 }
 
@@ -77,11 +77,11 @@ public:
    Person(const char *, const char *, char, const char *);  
    Person(const Person &);  // copy constructor
    virtual ~Person();  // destructor
-   const char *GetFirstName() { return firstName; }  
-   const char *GetLastName() { return lastName; }    
-   const char *GetTitle() { return title; } 
-   char GetMiddleInitial(){ return middleInitial; }
-   virtual void Print() override;  // redefine pure virtual functions
+   const char *GetFirstName() const { return firstName; }  
+   const char *GetLastName() const { return lastName; }    
+   const char *GetTitle() const { return title; } 
+   char GetMiddleInitial() const { return middleInitial; }
+   virtual void Print() const override;  // redefine pure virtual functions
    virtual const char *IsA() override;   
    virtual const char *Speak() override;
 };
@@ -130,7 +130,7 @@ void Person::ModifyTitle(const char *newTitle)
    strcpy(title, newTitle);
 }
 
-void Person::Print()
+void Person::Print() const
 {
    cout << "\t" << title << " " << firstName << " ";
    cout << middleInitial << ". " << lastName << endl;
@@ -160,11 +160,11 @@ public:
    Student(const Student &);  // copy constructor
    virtual ~Student();  // destructor
    void EarnPhD();  
-   float GetGpa() { return gpa; }
-   const char *GetCurrentCourse() { return currentCourse; }
-   const char *GetStudentId() { return studentId; }
+   float GetGpa() const { return gpa; }
+   const char *GetCurrentCourse() const { return currentCourse; }
+   const char *GetStudentId() const { return studentId; }
    void SetCurrentCourse(const char *);
-   virtual void Print() override; // redefine not all virtual functions
+   virtual void Print() const override; // redefine not all virtual functions
    virtual const char *IsA() override;
 };
 
@@ -217,7 +217,7 @@ void Student::EarnPhD()
    ModifyTitle("Dr.");  
 }
 
-void Student::Print()
+void Student::Print() const
 {
    cout << "\t" << GetTitle() << " " << GetFirstName() << " ";
    cout << GetMiddleInitial() << ". " << GetLastName();
