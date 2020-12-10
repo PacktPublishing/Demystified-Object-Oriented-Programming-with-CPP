@@ -7,12 +7,10 @@
 // instance of a Centaur.
 
 #include <iostream>
-#include <iomanip>
 #include <cstring>
 
 using namespace std;
 
-const int MAX = 5;
 
 class LifeForm
 {
@@ -24,8 +22,8 @@ public:
     LifeForm(const LifeForm &form) 
        { lifeExpectancy = form.lifeExpectancy; }
     virtual ~LifeForm() { }
-    int GetLifeExpectancy() { return lifeExpectancy; }
-    virtual void Print() = 0; 
+    int GetLifeExpectancy() const { return lifeExpectancy; }
+    virtual void Print() const = 0; 
     virtual const char *IsA() = 0;   
     virtual const char *Speak() = 0;
 };
@@ -46,8 +44,8 @@ public:
     Horse(const char *n);
     Horse(const Horse &); 
     virtual ~Horse() { delete name; }
-    const char *GetName() { return name; }
-    virtual void Print() { cout << name << endl; }
+    const char *GetName() const { return name; }
+    virtual void Print() const { cout << name << endl; }
     virtual const char *IsA() { return "Horse"; }
     virtual const char *Speak() { return "Neigh!"; }
 };
@@ -83,11 +81,11 @@ public:
     Person(const char *, const char *, char, const char *);  
     Person(const Person &);  // copy constructor
     virtual ~Person();  // destructor
-    const char *GetFirstName() { return firstName; }  
-    const char *GetLastName() { return lastName; }    
-    const char *GetTitle() { return title; } 
-    char GetMiddleInitial(){ return middleInitial; }
-    virtual void Print();
+    const char *GetFirstName() const { return firstName; }  
+    const char *GetLastName() const { return lastName; }    
+    const char *GetTitle() const { return title; } 
+    char GetMiddleInitial() const { return middleInitial; }
+    virtual void Print() const;
     virtual const char *IsA();   
     virtual const char *Speak();
 };
@@ -140,7 +138,7 @@ void Person::ModifyTitle(const char *newTitle)
     strcpy(title, newTitle);
 }
 
-void Person::Print()
+void Person::Print() const
 {
     cout << title << " " << firstName << " ";
     cout << middleInitial << ". " << lastName << endl;
@@ -165,7 +163,7 @@ public:
    Centaur(const char *, const char *, char = ' ', const char * = "Mythological Creature"); 
    Centaur(const Centaur &c): 
            Person(c), Horse(c),LifeForm(1000) { }
-   virtual void Print();
+   virtual void Print() const;
    virtual const char *IsA();   
    virtual const char *Speak();
 };
@@ -180,7 +178,7 @@ Centaur::Centaur(const char *fn, const char *ln, char mi, const char *title):
    // All initialization has been taken care of in init. list
 }
 
-void Centaur::Print()
+void Centaur::Print() const
 {
    cout << "My name is " << GetFirstName();
    cout << ".  I am a " << GetTitle() << endl;

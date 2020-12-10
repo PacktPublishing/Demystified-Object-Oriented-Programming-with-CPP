@@ -5,12 +5,9 @@
 // instance of a Centaur.
 
 #include <iostream>
-#include <iomanip>
 #include <cstring>
 using namespace std;
 
-
-const int MAX = 5;
 
 class LifeForm
 {
@@ -21,11 +18,11 @@ public:
    LifeForm(int life) { lifeExpectancy = life; }
    LifeForm(const LifeForm &form) { lifeExpectancy = form.lifeExpectancy; }
    virtual ~LifeForm() { }
-   int GetLifeExpectancy() { return lifeExpectancy; }
+   int GetLifeExpectancy() const { return lifeExpectancy; }
 
    // Virtual functions will not be inlined since their method must be determined
    // at run time using the v-table.
-   virtual void Print() = 0; // pure virtual functions specify the interface but
+   virtual void Print() const = 0; // pure virtual functions specify the interface but
    virtual const char *IsA() = 0;   // most often do not specify a default behavior
    virtual const char *Speak() = 0;
 };
@@ -39,8 +36,8 @@ public:
    Horse(const char *n);
    Horse(const Horse &); 
    virtual ~Horse() { delete name; }
-   const char *GetName() { return name; }
-   virtual void Print();
+   const char *GetName() const { return name; }
+   virtual void Print() const;
    virtual const char *IsA();
    virtual const char *Speak();
 };
@@ -57,7 +54,7 @@ Horse::Horse(const Horse &h) : LifeForm (h)
    strcpy(name, h.name); 
 }
 
-void Horse::Print()
+void Horse::Print() const
 {
    cout << name << endl;
 }
@@ -90,14 +87,14 @@ public:
    virtual ~Person();  // destructor
 
    // inline function definitions
-   const char *GetFirstName() { return firstName; }  // firstName returned as const string  
-   const char *GetLastName() { return lastName; }    // so is lastName (via implicit cast)
-   const char *GetTitle() { return title; } 
-   char GetMiddleInitial(){ return middleInitial; }
+   const char *GetFirstName() const { return firstName; }  // firstName returned as const string  
+   const char *GetLastName() const { return lastName; }    // so is lastName (via implicit cast)
+   const char *GetTitle() const { return title; } 
+   char GetMiddleInitial() const { return middleInitial; }
 
    // Virtual functions will not be inlined since their method must be determined
    // at run time using the v-table.
-   virtual void Print();
+   virtual void Print() const;
    virtual const char *IsA();   
    virtual const char *Speak();
 };
@@ -145,7 +142,7 @@ void Person::ModifyTitle(const char *newTitle)
    strcpy(title, newTitle);
 }
 
-void Person::Print()
+void Person::Print() const
 {
    cout << GetTitle() << " " << GetFirstName() << " ";
    cout << GetMiddleInitial() << ". " << GetLastName() << endl;
@@ -170,7 +167,7 @@ public:
    Centaur() { }
    Centaur(const char *, const char *, char = ' ', const char * = "Mythological Creature"); 
    Centaur(const Centaur &c): Person(c), Horse(c) { }
-   virtual void Print();
+   virtual void Print() const;
    virtual const char *IsA();   
    virtual const char *Speak();
 };
@@ -181,7 +178,7 @@ Centaur::Centaur(const char *fn, const char *ln, char mi, const char *title) :
    // All initialization has been taken care of in init. list 
 }
 
-void Centaur::Print()
+void Centaur::Print() const
 {
    // GetFirstName is defined in Person.  So is GetTitle()
    cout << "My name is " << GetFirstName();

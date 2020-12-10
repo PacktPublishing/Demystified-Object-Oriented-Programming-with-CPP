@@ -2,7 +2,6 @@
 // Purpose: To illustrate multiple inheritance.
 
 #include <iostream>
-#include <iomanip>
 #include <cstring>
 
 using namespace std;
@@ -21,10 +20,10 @@ public:
     Person();   // default constructor
     Person(const char *, const char *, char, const char *);  
     virtual ~Person();  // destructor
-    const char *GetFirstName() { return firstName; }  
-    const char *GetLastName() { return lastName; }    
-    const char *GetTitle() { return title; } 
-    char GetMiddleInitial(){ return middleInitial; }
+    const char *GetFirstName() const { return firstName; }  
+    const char *GetLastName() const { return lastName; }    
+    const char *GetTitle() const { return title; } 
+    char GetMiddleInitial() const { return middleInitial; }
 };
 
 
@@ -71,7 +70,7 @@ public:
     BillableEntity(float amt) { invoiceAmt = amt; } 
     virtual ~BillableEntity() { }
     void Pay(float amt) { invoiceAmt -= amt; }
-    float GetBalance() { return invoiceAmt; }
+    float GetBalance() const { return invoiceAmt; }
     void Balance();
 };
 
@@ -95,11 +94,11 @@ public:
     Student(const char *, const char *, char, const char *,
            float, const char *, const char *, float); 
     virtual ~Student(); 
-    void Print();
+    void Print() const;
     void EarnPhD();  
-    float GetGpa() { return gpa; }
-    const char *GetCurrentCourse() { return currentCourse; }
-    const char *GetStudentId() { return studentId; }
+    float GetGpa() const { return gpa; }
+    const char *GetCurrentCourse() const { return currentCourse; }
+    const char *GetStudentId() const { return studentId; }
     void SetCurrentCourse(const char *);
 };
 
@@ -137,7 +136,7 @@ Student::~Student()
    delete (char *) studentId;
 }
 
-void Student::Print()
+void Student::Print() const
 {
     cout << GetTitle() << " " << GetFirstName() << " ";
     cout << GetMiddleInitial() << ". " << GetLastName();
