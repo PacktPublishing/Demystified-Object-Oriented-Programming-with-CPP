@@ -120,8 +120,7 @@ Item *Stack::Pop()
 
 int main()
 {
-   // create a Stack
-   Stack stack1;
+   Stack stack1;  // create a stack
  
    // Add some items to the stack.  Notice that we may only utilize the public      
    // interface provided by Stack to add items--to instances of stack, the public
