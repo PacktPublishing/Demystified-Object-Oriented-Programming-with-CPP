@@ -54,13 +54,13 @@ public:
     virtual ~Person();  // virtual destructor
 
     // inline function definitions
-    const char *GetFirstName() { return firstName; }  
-    const char *GetLastName() { return lastName; }    
-    const char *GetTitle() { return title; } 
-    char GetMiddleInitial(){ return middleInitial; }
+    const char *GetFirstName() const { return firstName; }  
+    const char *GetLastName() const { return lastName; }    
+    const char *GetTitle() const { return title; } 
+    char GetMiddleInitial() const { return middleInitial; }
 
     // Virtual functions 
-    virtual void Print();
+    virtual void Print() const;
     virtual void IsA();  
     virtual void Greeting(const char *);
 };
@@ -109,7 +109,7 @@ void Person::ModifyTitle(const char *newTitle)
     strcpy(title, newTitle);
 }
 
-void Person::Print()
+void Person::Print() const
 {
     cout << title << " " << firstName << " ";
     cout << middleInitial << ". " << lastName << endl;
@@ -141,10 +141,10 @@ public:
     Student(const Student &);  // copy constructor
     virtual ~Student();  // destructor
     void EarnPhD();  
-    float GetGpa() { return gpa; }  // various inline fns.
-    const char *GetCurrentCourse() { return currentCourse; }
+    float GetGpa() const { return gpa; }  // various inline fns.
+    const char *GetCurrentCourse() const { return currentCourse; }
     void SetCurrentCourse(const char *); // prototype only
-    virtual void Print();
+    virtual void Print() const;
     virtual void IsA();
     static int GetNumberStudents() { return numStudents; }
     
@@ -200,7 +200,7 @@ void Student::EarnPhD()
     ModifyTitle("Dr.");  
 }
 
-void Student::Print()
+void Student::Print() const
 {   
     cout << GetTitle() << " " << GetFirstName() << " ";
     cout << GetMiddleInitial() << ". " << GetLastName();
