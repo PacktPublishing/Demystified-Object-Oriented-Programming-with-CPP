@@ -10,6 +10,11 @@
 // universally provide selected functions in the public access region.
 // Friend functions are also beneficial when used in conjunction with
 // operator overloading.
+// NOTE: LinkListElement and LinkList are not intended to be extended with
+// public inheritance -- they do not contain virtual destructors.
+// Instead, LinkList is meant to be used on its own or to serve as a 
+// private or protected base class to provide the underlying implementation
+// for other ADTs, such as Queue. 
 
 #include <iostream>
 using namespace std;
@@ -36,7 +41,7 @@ public:
    friend class LinkList;   
    LinkListElement() { data = 0; next = 0; }
    LinkListElement(Item *i) { data = i; next = 0; }
-   virtual ~LinkListElement() { delete (Item *) data; next = 0; }
+   ~LinkListElement() { delete (Item *) data; next = 0; }
 };
 
 class LinkList
@@ -49,9 +54,9 @@ public:
    void InsertAtFront(Item *);
    LinkListElement *RemoveAtFront();
    void DeleteAtFront() { delete RemoveAtFront(); }  // destructor will delete data, set next to NULL
-   virtual int IsEmpty() { return head == 0; } 
-   virtual void Print();  
-   virtual ~LinkList() { while (!IsEmpty()) DeleteAtFront(); }
+   int IsEmpty() { return head == 0; } 
+   void Print();  
+   ~LinkList() { while (!IsEmpty()) DeleteAtFront(); }
 };
 
 
