@@ -17,7 +17,7 @@ private:
 public:
     Array(int size) : numElements(size) { contents = new Type [size]; }
     ~Array() { delete contents; }
-    void Print()
+    void Print() const
     {
         for (int i = 0; i < numElements; i++)
             cout << contents[i] << " ";
