@@ -21,7 +21,7 @@ public:
    friend class LinkList<Type>;   
    LinkListElement() { data = 0; next = 0; }
    LinkListElement(Type *i) { data = i; next = 0; }
-   virtual ~LinkListElement(){ delete data; next = 0;}
+   ~LinkListElement(){ delete data; next = 0;}
 };
 
 template <class Type>
@@ -36,9 +36,9 @@ public:
    void InsertAtFront(Type *);
    LinkListElement<Type> *RemoveAtFront();  
    void DeleteAtFront()  { delete RemoveAtFront(); }
-   virtual int IsEmpty() { return head == 0; } 
-   virtual void Print();    
-   virtual ~LinkList() { while (!IsEmpty()) DeleteAtFront(); }
+   int IsEmpty() { return head == 0; } 
+   void Print(); 
+   ~LinkList() { while (!IsEmpty()) DeleteAtFront(); }
 };
 
 template <class Type>
@@ -60,7 +60,7 @@ LinkListElement<Type> *LinkList<Type>::RemoveAtFront()
 }
  
 template <class Type>
-void LinkList<Type>::Print()
+void LinkList<Type>::Print() 
 {
    Type output;
 
