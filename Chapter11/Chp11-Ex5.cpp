@@ -52,14 +52,14 @@ public:
     virtual ~Person();  // virtual destructor
 
     // inline function definitions
-    const char *GetFirstName() { return firstName; }  
-    const char *GetLastName() { return lastName; }    
-    const char *GetTitle() { return title; } 
-    char GetMiddleInitial(){ return middleInitial; }
+    const char *GetFirstName() const { return firstName; }  
+    const char *GetLastName() const { return lastName; }    
+    const char *GetTitle() const { return title; } 
+    char GetMiddleInitial() const { return middleInitial; }
 
     // Virtual functions will not be inlined since their 
     // method must be determined at run time using v-table.
-    virtual void Print();
+    virtual void Print() const;
     virtual void IsA();  
     virtual void Greeting(const char *);
 };
@@ -108,7 +108,7 @@ void Person::ModifyTitle(const char *newTitle)
     strcpy(title, newTitle);
 }
 
-void Person::Print()
+void Person::Print() const
 {
     cout << title << " " << firstName << " ";
     cout << middleInitial << ". " << lastName << endl;
@@ -141,18 +141,18 @@ public:
     void EarnPhD();  
     bool TakePrerequisites();
     // inline function definitions
-    float GetGpa() { return gpa; }
-    const char *GetCurrentCourse() { return currentCourse; }
-    const char *GetStudentId() { return studentId; }
+    float GetGpa() const { return gpa; }
+    const char *GetCurrentCourse() const { return currentCourse; }
+    const char *GetStudentId() const { return studentId; }
     void SetCurrentCourse(const char *); // prototype only
   
     // In the derived class, the keyword virtual is optional, 
     // but recommended for internal documentation
-    virtual void Print();
-    virtual void IsA();
+    virtual void Print() const override;
+    virtual void IsA() override;
     // note: we choose not to redefine 
     // Person::Greeting(const char *)
-    virtual void Validate();
+    virtual void Validate();  // newly introduced virtual fn in Student
     virtual void Graduate();
 };
 
@@ -205,7 +205,7 @@ void Student::EarnPhD()
     ModifyTitle("Dr.");  
 }
 
-void Student::Print()
+void Student::Print() const
 {   // need to use access functions as these data members are
     // defined in Person as private
     cout << GetTitle() << " " << GetFirstName() << " ";
@@ -257,7 +257,10 @@ int main()
         cout << e.what() << endl;
         cout << e.GetCode() << " " << e.GetDetails() << endl;
         // Grab useful info from e and try to fix the problem
-        exit(1);  // only exit if necessary!
+        // if we can fix the problem, and continue the application,
+        // be sure to deallocate heap memory for e using:
+        // delete &e;  // take the addr of the ref
+        exit(1);  // only exit if necessary!  Memory will be reclaimed upon exit.
     }
 
 
