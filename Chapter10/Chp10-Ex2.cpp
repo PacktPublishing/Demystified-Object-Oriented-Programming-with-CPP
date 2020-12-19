@@ -192,8 +192,8 @@ public:
     float GetGpa() const { return gpa; }  // various inline fns.
     const char *GetCurrentCourse() const { return currentCourse; }
     void SetCurrentCourse(const char *); // prototype only
-    virtual void Print() const;
-    virtual void IsA();
+    virtual void Print() const override;
+    virtual void IsA() override;
     static int GetNumberStudents() { return numStudents; }
     
     // Access function for associated Id object
