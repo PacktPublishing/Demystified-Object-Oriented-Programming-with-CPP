@@ -1,5 +1,5 @@
 // (c) Dorothy R. Kirk. All Rights Reserved.
-// Purpose: To illustrate a simple encaptulated LinkList, utilizing
+// Purpose: To illustrate a simple encapsulated LinkList, utilizing
 // a friend class. A friend class is one in which all of that class's
 // member functions are friend functions of the class who grants them
 // friendship.  Friend functions of LinkListElement are those which 
