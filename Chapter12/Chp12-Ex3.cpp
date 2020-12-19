@@ -3,12 +3,9 @@
 // non-member functions.  
 
 #include <iostream>
-#include <iomanip>
 #include <cstring>
 using namespace std;
 
-
-const int MAX = 5;
 
 class Person
 {
@@ -27,12 +24,12 @@ public:
    virtual ~Person();  // destructor
 
    // inline function definitions
-   const char *GetFirstName() { return firstName; }  // firstName returned as const string  
-   const char *GetLastName() { return lastName; }    // so is lastName (via implicit cast)
-   const char *GetTitle() { return title; } 
-   char GetMiddleInitial(){ return middleInitial; }
+   const char *GetFirstName() const { return firstName; }  // firstName returned as const string  
+   const char *GetLastName() const { return lastName; }    // so is lastName (via implicit cast)
+   const char *GetTitle() const { return title; } 
+   char GetMiddleInitial() const { return middleInitial; }
 
-   virtual void Print();
+   virtual void Print() const;
    virtual void IsA();   
 
    // An overloaded assignment operator is not inherited by derived classes, therefore 
@@ -141,7 +138,7 @@ void Person::ModifyTitle(const char *newTitle)
    strcpy(title, newTitle);
 }
 
-void Person::Print()
+void Person::Print() const
 {
    if (title)
       cout << title << " ";
