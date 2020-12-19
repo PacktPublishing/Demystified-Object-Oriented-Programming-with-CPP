@@ -37,9 +37,9 @@ public:
    Horse(const Horse &); 
    virtual ~Horse() { delete name; }
    const char *GetName() const { return name; }
-   virtual void Print() const;
-   virtual const char *IsA();
-   virtual const char *Speak();
+   virtual void Print() const override;
+   virtual const char *IsA() override;
+   virtual const char *Speak() override;
 };
 
 Horse::Horse(const char *n) : LifeForm(35)
@@ -94,9 +94,9 @@ public:
 
    // Virtual functions will not be inlined since their method must be determined
    // at run time using the v-table.
-   virtual void Print() const;
-   virtual const char *IsA();   
-   virtual const char *Speak();
+   virtual void Print() const override;
+   virtual const char *IsA() override;   
+   virtual const char *Speak() override;
 };
 
 Person::Person() : LifeForm(80)
@@ -167,9 +167,9 @@ public:
    Centaur() { }
    Centaur(const char *, const char *, char = ' ', const char * = "Mythological Creature"); 
    Centaur(const Centaur &c): Person(c), Horse(c) { }
-   virtual void Print() const;
-   virtual const char *IsA();   
-   virtual const char *Speak();
+   virtual void Print() const override;
+   virtual const char *IsA() override;   
+   virtual const char *Speak() override;
 };
 
 Centaur::Centaur(const char *fn, const char *ln, char mi, const char *title) : 

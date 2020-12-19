@@ -45,9 +45,9 @@ public:
     Horse(const Horse &); 
     virtual ~Horse() { delete name; }
     const char *GetName() const { return name; }
-    virtual void Print() const { cout << name << endl; }
-    virtual const char *IsA() { return "Horse"; }
-    virtual const char *Speak() { return "Neigh!"; }
+    virtual void Print() const override { cout << name << endl; }
+    virtual const char *IsA() override { return "Horse"; }
+    virtual const char *Speak() override { return "Neigh!"; }
 };
 
 // Notice that the base class initialization list is ignored
@@ -85,9 +85,9 @@ public:
     const char *GetLastName() const { return lastName; }    
     const char *GetTitle() const { return title; } 
     char GetMiddleInitial() const { return middleInitial; }
-    virtual void Print() const;
-    virtual const char *IsA();   
-    virtual const char *Speak();
+    virtual void Print() const override;
+    virtual const char *IsA() override;   
+    virtual const char *Speak() override;
 };
 
 // Notice that the base class initialization list is ignored
@@ -163,9 +163,9 @@ public:
    Centaur(const char *, const char *, char = ' ', const char * = "Mythological Creature"); 
    Centaur(const Centaur &c): 
            Person(c), Horse(c),LifeForm(1000) { }
-   virtual void Print() const;
-   virtual const char *IsA();   
-   virtual const char *Speak();
+   virtual void Print() const override;
+   virtual const char *IsA() override;   
+   virtual const char *Speak() override;
 };
 
 // Constructors for Centaur need to specify how the shared
