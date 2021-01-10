@@ -24,7 +24,7 @@ protected:
     Observer(int s) { observerState = s; }
     void SetState(int s) { observerState = s; }
 public: 
-    int GetState() { return observerState; }
+    int GetState() const { return observerState; }
     virtual ~Observer() {}
     virtual void Update() = 0;
 };
@@ -41,8 +41,8 @@ protected:
     Subject(int s) { subjectState = s; numObservers = 0; }
     void SetState(int s) { subjectState = s; }
 public:
-    int GetState() { return subjectState; }
-    int GetNumObservers() { return numObservers; }
+    int GetState() const { return subjectState; }
+    int GetNumObservers() const { return numObservers; }
     virtual ~Subject() {}
     virtual void Register(Observer *);
     virtual void Release(Observer *);
