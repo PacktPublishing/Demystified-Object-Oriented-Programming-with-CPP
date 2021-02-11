@@ -19,6 +19,7 @@ public:
    Person();   // default constructor
    Person(const char *, const char *, char, const char *);  // alternate constructor
    Person(const Person &);  // copy constructor
+   Person &operator=(const Person &); // assignment operator
    virtual ~Person();  // destructor
    const char *GetFirstName() const { return firstName; }  // firstName returned as const string
    const char *GetLastName() const { return lastName; }    // so is lastName (via implicit cast)
@@ -65,11 +66,65 @@ Person::Person(const Person &pers)
    strcpy(greeting, pers.greeting);
 }
 
+Person &Person::operator=(const Person &p)
+{
+   // make sure we're not assigning an object to itself
+   if (this != &p)
+   {
+      // if 'this' had values for strings, delete the existing firstName, lastName, etc.
+      if (firstName)
+          delete firstName;  // or call ~Person(); (unusual)
+      if (lastName)
+          delete lastName;
+      if (title)
+          delete title;
+      if (greeting)
+          delete greeting;
+
+      // if source object's strings are not null, let's copy them. If they are null, set 'this' counterparts to null
+      if (p.firstName)
+      {
+          firstName = new char [strlen(p.firstName) + 1];
+          strcpy(firstName, p.firstName);
+      }
+      else
+          firstName = 0; 
+
+      if (p.lastName)
+      {
+          lastName = new char [strlen(p.lastName) + 1];
+          strcpy(lastName, p.lastName);
+      }
+      else
+          lastName = 0;
+
+      middleInitial = p.middleInitial;
+
+      if (p.title)
+      {
+          title = new char [strlen(p.title) + 1];
+          strcpy(title, p.title);
+      }
+      else
+          title = 0;
+
+      if (p.greeting)
+      {
+          greeting = new char [strlen(p.greeting) + 1];
+          strcpy(greeting, p.greeting);
+      }
+      else
+          greeting = 0;
+   }
+   return *this;  // allow for cascaded assignments
+}
+
 Person::~Person()
 {
    delete firstName;
    delete lastName;
    delete title;
+   delete greeting;
 }
 
 void Person::ModifyTitle(const char *newTitle)
@@ -133,7 +188,8 @@ private:
 public:
     // No default constructor (unusual)
     CitizenDataBase(const char *);
-    CitizenDataBase(const CitizenDataBase &);  // copy constructor
+    CitizenDataBase(const CitizenDataBase &) = delete ;  // prohibit copies 
+    CitizenDataBase &operator=(const CitizenDataBase &) = delete;  // prohibit assignment 
     virtual ~CitizenDataBase();  // destructor
     Person &Read(const char *);
     const char *Write(Person &);
@@ -147,12 +203,6 @@ CitizenDataBase::CitizenDataBase(const char *n)
     db_open(name);   // calling an existing external function
 }
 
-CitizenDataBase::CitizenDataBase(const CitizenDataBase &db)
-{
-    name = new char [strlen(db.name) + 1];
-    strcpy(name, db.name);
-    db_open(name);  // existing external function 
-}
 
 CitizenDataBase::~CitizenDataBase()
 {

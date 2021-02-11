@@ -20,6 +20,7 @@ public:
    Person();   // default constructor
    Person(const char *, const char *, char, const char *);  // alternate constructor
    Person(const Person &);  // copy constructor
+   Person &operator=(const Person &); // assignment operator
    virtual ~Person();  // destructor
    const char *GetFirstName() const { return firstName; }  // firstName returned as const string  
    const char *GetLastName() const { return lastName; }    // so is lastName (via implicit cast)
@@ -65,11 +66,35 @@ Person::Person(const Person &pers)
    strcpy(greeting, pers.greeting);
 }
 
+Person &Person::operator=(const Person &p)
+{
+   // make sure we're not assigning an object to itself
+   if (this != &p)
+   {
+      delete firstName;  // or call ~Person();
+      delete lastName;
+      delete title;
+      delete greeting;
+
+      firstName = new char [strlen(p.firstName) + 1];
+      strcpy(firstName, p.firstName);
+      lastName = new char [strlen(p.lastName) + 1];
+      strcpy(lastName, p.lastName);
+      middleInitial = p.middleInitial;
+      title = new char [strlen(p.title) + 1];
+      strcpy(title, p.title);
+      greeting = new char [strlen(p.greeting) + 1];
+      strcpy(greeting, p.greeting);
+   }
+   return *this;  // allow for cascaded assignments
+}
+
 Person::~Person()
 {
    delete firstName;
    delete lastName;
    delete title;
+   delete greeting;
 }
 
 void Person::ModifyTitle(const char *newTitle)
@@ -106,6 +131,7 @@ public:
    Humanoid() { life = 0; }
    Humanoid(const char *, const char *, const char *, const char *); 
    Humanoid(const Humanoid &h);  
+   Humanoid &operator=(const Humanoid &h); 
    virtual ~Humanoid() { delete life; }  // destructor
    const char *GetSecondaryName() const { return life->GetFirstName(); }  
    const char *GetPrimaryName() const { return life->GetLastName(); }    // so is lastName (via implicit cast)
@@ -124,9 +150,17 @@ Humanoid::Humanoid(const char *n2, const char *n1, const char *planetNation, con
 
 Humanoid::Humanoid(const Humanoid &h) 
 {
+   delete life;  // delete the old associated object
    // instantiate the associated object (Adaptee)
    life = new Person(h.GetSecondaryName(), h.GetPrimaryName(), ' ', h.GetTitle());
    life->SetGreeting(h.life->Speak());  // Remember, life member is a Person *
+}
+
+Humanoid &Humanoid::operator=(const Humanoid &h)
+{  // there's only one data member, life, to worry about for a deep assignment
+   if (this != &h)
+       life->Person::operator=((Person &) h);     
+   return *this; 
 }
 
 const char *Humanoid::Converse()   // Yes, there can be a default implementation for a pure virtual function
@@ -142,6 +176,7 @@ public:
    Orkan();   // default constructor
    Orkan(const char *n2, const char *n1, const char *t) : Humanoid(n2, n1, t, "Nanu nanu") { } 
    Orkan(const Orkan &h) : Humanoid(h) { }  // copy constructor
+   Orkan &operator=(const Orkan &h) { return (Orkan &) Humanoid::operator=(h); }
    virtual ~Orkan() { }  // destructor
    virtual const char *Converse() override;  // We must override this method if we want Orkan to be a concrete class
 };
@@ -159,6 +194,7 @@ public:
    Romulan();   // default constructor
    Romulan(const char *n2, const char *n1, const char *t) : Humanoid(n2, n1, t, "jolan'tru") { } 
    Romulan(const Romulan &h) : Humanoid(h) { }  // copy constructor
+   Romulan &operator=(const Romulan &h) { return (Romulan &) Humanoid::operator=(h); }
    virtual ~Romulan() { }  // destructor
    virtual const char *Converse() override;  // We must override this method if we want Romulan to be a concrete class
 };
@@ -176,6 +212,7 @@ public:
    Earthling();   // default constructor
    Earthling(const char *n2, const char *n1, const char *t) : Humanoid(n2, n1, t, "Hello") { } 
    Earthling(const Romulan &h) : Humanoid(h) { }  // copy constructor
+   Earthling &operator=(const Earthling &h) { return (Earthling &) Humanoid::operator=(h); }
    virtual ~Earthling() { }  // destructor
    virtual const char *Converse() override;  // We must override this method if we want Romulan to be a concrete class
 };
