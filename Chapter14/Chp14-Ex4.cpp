@@ -22,6 +22,7 @@ public:
     Person();   // default constructor
     Person(const char *, const char *, char, const char *);  
     Person(const Person &);  // copy constructor
+    Person &operator=(const Person &); // overloaded assignment operator
     virtual ~Person();  // virtual destructor
 
     // inline function definitions
@@ -56,6 +57,7 @@ Person::Person(const char *fn, const char *ln, char mi,
     strcpy(title, t);
 }
 
+// copy constructor definition
 Person::Person(const Person &pers)
 {
     firstName = new char [strlen(pers.firstName) + 1];
@@ -65,6 +67,28 @@ Person::Person(const Person &pers)
     middleInitial = pers.middleInitial;
     title = new char [strlen(pers.title) + 1];
     strcpy(title, pers.title);
+}
+
+// overloaded assignment operator
+Person &Person::operator=(const Person &p)
+{
+   // cout << "Person assignment operator" << endl;
+   // make sure we're not assigning an object to itself
+   if (this != &p)
+   {
+      delete firstName;  // or call ~Person();
+      delete lastName;
+      delete title;
+
+      firstName = new char [strlen(p.firstName) + 1];
+      strcpy(firstName, p.firstName);
+      lastName = new char [strlen(p.lastName) + 1];
+      strcpy(lastName, p.lastName);
+      middleInitial = p.middleInitial;
+      title = new char [strlen(p.title) + 1];
+      strcpy(title, p.title);
+   }
+   return *this;  // allow for cascaded assignments
 }
 
 Person::~Person()
@@ -111,6 +135,7 @@ public:
     Student(const char *, const char *, char, const char *,
             float, const char *, const char *); 
     Student(const Student &);  // copy constructor
+    Student &operator=(const Student &); // overloaded assignment operator
     virtual ~Student();  // destructor
     void EarnPhD();  
     // inline function definitions
@@ -163,7 +188,30 @@ Student::Student(const Student &ps) : Person(ps)
     strcpy (temp, ps.studentId); 
     studentId = temp;
 }
-   
+
+// overloaded assignment operator
+Student &Student::operator=(const Student &ps)
+{
+   // cout << "Student assignment operator" << endl;
+   // make sure we're not assigning an object to itself
+   if (this != &ps)
+   {
+      Person::operator=(ps);
+
+      delete currentCourse;  // or call ~Student();
+      delete studentId;
+
+      gpa = ps.gpa;
+      currentCourse = new char [strlen(ps.currentCourse) + 1];
+      strcpy(currentCourse, ps.currentCourse);
+      char *temp = new char [strlen(ps.studentId) + 1];
+      strcpy (temp, ps.studentId);
+      studentId = temp;
+
+   }
+   return *this;  // allow for cascaded assignments
+}
+
 // destructor definition
 Student::~Student()
 {
@@ -210,6 +258,8 @@ int main()
     studentBody.push_back(Student("Hana", "Sato", 'U', "Dr.", 3.8, "C++", "178PSU")); 
     studentBody.push_back(Student("Sara", "Kato", 'B', "Dr.", 3.9, "C++", "272PSU")); 
     studentBody.push_front(Student("Giselle", "LeBrun", 'R', "Ms.", 3.4, "C++", "299TU")); 
+
+    // Note, operator= is called both by insert (twice) and in the explicit assignment on the line below insert
     studentBody.insert(studentBody.begin() + 1, Student("Anne", "Brennan", 'B', "Ms.", 3.9, "C++", "299CU")); 
     studentBody[0] = s1;  // no bounds checking is done, be careful!
 
