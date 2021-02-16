@@ -22,6 +22,7 @@ public:
     Person();   // default constructor
     Person(const char *, const char *, char, const char *);  
     Person(const Person &);  // copy constructor
+    Person &operator=(const Person &); // overloaded assignment operator
     virtual ~Person();  // virtual destructor
 
     // inline function definitions
@@ -56,6 +57,7 @@ Person::Person(const char *fn, const char *ln, char mi,
     strcpy(title, t);
 }
 
+// copy constructor definition
 Person::Person(const Person &pers)
 {
     firstName = new char [strlen(pers.firstName) + 1];
@@ -65,6 +67,27 @@ Person::Person(const Person &pers)
     middleInitial = pers.middleInitial;
     title = new char [strlen(pers.title) + 1];
     strcpy(title, pers.title);
+}
+
+// overloaded assignment operator
+Person &Person::operator=(const Person &p)
+{
+   // make sure we're not assigning an object to itself
+   if (this != &p)
+   {
+      delete firstName;  // or call ~Person();
+      delete lastName;
+      delete title;
+
+      firstName = new char [strlen(p.firstName) + 1];
+      strcpy(firstName, p.firstName);
+      lastName = new char [strlen(p.lastName) + 1];
+      strcpy(lastName, p.lastName);
+      middleInitial = p.middleInitial;
+      title = new char [strlen(p.title) + 1];
+      strcpy(title, p.title);
+   }
+   return *this;  // allow for cascaded assignments
 }
 
 Person::~Person()
@@ -110,6 +133,7 @@ public:
     Student(const char *, const char *, char, const char *,
             float, const char *, const char *); 
     Student(const Student &);  // copy constructor
+    Student &operator=(const Student &); // overloaded assignment operator
     virtual ~Student();  // destructor
     void EarnPhD();  
     // inline function definitions
@@ -162,7 +186,29 @@ Student::Student(const Student &ps) : Person(ps)
     strcpy (temp, ps.studentId); 
     studentId = temp;
 }
-   
+
+// overloaded assignment operator
+Student &Student::operator=(const Student &ps)
+{
+   // make sure we're not assigning an object to itself
+   if (this != &ps)
+   {
+      Person::operator=(ps);
+
+      delete currentCourse;  // or call ~Student();
+      delete studentId;
+
+      gpa = ps.gpa;
+      currentCourse = new char [strlen(ps.currentCourse) + 1];
+      strcpy(currentCourse, ps.currentCourse);
+      char *temp = new char [strlen(ps.studentId) + 1];
+      strcpy (temp, ps.studentId);
+      studentId = temp;
+
+   }
+   return *this;  // allow for cascaded assignments
+}
+
 // destructor definition
 Student::~Student()
 {
@@ -198,16 +244,24 @@ bool operator==(const Student &s1, const Student &s2)
 
 struct comparison   // This struct represents a ‘functor’
 {                   // that is, a ‘function object’
-    bool operator() (const char *key1, const char *key2)
+    bool operator() (const char *key1, const char *key2) const
     {   
-        return strcmp(key1, key2); 
+        int ans = strcmp(key1, key2);
+        if (ans >= 0) 
+            return true;   // return true if greater than or =
+        else 
+            return false;  // return false if they are equal or less than
     }
+    comparison() { }
+    ~comparison() { }
 };
+
 
 int main()
 {
     Student s1("Hana", "Sato", 'U', "Dr.", 3.8, "C++", "178PSU"); 
     Student s2("Sara", "Kato", 'B', "Dr.", 3.9, "C++", "272PSU"); 
+    Student s3("Jill", "Long", 'R', "Dr.", 3.7, "C++", "234PSU"); 
 
     // Now, map is maintained in sorted order per comparison functor using operator()
     map<const char *, Student, comparison> studentBody;
@@ -216,9 +270,11 @@ int main()
     // create three pairings of ids to Students
     pair<const char *, Student> studentPair1(s1.GetStudentId(), s1); 
     pair<const char *, Student> studentPair2(s2.GetStudentId(), s2); 
+    pair<const char *, Student> studentPair3(s3.GetStudentId(), s3); 
 
     studentBody.insert(studentPair1);   // insert a pair instance
     studentBody.insert(studentPair2);
+    studentBody.insert(studentPair3);
     
     mapIter = studentBody.begin();
     while (mapIter != studentBody.end())
