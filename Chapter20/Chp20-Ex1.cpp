@@ -1,6 +1,9 @@
 // (c) Dorothy R. Kirk. All Rights Reserved.
 // Purpose: To illustrate use of pImpl pattern 
 // Note: this driver can also be used with non-pImpl Person class or pImpl with unique pointers -- works the same!
+// To compile: g++ -c PersonImpl.cpp
+//             g++ -c Chp20-Ex1.cpp
+//             g++ -o runme PersonImpl.o Chp20-Ex1.o   (executable is in 'runme')
 
 #include <iostream>
 #include "Person.h"

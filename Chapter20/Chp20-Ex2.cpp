@@ -2,6 +2,9 @@
 // Purpose: To demonstrate a simple smart pointer class
 // Note: This class still needs to decide how to handle copy constructor and assignment operator
 // That is, shallow copies/assignment (probably not), deep copies/assignment (maybe), or prohibit copies/assignment (likely)
+// To compile: g++ -c PersonImpl.cpp
+//             g++ -c Chp20-Ex2.cpp
+//             g++ -o runme PersonImpl.o Chp20-Ex2.o   (executable is in 'runme')
 
 #include <iostream>
 #include "Person.h"
