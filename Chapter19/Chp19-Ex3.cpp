@@ -6,7 +6,9 @@
 // SingletonDestroyer is released. Otherwise, we'd be counting on someone to remember to delete Singleton
 // which presents an issue -- many may point to the Singleton. Also, as the Singleton creates itself when 
 // needed, the Singleton can (thourgh its pairing w SingletonDestroy) be in charge of its own destruction
-// Nonetheless, we will add checks for single destruction in the rare case a Client deletes our Singleton directly.
+// Nonetheless, we will add checks for single destruction in case a Client deletes our Singleton directly.
+// NOTE: In this version, main() explicitly deletes the Singleton to demonstrate that the SingletonDestructor 
+//       can handle that case as well!
 
 #include <iostream>
 #include <cstring>
@@ -26,7 +28,7 @@ public:
     SingletonDestroyer(Singleton *s = 0) { theSingleton = s; }
     SingletonDestroyer(const SingletonDestroyer &) = delete; // disallow copies
     SingletonDestroyer &operator=(const SingletonDestroyer &) = delete; // disallow assignment
-    ~SingletonDestroyer();  // class is not meant to be customized, so destructor is not virtual
+    ~SingletonDestroyer();  // class is not meant to be customized, hence destructor is not virtual
     void setSingleton(Singleton *s) { theSingleton = s; }  
     Singleton *getSingleton() { return theSingleton; }
 };
@@ -63,10 +65,9 @@ SingletonDestroyer::~SingletonDestroyer()
     }                          // This will have been done by Singleton if it has been individually destructed
 }
 
-
-// This method is not needed with inheritance-model implementation of Singleton. 
+// This method is not needed with inheritanc-model implementation of Singleton. 
 // Shown to demonstrate what you'd need if you had a stand-alone class
-/* 
+/*
 Singleton *Singleton::instance()
 {
     if (theInstance == NULL)
@@ -185,6 +186,7 @@ void Person::SetGreeting(const char *newGreeting)
    strcpy(greeting, newGreeting);
 }
 
+
 void Person::Print()
 {
    cout << title << " " << firstName << " " << middleInitial << " " << lastName << endl;
@@ -210,19 +212,19 @@ President::President(const char *fn, const char *ln, char mi, const char *t) : P
 
 President::~President()
 {
-    destroyer.setSingleton(NULL);  // Necessary for the rare case that a Singleton is explicitly deleted. The SingletonDestructor
-    cout << "President destructor" << endl;   // destructor will check this member to see if it's NULL before deallocating Singleton
+    destroyer.setSingleton(NULL);
+    cout << "President destructor" << endl;
 }
 
 President *President::instance(const char *fn, const char *ln, char mi, const char *t) 
 {
-    if (theInstance == NULL)    // If we have not yet allocated the Singleton
+    if (theInstance == NULL)
     {
-        theInstance = new President(fn, ln, mi, t);    // Create one using private constructor
-        destroyer.setSingleton(theInstance);           // Set our SingletonDestroyer to point to the Singleton
+        theInstance = new President(fn, ln, mi, t);
+        destroyer.setSingleton(theInstance);
         cout << "Creating the Singleton" << endl;
     }
-    else                                               // If an instance exists, return existing instance
+    else
         cout << "Singleton previously created. Returning existing singleton" << endl;
     return (President *) theInstance;   // cast necessary because President has been stored as a Singleton in theInstance
 }
@@ -238,12 +240,9 @@ int main()
 
     p1->Print();
  
-    // Singleton is so long-lived that it is appropriate for it to be deleted at end of the application. 
-    // Many users will have links to Singleton. Ideally, none of them should delete it. The SingletonDestructor will do so.
-    // Just as Singleton allocates itself internally, so will it destruct on its own (with help from its paired Destructor)
-    // However, this code is written such that if someone does delete p1; then the SingletonDestructor will recognize this    
-    // and not doubly delete the Singleton which it is responsible for.
-
+    delete p1;  // Should there be a need to truly delete the Singleton before the application ends, our code is ok.
+                // The SingletonDestructor will check if the Singleton which it is responsible for has already been released. 
+                // In that case, the SingletonDestructor will not release its associated Singleton. 
     return 0;
 }
 
