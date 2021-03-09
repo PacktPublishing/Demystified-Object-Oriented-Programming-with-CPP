@@ -263,6 +263,10 @@ int main()
     if (studentBody1 == studentBody2)
         cout << "Vectors are the same" << endl;
 
+    // the auto keyword will allow iter's type to be determined by its first usage (in for loop)
+    for (auto iter = studentBody2.begin(); iter != studentBody2.end(); iter++)
+        (*iter).Print();
+
     if (!studentBody1.empty())   // clear first vector 
         studentBody1.clear();
 
