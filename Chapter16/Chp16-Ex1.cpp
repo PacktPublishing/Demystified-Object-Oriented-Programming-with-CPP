@@ -9,8 +9,7 @@
 
 using namespace std;
 
-const int MAXCOURSES = 5;
-const int MAXSTUDENTS = 5;
+const int MAXCOURSES = 5, MAXSTUDENTS = 5;
 
 class Subject;  // forward declarations
 class Student;
@@ -404,6 +403,10 @@ int main()
     // Notify() will then be called on the Course (Subject), which will call Update() the list of Observers (students on the waitList). 
     // This Update() will indirectly allow waitlisted Students, if any, to now Add the course. 
     // Lastly, in DropCourse, remove course from Student's courselist.
+
+    delete c1;
+    delete c2;
+    delete c3;
 
     return 0;
 }
