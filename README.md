@@ -28,9 +28,19 @@ All of the code is organized into folders. For example, Chapter02.
 
 The code will look like the following:
 ```
-char name[10] = "Dorothy";
-float grades[20];
-grades[0] = 4.0;
+class Singleton
+{
+protected:
+    static Singleton *theInstance;
+    static SingletonDestroyer destroyer;
+protected:
+    Singleton() {}
+    Singleton(const Singleton &) = delete; // disallow copies
+    Singleton &operator=(const Singleton &) = delete; // disallow assignment
+    friend class SingletonDestroyer;  // the two classes are tightly coupled
+    virtual ~Singleton() { cout << "Singleton destructor" << endl; }  // virtual because we'll inherit from Singleton
+};
+
 ```
 
 **Following is what you need for this book:**
