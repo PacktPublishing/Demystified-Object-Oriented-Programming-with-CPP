@@ -1,5 +1,5 @@
 // (c) Dorothy R. Kirk. All Rights Reserved.
-// Sample solution for Chp2, Question 2
+// Chp2, Question 2, a - d. Sample solution
 // Write a small C++ program to prompt a user to enter information regarding a Student, and print out the data.
 // a. Student information should minimally include first name, last name, gpa, and the current course in which 
 // the Student is registered. This information may be stored in a simple class. You may utilize either char arrays 
@@ -26,46 +26,46 @@ using std::string;
 class Student
 {
 public:
-	string firstName;
-	string lastName;
-	float gpa;
-	string course;
+    string firstName;
+    string lastName;
+    float gpa;
+    string course;
 };
 
-void display(string, string, string, float = 4.0);
-void display(string, float);
-void display(Student);
+void Print(string, string, string, float = 4.0);
+void Print(string, float);
+void Print(Student);
 
 int main()
 {
-	Student s1;
+    Student s1;
 	
-	cout << "Please enter <firstname> <lastname>: ";
-	cin >> s1.firstName >> s1.lastName;
-	cout << "Please enter " << s1.firstName << " " << s1.lastName;
-	cout << "'s <gpa> and <course>: ";
-	cin >> s1.gpa >> s1.course;
+    cout << "Please enter <firstname> <lastname>: ";
+    cin >> s1.firstName >> s1.lastName;
+    cout << "Please enter " << s1.firstName << " " << s1.lastName;
+    cout << "'s <gpa> and <course>: ";
+    cin >> s1.gpa >> s1.course;
 
-	display(s1.firstName, s1.lastName, s1.course, s1.gpa);
-	display(s1.firstName, s1.lastName, s1.course);	// use default gpa
-	display(s1.lastName, s1.gpa);	// use overloaded fn.
+    Print(s1.firstName, s1.lastName, s1.course, s1.gpa);
+    Print(s1.firstName, s1.lastName, s1.course);	// use default gpa
+    Print(s1.lastName, s1.gpa);	// use overloaded fn.
 
-	return 0;
+    return 0;
 }
 
-void display(string fn, string ln, string course, float gpa)
+void Print(string fn, string ln, string course, float gpa)
 {
-	cout << fn << " " << ln << " is taking " << course;
-	cout << " and has a gpa of " << std::setprecision(3) << gpa << endl;
+    cout << fn << " " << ln << " is taking " << course;
+    cout << " and has a gpa of " << std::setprecision(3) << gpa << endl;
 }
 
-void display(string ln, float gpa)
+void Print(string ln, float gpa)
 {
-	cout << ln << " has gpa of " << std::setprecision(3) << gpa << endl;
+    cout << ln << " has gpa of " << std::setprecision(3) << gpa << endl;
 }
 
-void display(Student s)
+void Print(Student s)
 {
-	cout << s.firstName << " " << s.lastName << " is taking " << s.course;
-	cout << " and has a gpa of " << std::setprecision(3) << s.gpa << endl;
+    cout << s.firstName << " " << s.lastName << " is taking " << s.course;
+    cout << " and has a gpa of " << std::setprecision(3) << s.gpa << endl;
 }
