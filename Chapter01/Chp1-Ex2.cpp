@@ -22,3 +22,4 @@ int main()
     cout << ". GPA is: " << setprecision(3) << gpa << endl;
     return 0;
 }
+

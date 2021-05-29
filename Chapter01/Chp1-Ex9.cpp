@@ -26,3 +26,4 @@ int main()
     cout << s1.name << " has GPA: " << s1.gpa << endl; 
     return 0;
 }
+
