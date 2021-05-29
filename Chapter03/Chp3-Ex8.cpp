@@ -21,8 +21,9 @@ int main()
    newId1 = genId("Group");  // fn call will allocate memory 
    newId2 = genId("Group");  // fn call will allocate memory 
    cout << "New ids: " << newId1 << " " << newId2 << endl;
-   delete newId1;   // notice that we are deallocating in a different scope than we allocated.
-   delete newId2;   // this will give us motivation later to use a smart pointer for safety.
+   delete [] newId1;   // notice that we are deallocating in a different scope than we allocated.
+   delete [] newId2;   // this will give us motivation later to use a smart pointer for safety.
+                       // note: delete newId1; or delete newId2; would also be ok (primitive type)
 
    return 0;
 }

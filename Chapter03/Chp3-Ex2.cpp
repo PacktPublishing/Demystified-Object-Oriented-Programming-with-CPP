@@ -36,8 +36,11 @@ int main()
         cout << *(intArray + i) << " ";
         cout << (*(collectionArray + i)).y << endl;
     }
-    delete intArray;     // mark memory for deletion
-    delete [] collectionArray;
+
+    // mark memory for deletion
+    delete [] intArray;          // for an array of primitive types, delete intArray; is also ok 
+    delete [] collectionArray;   // the []'s on delete first call a 'cleanup' function on each element before reclaiming
+                                 // the heap memory (useful for user defined types)-- more on that with Chapter 5
 
     return 0;
 }

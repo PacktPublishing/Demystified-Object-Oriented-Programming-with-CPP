@@ -27,6 +27,8 @@ int main()
    AddOne(y);
    cout << "x: " << x << " and *y: " << *y << endl;
 
+   delete y;    // relinquish the heap memory
+
    return 0;
 }
 

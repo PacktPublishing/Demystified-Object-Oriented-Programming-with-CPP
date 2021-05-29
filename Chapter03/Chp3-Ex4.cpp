@@ -36,8 +36,8 @@ int main()
     }
 
     for (int i = 0; i < numRows; i++)
-        delete TwoDimArray[i];   // delete column for each row
-    delete TwoDimArray;   // delete allocated rows
+        delete [] TwoDimArray[i];   // delete columns for each row  -- note: delete TwoDimArray[i]; is also ok since primitive type      
+    delete [] TwoDimArray;   // delete allocated rows  -- note: delete TwoDimAray; also ok since primitive type
 
     return 0;
 }

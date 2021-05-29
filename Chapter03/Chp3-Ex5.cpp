@@ -38,10 +38,10 @@ int main()
     for (int i = 0; i < dim1; i++)
     {
         for (int j = 0; j < dim2; j++)
-            delete ThreeDimArray[i][j];   // release dim 3 
-        delete ThreeDimArray[i];   // release dim 2 
+            delete [] ThreeDimArray[i][j];   // release dim 3 
+        delete [] ThreeDimArray[i];   // release dim 2 
     }
-    delete ThreeDimArray;   // release dim 1 
+    delete [] ThreeDimArray;   // release dim 1 
 
     return 0;
 }

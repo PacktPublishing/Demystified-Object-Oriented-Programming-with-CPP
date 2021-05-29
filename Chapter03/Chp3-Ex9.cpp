@@ -17,13 +17,14 @@ int main()
     unspecified = new int;  // the void * now points to an int
 
     // the void * must be vase to an int * before it is dereferenced
-    *((int *) unspecified) = 89;
+    *(static_cast<int *>(unspecified)) = 89;
 
     // let x point to the memory which unspecified points to
-    x = (int *) unspecified;
+    x = static_cast<int *> (unspecified);
 
-    cout << *x << " " << *((int *) unspecified) << endl;
+    cout << *x << " " << *(static_cast<int *>(unspecified)) << endl;
 
+    delete static_cast<int *>(unspecified);
 
     return 0;
 }

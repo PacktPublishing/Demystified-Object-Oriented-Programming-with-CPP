@@ -12,21 +12,21 @@ using std::endl;
 using std::flush; 
 using std::setw; 
 
-const int MAX = 20;
+constexpr int MAX = 20;
 
-char *createName();  // function prototype
+[[nodiscard]] char *createName();  // function prototype
 
 int main()    
 {
    char *name = nullptr;
    name = createName();
    cout << "Name: " << name << endl;
-   delete name;   // notice that we delete in a different scope than that which we allocated. 
-                  // this is a motivation for us later choosing a smart pointer (to alleviate unintentional errors)
-   return 0;
+   delete [] name;   // notice that we delete in a different scope than that which we allocated. 
+                     // this is a motivation for us later choosing a smart pointer (to alleviate unintentional errors)
+   return 0;         // Also note that delete name; would have been ok (primitive type)
 }
 
-char *createName()
+[[nodiscard]] char *createName()
 {
    char *temp = new char[MAX];
    cout << "Enter name: " << flush;
