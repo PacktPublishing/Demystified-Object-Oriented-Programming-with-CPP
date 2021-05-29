@@ -7,7 +7,7 @@
 using std::cout;   // preferred to: using namespace std;
 using std::endl;
 
-const float PI = 3.14159;
+constexpr float PI = 3.14159;
 
 class Circle   // user defined type declarations
 {

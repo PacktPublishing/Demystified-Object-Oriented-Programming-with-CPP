@@ -6,7 +6,7 @@
 using std::cout;   // preferred to: using namespace std;
 using std::endl;
 
-int minimum(int arg1, int arg2);   // function prototype with optional argument names
+[[nodiscard]] int minimum(int arg1, int arg2);   // function prototype with optional argument names
 
 
 int main()
@@ -18,7 +18,7 @@ int main()
     return 0;
 }
 
-int minimum(int a, int b)  // function definition with formal parameters
+[[nodiscard]] int minimum(int a, int b)  // function definition with formal parameters
 {
     if (a < b)
         return a;

@@ -6,7 +6,7 @@
 using std::cout;    // preferred to: using namespace std;
 using std::endl;
 
-int maximum (double, double);
+[[nodiscard]] int maximum (double, double);
 
 int main()
 {
@@ -21,7 +21,7 @@ int main()
     return 0;
 }
 
-int maximum (double a, double b)
+[[nodiscard]] int maximum (double a, double b)
 {
     return (a > b) ? a : b;
 
