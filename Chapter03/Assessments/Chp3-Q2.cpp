@@ -25,3 +25,4 @@ int main()
     const Student *const s3 = s0;
     return 0;
 }
+
