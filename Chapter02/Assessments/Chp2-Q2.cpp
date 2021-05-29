@@ -69,3 +69,4 @@ void Print(Student s)
     cout << s.firstName << " " << s.lastName << " is taking " << s.course;
     cout << " and has a gpa of " << std::setprecision(3) << s.gpa << endl;
 }
+
