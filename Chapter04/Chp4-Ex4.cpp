@@ -28,3 +28,4 @@ int &CreateId()
     *memory = count++;    // use count as id, then increment
     return *memory;
 }
+
