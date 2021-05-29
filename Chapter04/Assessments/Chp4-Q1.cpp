@@ -85,3 +85,4 @@ void ReadData(Student &s)
     cout << "'s <gpa> and <course>: ";
     cin >> s.gpa >> s.course;
 }
+
