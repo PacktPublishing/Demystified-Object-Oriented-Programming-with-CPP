@@ -6,8 +6,8 @@
 using std::cout;  // preferred to: using namespace std;
 using std::endl;
 
-int maximum (int, int);        // overloaded fn prototypes. 
-float maximum (float, float);  // Return type is not part of the signature
+[[nodiscard]] int maximum (int, int);        // overloaded fn prototypes. 
+[[nodiscard]] float maximum (float, float);  // Return type is not part of the signature
 
 int main()
 {
@@ -22,12 +22,12 @@ int main()
     // there are two equally good candidates -- hence "ambiguous"
     // cout << "The maximum is: " << maximum(a, y) << endl; 
     // We can force a choice through using an explicit typecast
-    cout << "The maximum is: " << maximum((float)a, y) << endl; 
+    cout << "The maximum is: " << maximum(static_cast<float>(a), y) << endl; 
 	
     return 0;
 }
 
-int maximum (int arg1, int arg2)
+[[nodiscard]] int maximum (int arg1, int arg2)
 {
     if (arg1 > arg2)
         return arg1;
@@ -35,7 +35,7 @@ int maximum (int arg1, int arg2)
         return arg2;
 }
 
-float maximum (float arg1, float arg2)
+[[nodiscard]] float maximum (float arg1, float arg2)
 {
     if (arg1 > arg2)
         return arg1;
