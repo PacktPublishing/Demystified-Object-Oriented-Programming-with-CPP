@@ -7,9 +7,9 @@ using std::cout;    // preferred to: using namespace std;
 using std::endl;
 using std::string;
 
-class Student
+class Student      // very simple class -- we'll add to it in the next chapter
 {
-public:
+public:          
     string name;
     float gpa;
 };

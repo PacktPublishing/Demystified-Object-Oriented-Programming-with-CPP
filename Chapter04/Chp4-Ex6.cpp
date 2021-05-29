@@ -9,22 +9,21 @@ using std::cin;
 using std::endl;
 
 
-class Collection
+struct collection
 {
-public:
-   int x;         // don't worry, we'll soon see (Chp 5) how to initialize class members easily
+   int x;       // don't worry, we'll soon see (Chp 5) how to initialize struct or class members easily
    float y;
 };
 
-void Update(Collection *);
-void Print(const Collection &);
+void Update(collection *);
+void Print(const collection &);
 
 int main()
 {
-   Collection collect1, *collect2 = nullptr; 
+   collection collect1, *collect2 = nullptr; 
 
    // allocate memory for collect2 from the heap
-   collect2 = new Collection;  
+   collect2 = new collection;  
 
    Update(&collect1);
    Update(collect2);
@@ -38,13 +37,13 @@ int main()
    return 0;
 }
 
-void Update(Collection *c)
+void Update(collection *c)
 {
    cout << "Enter <int> and <float> members: ";
    cin >> c->x >> c->y;
 }
     
-void Print(const Collection &c)
+void Print(const collection &c)
 {
    cout << "x member: " << c.x << "   y member: " << c.y << endl;
 }

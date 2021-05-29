@@ -12,6 +12,7 @@ int main()
     *ptr = 20;
     int *&refPtr = ptr;   // establish a reference to a pointer
     cout << *ptr << " " << *refPtr << endl;
+    delete ptr;
     
     return 0;
 }

@@ -29,6 +29,8 @@ int main()
    Display(x);
    Display(*y);
 
+   delete y;
+
    return 0;
 }
 

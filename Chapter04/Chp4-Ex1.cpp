@@ -31,5 +31,7 @@ int main()
 
    cout << x << " " << *p << " " << refInt1 << " " << refInt2 << endl;
 
+   delete p;
+
    return 0;
 }
