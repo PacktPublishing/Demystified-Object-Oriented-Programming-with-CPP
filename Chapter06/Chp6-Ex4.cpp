@@ -15,7 +15,7 @@ private:
 public:
    LinkListElement() { data = nullptr; next = nullptr; }
    LinkListElement(Item *i) { data = i; next = nullptr; }
-   ~LinkListElement() { delete (Item *) data; next = nullptr; }
+   ~LinkListElement() { delete static_cast<Item *>(data); next = nullptr; }
    void *GetData() { return data; }
    LinkListElement *GetNext() { return next; }
    void SetNext(LinkListElement *e) { next = e; }
@@ -44,7 +44,7 @@ public:
    LinkListElement *RemoveAtEnd();
    void DeleteAtEnd();
 
-   int IsEmpty() { return head == 0; } 
+   int IsEmpty() { return head == nullptr; } 
    void Print();  
 };
 
@@ -86,11 +86,11 @@ void LinkList::InsertBeforeItem(Item *newItem, Item *existing)
    LinkListElement *temp, *toAdd;
    // assumes item to insert before exists
    current = head;
-   if (*((Item *) current->GetData()) == *existing)
+   if (*(static_cast<Item *>(current->GetData())) == *existing)
        InsertAtFront(newItem);
    else
    {
-      while (*((Item *)current->GetData()) != *existing)
+      while (*(static_cast<Item *>(current->GetData())) != *existing)
       {
          temp = current;
          current = current->GetNext();
@@ -145,7 +145,7 @@ void LinkList::Print()
    current = head;
    while (current)
    {
-      output = *((Item *) current->GetData());
+      output = *(static_cast<Item *>(current->GetData()));
       cout << output << " ";
       current = current->GetNext();
    }
@@ -181,7 +181,7 @@ Item *Queue::Dequeue()
 {
    LinkListElement *temp;
    temp = RemoveAtFront();
-   Item *item = new Item(*((Item *) temp->GetData())); // make copy of temp's data
+   Item *item = new Item(*(static_cast<Item *>(temp->GetData()))); // make copy of temp's data
    delete temp; 
    return item;
 }

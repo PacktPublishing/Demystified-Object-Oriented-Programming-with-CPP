@@ -15,7 +15,7 @@ private:
 public:
    LinkListElement() { data = nullptr; next = nullptr; }
    LinkListElement(Item *i) { data = i; next = nullptr; }
-   ~LinkListElement() { delete (Item *) data; next = nullptr; }
+   ~LinkListElement() { delete static_cast<Item *>(data); next = nullptr; }
    void *GetData() { return data; }
    LinkListElement *GetNext() { return next; }
    void SetNext(LinkListElement *e) { next = e; }
@@ -34,7 +34,7 @@ public:
    void InsertAtFront(Item *);
    LinkListElement *RemoveAtFront();
    void DeleteAtFront();
-   int IsEmpty() { return head == 0; } 
+   int IsEmpty() { return head == nullptr; } 
    void Print();  
 };
 
@@ -80,7 +80,7 @@ void LinkList::Print()
    current = head;
    while (current)
    {
-      output = *((Item *) current->GetData());
+      output = *(static_cast<Item *>(current->GetData()));
       cout << output << " ";
       current = current->GetNext();
    }
@@ -115,7 +115,7 @@ Item *Stack::Pop()
 {
    LinkListElement *temp;
    temp = RemoveAtFront();
-   Item *item = new Item(*((Item *) temp->GetData()));  // copy temp's data
+   Item *item = new Item(*(static_cast<Item *>(temp->GetData())));  // copy temp's data
    delete temp;
    return item;
 }
