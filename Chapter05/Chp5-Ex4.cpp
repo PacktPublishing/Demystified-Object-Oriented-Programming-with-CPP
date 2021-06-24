@@ -22,9 +22,10 @@ public:
 
 University::University()    // default, no-argument constructor
 {
-    // even though string data member name is initialized with an empty string (the string class does so for us),
-    // it is considered better practice to ensure that we initialize all data members within our constructor
-    name = "";
+    // Because a string is a class type, all strings are constructed with an empty value by default. 
+    // For that reason, we do not need to explicitly initialize strings if an empty string is desired. 
+    // We’ll see a preferred manner of initialization for all data members shortly in this chapter.    
+    // Hence, name is constructed by default (empty string)
     numStudents = 0;
 }
 

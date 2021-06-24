@@ -31,9 +31,9 @@ public:
 void Student::Initialize()
 {
     // even though string data members, firstName and lastName, are initialized with empty strings (string is a class and does so for us),
-    // it is considered better practice to ensure that all data members are set ourselves 
-    firstName = "";
-    lastName = "";
+    // we're showing here how to clear the string, as it may be re-initialized more than once
+    firstName.clear(); 
+    lastName.clear();
     middleInitial = '\0';      // null character
     gpa = 0.0;
     currentCourse = nullptr;
@@ -53,7 +53,7 @@ void Student::Initialize(string fn, string ln, char mi, float avg, const char *c
 // Member function definition
 void Student::CleanUp()
 {
-    delete currentCourse;    // deallocate the memory for data members that are pointers
+    delete [] currentCourse;    // deallocate the memory for data members that are pointers
 }
 
 // Member function definition

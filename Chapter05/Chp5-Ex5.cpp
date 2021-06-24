@@ -31,10 +31,8 @@ public:
 // default constructor
 Student::Student()
 {
-    // even though string data members, firstName and lastName, are initialized with empty strings (string is a class and does so for us),
-    // it is considered better practice to ensure that we initialize all data members within our constructor
-    firstName = "";
-    lastName = "";
+    // Remember, firstName and lastName are member objects of type string; they are default constructed and hence
+    // 'empty' by default. They HAVE been initialized. 
     middleInitial = '\0';
     gpa = 0.0;
     currentCourse = nullptr;
