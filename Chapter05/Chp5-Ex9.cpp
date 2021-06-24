@@ -42,11 +42,13 @@ inline void Student::SetCurrentCourse(const string &c)
 
 
 // Member init. list is used to set data members 
-Student::Student() : firstName(""), lastName(""), middleInitial('\0'), gpa(0.0), currentCourse(""), studentId(0)  
+Student::Student() : firstName(), lastName(), middleInitial('\0'), gpa(0.0), currentCourse(), studentId(0)  
 {
-   // even though string data members, firstName, lastName, currentCourse are initialized with empty strings
-   // (string is a class and does so for us), it is still better practice to initialize all members yourself (see mbr init list above)
-   // note: you may still initialize data members here, but using member initialization list is more efficient
+    // You may still set data members here, but using above initialization is more efficient than using assignment
+    // Note: firstName, lastName, currentCourse are shown in member init. list selecting default constructor for initialization.
+    // However, as this is the default action for member objects (string), we don’t need to explicitly include
+    // these members in the member initialization list (nor will we include them in future examples).
+
 }
 
 // member init. list is used to set data members 

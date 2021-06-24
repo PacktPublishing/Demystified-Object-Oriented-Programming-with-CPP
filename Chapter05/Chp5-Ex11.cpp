@@ -55,11 +55,10 @@ inline void Student::SetCurrentCourse(const string &c)
 
 
 // default constructor definition
-Student::Student() : firstName(""), lastName(""), middleInitial('\0'), gpa(0.0), currentCourse(""), studentId(nullptr)
+Student::Student() : middleInitial('\0'), gpa(0.0), studentId(nullptr)
 {
-    // even though string data members, firstName, lastName, currentCourse are initialized with empty strings
-    // (string is a class and does so for us), it is still better practice to initialize all members yourself (see mbr init list above)
     // note: you may still initialize data members here, but using member initialization list is more efficient
+    // Note: firstName, lastName, currentCourse as member objects (type string), will be default constructed to empty strings
     numStudents++;
 }
 
@@ -83,6 +82,7 @@ Student::Student(const string &fn, const string &ln, char mi, float avg, const s
 Student::Student(const Student &s) : firstName(s.firstName), lastName(s.lastName), middleInitial(s.middleInitial),
                                      gpa(s.gpa), currentCourse(s.currentCourse)
 {
+    delete studentId;  // release previously allocated studentId
     // remember to do a deep copy for any data members that are pointers
     char *temp = new char [strlen(s.studentId) + 1];
     strcpy (temp, s.studentId); //studentId can't be an lvaue, 
@@ -94,7 +94,9 @@ Student::Student(const Student &s) : firstName(s.firstName), lastName(s.lastName
 Student::~Student()
 {
     // remember to delete memory for any data members that are pointers
-    delete const_cast<char *> (studentId); // cast is necessary for delete
+    delete [] studentId; 
+    // Note that older compilers will instead require: 
+    // delete const_cast<char *> (studentId); // cast is necessary for delete -- see book discussion 
     numStudents--;
 }
 

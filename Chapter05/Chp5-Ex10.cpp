@@ -40,12 +40,11 @@ inline void Student::SetCurrentCourse(const string &c)
 
 
 // default constructor 
-Student::Student() : firstName(""), lastName(""), middleInitial('\0'), gpa(0.0), currentCourse(""), studentId(0)
+Student::Student() : middleInitial('\0'), gpa(0.0), studentId(0)
 {
-   // even though string data members, firstName, lastName, currentCourse are initialized with empty strings
-   // (string is a class and does so for us), it is still better practice to initialize all members yourself (see mbr init list above)
    // note: you may still initialize data members here, but using member initialization list is more efficient
-
+   // Because string data members, firstName, lastName, currentCourse are initialized with empty strings (they are member objects
+   // which are default constructed), we do not need to include the default constructor specification for these members above. 
 }
 
 // alternate constructor 
