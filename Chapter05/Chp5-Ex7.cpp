@@ -45,7 +45,7 @@ University::University(const University &u) // copy const
 
 University::~University()  // destructor definition
 {
-    delete name;   // be sure to deallocate any dynamically allocoated memory
+    delete [] name;   // be sure to deallocate any dynamically allocoated memory
     cout << "Destructor called " << this << endl;
 }
 
