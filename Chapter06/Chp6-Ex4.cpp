@@ -10,25 +10,25 @@ typedef int Item;
 class LinkListElement
 {
 private:
-   void *data;
-   LinkListElement *next;
+   void *data = nullptr;
+   LinkListElement *next = nullptr;
 public:
-   LinkListElement() { data = nullptr; next = nullptr; }
-   LinkListElement(Item *i) { data = i; next = nullptr; }
+   LinkListElement() = default; 
+   LinkListElement(Item *i) : data(i), next(nullptr) { }
    ~LinkListElement() { delete static_cast<Item *>(data); next = nullptr; }
    void *GetData() { return data; }
-   LinkListElement *GetNext() { return next; }
+   LinkListElement *GetNext() const { return next; }
    void SetNext(LinkListElement *e) { next = e; }
 };
 
 class LinkList
 {
 private:
-   LinkListElement *head;
-   LinkListElement *tail;
-   LinkListElement *current;
+   LinkListElement *head = nullptr;
+   LinkListElement *tail = nullptr;
+   LinkListElement *current = nullptr;
 public:
-   LinkList();
+   LinkList() = default;
    LinkList(LinkListElement *);
    ~LinkList();
 
@@ -44,14 +44,18 @@ public:
    LinkListElement *RemoveAtEnd();
    void DeleteAtEnd();
 
-   int IsEmpty() { return head == nullptr; } 
+   int IsEmpty() const { return head == nullptr; } 
    void Print();  
 };
 
+// User supplied default constructor is not necessary due to in-class initialization. 
+// Here is what it would look like (or use mbr init list) if you opted not to include in-class initialization
+/*
 LinkList::LinkList()
 {
    head = tail = current = nullptr;
 }
+*/
 
 LinkList::LinkList(LinkListElement *element)
 {
@@ -60,10 +64,10 @@ LinkList::LinkList(LinkListElement *element)
 
 void LinkList::InsertAtFront(Item *theItem)
 {
-   LinkListElement *temp = new LinkListElement(theItem);
+   LinkListElement *newHead = new LinkListElement(theItem);
 
-   temp->SetNext(head);  // temp->next = head;
-   head = temp;
+   newHead->SetNext(head);  // newHead->next = head;
+   head = newHead;
 }
 
 LinkListElement *LinkList::RemoveAtFront()
@@ -78,12 +82,12 @@ void LinkList::DeleteAtFront()
 {
    LinkListElement *deallocate;
    deallocate = RemoveAtFront();
-   delete deallocate;    // destructor will delete data, set next to NULL
+   delete deallocate;    // destructor will delete data, set next to nullptr
 }
 
 void LinkList::InsertBeforeItem(Item *newItem, Item *existing)
 {
-   LinkListElement *temp, *toAdd;
+   LinkListElement *temp = nullptr, *toAdd = nullptr;
    // assumes item to insert before exists
    current = head;
    if (*(static_cast<Item *>(current->GetData())) == *existing)
@@ -138,13 +142,12 @@ void LinkList::DeleteAtEnd()
 
 void LinkList::Print()
 {
-   Item output;
-
    if (!head)
       cout << "<EMPTY>";
    current = head;
    while (current)
    {
+      Item output;  // localize temp output var
       output = *(static_cast<Item *>(current->GetData()));
       cout << output << " ";
       current = current->GetNext();
@@ -163,8 +166,11 @@ class Queue : protected LinkList
 private:
    // no new data members are necessary
 public:
-   Queue() : LinkList() { }
-   virtual ~Queue() {} // we'll discuss virtual in Chp 7
+   // Constructor prototype shown below is not needed; we get default without prorotype (since there are no other ctors)
+   // Shown in comments to show optional use of =default to get default ctor
+   // Queue() = default;   // will call LinkList() constructor 
+   // Destructor prototype is needed (per virtual keyword)
+   virtual ~Queue() = default; // we'll discuss virtual in Chp 7 
    // Here, we specify the pubilc interface which Queue instances may utilize.
    // With protected inheritance, the protected and public members inherited 
    // from LinkList act as though they were defined by Queue as protected 
@@ -173,16 +179,16 @@ public:
    void Enqueue(Item *i) { InsertAtEnd(i); }
    Item *Dequeue(); 
    // It is necessary to redefine these operations--LinkList is a protected base class
-   int IsEmpty() { return LinkList::IsEmpty(); }
+   int IsEmpty() const { return LinkList::IsEmpty(); }
    void Print() { LinkList::Print(); }
 };
 
 Item *Queue::Dequeue()
 {
-   LinkListElement *temp;
-   temp = RemoveAtFront();
-   Item *item = new Item(*(static_cast<Item *>(temp->GetData()))); // make copy of temp's data
-   delete temp; 
+   LinkListElement *front;
+   front = RemoveAtFront();
+   Item *item = new Item(*(static_cast<Item *>(front->GetData()))); // make copy of front's data
+   delete front; 
    return item;
 }
 
@@ -192,8 +198,11 @@ class PriorityQueue : public Queue
 private:
    // no new data members are necessary
 public:
-   PriorityQueue() : Queue() { }
-   virtual ~PriorityQueue() {} // we'll discuss virtual in Chp 7
+   // Constructor prototype shown below is not needed; we get default without prorotype (since there are no other ctors)
+   // Shown in comments to show optional use of =default to get default ctor
+   // PriorityQueue() = default;   // will call Queue() default constructor 
+   // Destructor prototype is needed (per virtual/override)
+   ~PriorityQueue() override = default; // we'll discuss override in Chp 7
    // Here, we specify the pubilc interface which PriorityQueue instances may utilize.
    // Since we are inherited from Queue publicly, we inherit the public interface
    // from Queue.  Since Queue is inherited protectedly from LinkList, the public

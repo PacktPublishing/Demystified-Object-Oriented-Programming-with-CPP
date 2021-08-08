@@ -5,43 +5,47 @@
 using std::cout;
 using std::endl;
 
-typedef int Item;  
+using Item = int;  
 
 class LinkListElement
 {
 private:
-   void *data;
-   LinkListElement *next;
+   void *data = nullptr;   // in-class initialization
+   LinkListElement *next = nullptr;
 public:
-   LinkListElement() { data = nullptr; next = nullptr; }
-   LinkListElement(Item *i) { data = i; next = nullptr; }
+   LinkListElement() = default;   // yes, we do desire the default constructor interface
+   LinkListElement(Item *i) : data(i), next(nullptr) { }
    ~LinkListElement() { delete static_cast<Item *>(data); next = nullptr; }
    void *GetData() { return data; }
-   LinkListElement *GetNext() { return next; }
+   LinkListElement *GetNext() const { return next; }
    void SetNext(LinkListElement *e) { next = e; }
 };
 
 class LinkList
 {
 private:
-   LinkListElement *head;
-   LinkListElement *tail;
-   LinkListElement *current;
+   LinkListElement *head = nullptr;   // use in-class initialization
+   LinkListElement *tail = nullptr;
+   LinkListElement *current = nullptr;
 public:
-   LinkList();
+   LinkList() = default;
    LinkList(LinkListElement *);
    ~LinkList();
    void InsertAtFront(Item *);
    LinkListElement *RemoveAtFront();
    void DeleteAtFront();
-   int IsEmpty() { return head == nullptr; } 
+   int IsEmpty() const { return head == nullptr; } 
    void Print();  
 };
 
+// If we chose to write the default constructor (versus in-class initialization), it might look like this (or use mbr init list)
+/*
 LinkList::LinkList()
 {
    head = tail = current = nullptr;
 }
+*/
+
 
 LinkList::LinkList(LinkListElement *element)
 {
@@ -50,10 +54,10 @@ LinkList::LinkList(LinkListElement *element)
 
 void LinkList::InsertAtFront(Item *theItem)
 {
-   LinkListElement *temp = new LinkListElement(theItem);
+   LinkListElement *newHead = new LinkListElement(theItem);
 
-   temp->SetNext(head);  // temp->next = head;
-   head = temp;
+   newHead->SetNext(head);  // newHead->next = head;
+   head = newHead;
 }
 
 LinkListElement *LinkList::RemoveAtFront()
@@ -68,18 +72,18 @@ void LinkList::DeleteAtFront()
 {
    LinkListElement *deallocate;
    deallocate = RemoveAtFront();
-   delete deallocate;    // destructor will delete data, set next to NULL
+   delete deallocate;    // destructor will delete data, set next to nullptr
 }
  
 void LinkList::Print() 
 {
-   Item output;
 
    if (!head)
       cout << "<EMPTY>";
    current = head;
    while (current)
    {
+      Item output;  // localize the output temporary variable
       output = *(static_cast<Item *>(current->GetData()));
       cout << output << " ";
       current = current->GetNext();

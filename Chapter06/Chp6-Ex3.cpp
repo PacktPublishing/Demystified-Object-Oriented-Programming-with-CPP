@@ -10,38 +10,42 @@ typedef int Item;
 class LinkListElement
 {
 private:
-   void *data;
-   LinkListElement *next;
+   void *data = nullptr;
+   LinkListElement *next = nullptr;
 public:
-   LinkListElement() { data = nullptr; next = nullptr; }
-   LinkListElement(Item *i) { data = i; next = nullptr; }
+   LinkListElement() = default; 
+   LinkListElement(Item *i) : data(i), next(nullptr) { }
    ~LinkListElement() { delete static_cast<Item *>(data); next = nullptr; }
    void *GetData() { return data; }
-   LinkListElement *GetNext() { return next; }
+   LinkListElement *GetNext() const { return next; }
    void SetNext(LinkListElement *e) { next = e; }
 };
 
 class LinkList
 {
 private:
-   LinkListElement *head;
-   LinkListElement *tail;
-   LinkListElement *current;
+   LinkListElement *head = nullptr;
+   LinkListElement *tail = nullptr;
+   LinkListElement *current = nullptr;
 public:
-   LinkList();
+   LinkList() = default;
    LinkList(LinkListElement *);
    ~LinkList();
    void InsertAtFront(Item *);
    LinkListElement *RemoveAtFront();
    void DeleteAtFront();
-   int IsEmpty() { return head == nullptr; } 
+   int IsEmpty() const { return head == nullptr; } 
    void Print();  
 };
 
+// If we chose to write the default constructor ourselves (rather than use in-class initialization),
+// it might look as below (or use the mbr init list)
+/*
 LinkList::LinkList()
 {
    head = tail = current = nullptr;
 }
+*/
 
 LinkList::LinkList(LinkListElement *element)
 {
@@ -50,10 +54,10 @@ LinkList::LinkList(LinkListElement *element)
 
 void LinkList::InsertAtFront(Item *theItem)
 {
-   LinkListElement *temp = new LinkListElement(theItem);
+   LinkListElement *newHead = new LinkListElement(theItem);
 
-   temp->SetNext(head);  // temp->next = head;
-   head = temp;
+   newHead->SetNext(head);  // newHead->next = head;
+   head = newHead;
 }
 
 LinkListElement *LinkList::RemoveAtFront()
@@ -68,18 +72,17 @@ void LinkList::DeleteAtFront()
 {
    LinkListElement *deallocate;
    deallocate = RemoveAtFront();
-   delete deallocate;    // destructor will delete data, set next to NULL
+   delete deallocate;    // destructor will delete data, set next to nullptr
 }
 
 void LinkList::Print()
 {
-   Item output;
-
    if (!head)
       cout << "<EMPTY>";
    current = head;
    while (current)
    {
+      Item output;  // localize temp var
       output = *(static_cast<Item *>(current->GetData()));
       cout << output << " ";
       current = current->GetNext();
@@ -98,8 +101,12 @@ class Stack : private LinkList
 private:
    // no new data members are necessary
 public:
-   Stack() : LinkList() { }
-   ~Stack() { }
+   // Constructor and destructor prototypes shown below are not needed; we get both without these prototypes!
+   // Since no other constructor exists, we get Stack() without any prototype. Same for destructor.
+   // Shown in comments to show how optional prototyping can be done with =default
+   // Stack() = default;  // will call LinkList() default ctor
+   // ~Stack() = default; 
+
    // Here, we specify the pubilc interface which Stack instances may utilize.
    // With private inheritance, the protected and public members inherited 
    // from LinkList act as though they were defined by Stack as private
@@ -107,16 +114,16 @@ public:
    void Push(Item *i) { InsertAtFront(i); }
    Item *Pop(); 
    // It is necessary to redefine these operations--LinkList is a private base class
-   int IsEmpty() { return LinkList::IsEmpty(); }  
+   int IsEmpty() const { return LinkList::IsEmpty(); }  
    void Print() { LinkList::Print(); }
 };
 
 Item *Stack::Pop()
 {
-   LinkListElement *temp;
-   temp = RemoveAtFront();
-   Item *item = new Item(*(static_cast<Item *>(temp->GetData())));  // copy temp's data
-   delete temp;
+   LinkListElement *top;
+   top = RemoveAtFront();   
+   Item *item = new Item(*(static_cast<Item *>(top->GetData())));  // copy top's data
+   delete top;
    return item;
 }
 
