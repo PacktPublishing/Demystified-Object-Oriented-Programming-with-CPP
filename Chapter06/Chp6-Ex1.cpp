@@ -8,7 +8,8 @@
 
 #include <iostream>
 #include <iomanip>
-using std::cout;
+
+using std::cout;     // preferred to: using namespace std;
 using std::endl;
 using std::setprecision;
 using std::string;
@@ -28,7 +29,7 @@ public:
    Person() = default;   // default constructor 
    Person(const string &, const string &, char, const string &);  // alternate constructor
    Person(const Person &) = default;  // use default copy constructor
-   ~Person() = default;  // destructor
+   ~Person() = default;  // default destructor; note: = default prototype is optional (we'd get default dest w/o any prototype)
 
    // inline function definitions
    const string &GetFirstName() const { return firstName; }  // firstName returned as const string  
@@ -152,7 +153,7 @@ Student::Student(const string &fn, const string &ln, char mi, const string &t,
 // Person sub-object.  Without this secification, the default constructor
 // for Person would be invoked (which would be incorrect since part of
 // the copied Student object would be Nulled out).  Notice that
-// the input parameter ps is implicitly cast to a Person &
+// the input parameter s is implicitly cast to a Person &
 Student::Student(const Student &s) : Person(s),
                  gpa(s.gpa), currentCourse(s.currentCourse), studentId(s.studentId)
 {
@@ -175,7 +176,7 @@ void Student::Print() const
    cout << GetTitle() << " " << GetFirstName() << " ";
    cout << GetMiddleInitial() << ". " << GetLastName();
    cout << " with id: " << studentId << " gpa: ";
-   cout << setprecision(2) << gpa;
+   cout << setprecision(3) << gpa;
    cout << " course: " << currentCourse << endl;
 }
 
