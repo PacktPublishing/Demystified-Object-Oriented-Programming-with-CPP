@@ -50,9 +50,9 @@ public:
    ~Cat() override = default;    // virtual destructor
    const string &GetName() const { return name; }
    int GetNumberLivesLeft() const { return numberLivesLeft; }
-   virtual void Print() const override;   // redefine pure virtual functions
-   virtual string IsA() const override { return "Cat"; }
-   virtual string Speak() const override { return "Meow!"; }
+   void Print() const override;   // redefine pure virtual functions
+   string IsA() const override { return "Cat"; }
+   string Speak() const override { return "Meow!"; }
 };
 
 Cat::Cat(const string &n) : LifeForm(15), name(n)  // numLivesLeft will be set to 9 with in-class init
