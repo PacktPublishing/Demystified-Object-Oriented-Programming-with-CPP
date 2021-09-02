@@ -41,7 +41,7 @@ public:
 };
 
 // With in-class initialization, writing the default constructor yourself is no longer necessary
-// Here's how it would look if you did choose to provide one (instead of using in-class initialization)
+// Here's how it would look if you did choose to provide one (and also chose not to use in-class initialization)
 /*
 Person::Person() : middleInitial('\0')
 {
