@@ -6,18 +6,19 @@
 using std::cout;    // preferred to: using namespace std;
 using std::endl;
 using std::string;
+using std::to_string;
 
 class Person
 {
 private: 
     string firstName;
     string lastName;
-    char middleInitial;
+    char middleInitial = '\0';  // in-class initialization -- value to be used in default constructor
     string title;  // Mr., Ms., Mrs., Miss, Dr., etc.
 protected:
     void ModifyTitle(const string &);  
 public:
-    Person();   // default constructor
+    Person() = default;   // default constructor
     Person(const string &, const string &, char, const string &);  
     Person(const Person &) = delete;  // prohibit copies 
     virtual ~Person();  // destructor
@@ -27,18 +28,25 @@ public:
     char GetMiddleInitial() const { return middleInitial; }
 };
 
-
-Person::Person() : firstName(""), lastName(""), middleInitial('\0'), title("")
+// With in-class initialization, writing the default constructor yourself is no longer necessary
+// Here's how it would look if you did choose to provide one (and also chose not to use in-class initialization)
+/*
+Person::Person() : middleInitial('\0')
 {
+   // Remember, string members are automatically initialized to empty with the default string constructor
+   // dynamically allocate memory for any pointer data members here
 }
+*/
 
 Person::Person(const string &fn, const string &ln, char mi, const string &t) : 
                firstName(fn), lastName(ln), middleInitial(mi), title(t)
 {
 }
 
+// Simple destructor written ourselves, just so we can trace the destructor chain using cout statements
 Person::~Person()
 {
+    cout << "Person destructor <" << firstName << " " << lastName << ">" << endl;
 }
 
 void Person::ModifyTitle(const string &newTitle)
@@ -49,16 +57,22 @@ void Person::ModifyTitle(const string &newTitle)
 class BillableEntity
 {
 private:
-    float invoiceAmt;
+    float invoiceAmt = 0.0;   // in-class initialization
 public:
-    BillableEntity() { invoiceAmt = 0.0; }
-    BillableEntity(float amt) { invoiceAmt = amt; } 
+    BillableEntity()  = default;
+    BillableEntity(float amt) : invoiceAmt(amt) { } 
     BillableEntity(const BillableEntity &) = delete; // prohibit copies
-    virtual ~BillableEntity() { }
+    virtual ~BillableEntity(); 
     void Pay(float amt) { invoiceAmt -= amt; }
     float GetBalance() const { return invoiceAmt; }
     void Balance();
 };
+
+// Simple destructor written ourselves, just so we can trace the destructor chain using cout statements
+BillableEntity::~BillableEntity()
+{
+    cout << "BillableEntity destructor" << endl;
+}
 
 void BillableEntity::Balance()
 {
@@ -71,31 +85,47 @@ void BillableEntity::Balance()
 class Student: public Person, public BillableEntity
 {
 private: 
-    float gpa;
+    float gpa = 0.0;   // in-class initialization
     string currentCourse;
     const string studentId;  
+    static int numStudents;
 public:
     Student();  // default constructor
     Student(const string &, const string &, char, const string &,
            float, const string &, const string &, float); 
     Student(const Student &) = delete;  // prohibit copies 
-    virtual ~Student(); 
+    ~Student() override; 
     void Print() const;
     void EarnPhD();  
     float GetGpa() const { return gpa; }
     const string &GetCurrentCourse() const { return currentCourse; }
     const string &GetStudentId() const { return studentId; }
     void SetCurrentCourse(const string &);
+    static int GetNumberStudents(); // static member function
 };
+
+// definition for static data member (which is implemented as external variable)
+int Student::numStudents = 0;  // notice initial value of 0
 
 inline void Student::SetCurrentCourse(const string &c)
 {
     currentCourse = c;
 }
 
-// Due to non-specification, this constructor calls the default base class constructors
-Student::Student() : gpa(0.0), currentCourse(""), studentId ("") 
-{ 
+// Definition for static member function (it is also inline)
+inline int Student::GetNumberStudents()
+{
+    return numStudents;
+}
+
+// Due to non-specification in the member init list, this constructor calls the default base class constructors
+Student::Student() : studentId(to_string(numStudents + 100) + "Id")
+{
+   // Note: since studentId is const, we need to set it at construction. We're doing so in member init list with
+   // a unique id (based upon numStudents counter + 100), concatenated with the string "Id" .
+   // Remember, string member currentCourse will be default constructed with an empty string - it is a member object
+   // Also, remember to dynamically allocate memory for any pointer data members here (not needed in this example)
+   numStudents++;
 }
 
 // The member initialization list specifies which versions of each base class constructor should be utilized.
@@ -104,10 +134,14 @@ Student::Student(const string &fn, const string &ln, char mi, const string &t, f
                  Person(fn, ln, mi, t), BillableEntity(amt),
                  gpa(avg), currentCourse(course), studentId(id) 
 {
+   numStudents++;
 }
 
+// Simple destructor written ourselves, just so we can trace the destructor chain using cout statements
 Student::~Student()
 {
+   numStudents--;
+   cout << "Student destructor <" << GetFirstName() << " " << GetLastName() << ">" << endl;
 }
 
 void Student::Print() const

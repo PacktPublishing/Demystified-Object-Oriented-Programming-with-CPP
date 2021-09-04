@@ -11,20 +11,24 @@
 using std::cout;    // preferred to: using namespace std;
 using std::endl;
 using std::string;
+using std::to_string;
 
 class LifeForm
 {
 private:
-   int lifeExpectancy;
+   int lifeExpectancy = 0;   // in-class initialization
 public:
-   LifeForm() { lifeExpectancy = 0; }
-   LifeForm(int life) { lifeExpectancy = life; }
-   LifeForm(const LifeForm &form) { lifeExpectancy = form.lifeExpectancy; }
-   virtual ~LifeForm() { }
+   LifeForm() = default;
+   LifeForm(int life) : lifeExpectancy(life) { }
+   LifeForm(const LifeForm &form) = default; 
+   // If we wanted to write the copy constructor, this is what it would look like:
+   // LifeForm(const LifeForm &form) : lifeExpectancy(form.lifeExpectancy) { }   OR
+   // LifeForm(const LifeForm &form) { lifeExpectancy = form.lifeExpectancy; }
+   virtual ~LifeForm() = default; 
    int GetLifeExpectancy() const { return lifeExpectancy; }
 
-   // Virtual functions will not be inlined since their method must be determined
-   // at run time using the v-table.
+   // Virtual functions will (almost) never be inlined since their method must be determined
+   // at run time using the v-table (except a few rare situations).
    virtual void Print() const = 0;   // pure virtual functions specify the interface but
    virtual string IsA() const = 0;   // most often do not specify a default behavior
    virtual string Speak() const = 0;
@@ -42,27 +46,30 @@ class Horse: public virtual LifeForm
 private:
    string name;
 public:
-   Horse(): LifeForm(35), name("") { }
+   Horse(): LifeForm(35) { }
    Horse(const string &n);
-   Horse(const Horse &);
-   virtual ~Horse() { }
+   Horse(const Horse &) = default;
+   ~Horse() override = default;
    const string &GetName() const { return name; }
-   virtual void Print() const override;
-   virtual string IsA() const override;
-   virtual string Speak() const override;
+   void Print() const override;
+   string IsA() const override;
+   string Speak() const override;
 };
 
 // Notice that the base class initialization list is ignored
 // if LifeForm actually is a shared virtual base class.
 // Most often the default construcor will instead be called for LifeForm.
 // The remainder of the member initialization list will be used as expected.
-Horse::Horse(const string &n) : LifeForm(35), name("")
+Horse::Horse(const string &n) : LifeForm(35), name(n)
 {
 }
 
+// We are using the default (system supplied) copy constructor, but if we wanted to write it, it would look like:
+/*
 Horse::Horse(const Horse &h) : LifeForm (h), name(h.name)
 {
 }
+*/
 
 void Horse::Print() const
 {
@@ -86,15 +93,15 @@ private:
    // data members
    string firstName;
    string lastName;
-   char middleInitial;
+   char middleInitial = '\0';   // in-class initialization
    string title;  // Mr., Ms., Mrs., Miss, Dr., etc.
 protected:
    void ModifyTitle(const string &);  // Make this operation available to derived classes
 public:
-   Person();   // default constructor
+   Person();   // programmer supplied default constructor
    Person(const string &, const string &, char, const string &);  // alternate constructor
-   Person(const Person &);  // copy constructor
-   virtual ~Person();  // destructor
+   Person(const Person &) = default;  // copy constructor
+   ~Person() override = default;  // destructor
 
    // inline function definitions
    const string &GetFirstName() const { return firstName; }  // firstName returned as ref to const string
@@ -104,16 +111,16 @@ public:
 
    // Virtual functions will not be inlined since their method must be determined
    // at run time using the v-table.
-   virtual void Print() const override;
-   virtual string IsA() const override;
-   virtual string Speak() const override;
+   void Print() const override;
+   string IsA() const override;
+   string Speak() const override;
 };
 
-// Notice that the base class initialization list is ignored
-// if LifeForm actually is a shared virtual base class.
+// Notice that the base class init list specification of LifeForm is ignored if LifeForm ACTUALLY is a shared virtual base class.
 // Most often the default construcor will instead be called for LifeForm.
-// The remainder of the member initialization list will be utilized, as expected.
-Person::Person() : LifeForm(80), firstName(""), lastName(""), middleInitial('\0'), title("")
+// With in-class initialization, we don't need to set middleInitial.
+// Remember, string members are automatically initialized to empty with the default string constructor
+Person::Person() : LifeForm(80)
 {
 }
 
@@ -123,14 +130,20 @@ Person::Person(const string &fn, const string &ln, char mi, const string &t) : L
 {
 }
 
+// We're using default copy constructor. But if we wanted to write it, this is what it would look like:
+/*
 Person::Person(const Person &p) : LifeForm(p), firstName(p.firstName), lastName(p.lastName),
                                                middleInitial(p.middleInitial), title(p.title)
 {
 }
+*/
 
+// We're using the default destructor, but if we wrote it, this is what it would look like:
+/*
 Person::~Person()
 {
 }
+*/
 
 void Person::ModifyTitle(const string &newTitle)
 {
@@ -159,12 +172,13 @@ private:
    // no additional data members required 
 public:
    Centaur(): LifeForm(1000) { }
-   Centaur(const string &, const string &, char = ' ', const string & = "Mythological Creature"); 
-   Centaur(const Centaur &c): 
-           Person(c), Horse(c),LifeForm(1000) { }
-   virtual void Print() const override;
-   virtual string IsA() const override;   
-   virtual string Speak() const override;
+   Centaur(const string &, const string &, char = ' ', const string & = "Mythological Creature");  // note default args in alt ctor
+   // Note: we do not want default copy constructor here, due to virtual base class use in member init list 
+   Centaur(const Centaur &c): Person(c), Horse(c), LifeForm(1000) { } // same as default copy constructor
+   ~Centaur() override = default;
+   void Print() const override;
+   string IsA() const override;   
+   string Speak() const override;
 };
 
 // Constructors for Centaur need to specify how the shared
