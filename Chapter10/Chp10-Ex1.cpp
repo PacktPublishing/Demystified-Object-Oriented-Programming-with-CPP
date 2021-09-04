@@ -13,26 +13,26 @@ using std::cout;
 using std::endl;
 using std::setprecision;
 using std::string;
+using std::to_string;
 
 class Id
 {
 private:
    string idNumber;
 public:
-   Id(): idNumber("") { }
-   Id(const string &); 
-   Id(const Id &);  
-   ~Id() { }
+   Id() = default;   // we do want this interface for construction
+   Id(const string &id) : idNumber(id) { }
+   Id(const Id &) = default;
+   ~Id() = default;
    const string &GetId() const { return idNumber; }
 };
 
-Id::Id(const string &id) : idNumber(id)
-{
-}
-
+// We're using the default copy constructor, but if you wrote it yourself, this is what it would look like:
+/*
 Id::Id(const Id &id) : idNumber(id.idNumber)
 {
 }
+*/
 
 class Person
 {
@@ -40,15 +40,15 @@ private:
     // data members
     string firstName;
     string lastName;
-    char middleInitial;
+    char middleInitial = '\0';  // in-class initialization -- value to be used in default constructor
     string title;  // Mr., Ms., Mrs., Miss, Dr., etc.
 protected:
     void ModifyTitle(const string &); 
 public:
-    Person();   // default constructor
+    Person() = default;   // default constructor
     Person(const string &, const string &, char, const string &);  
-    Person(const Person &);  // copy constructor
-    virtual ~Person();  // virtual destructor
+    Person(const Person &) = default;  // copy constructor
+    virtual ~Person() = default;  // virtual destructor
 
     // inline function definitions
     const string &GetFirstName() const { return firstName; }  
@@ -62,23 +62,35 @@ public:
     virtual void Greeting(const string &) const;
 };
 
-Person::Person() : firstName(""), lastName(""), middleInitial('\0'), title("")
+// With in-class initialization, writing the default constructor yourself is no longer necessary
+// Here's how it would look if you did choose to provide one (and also chose not to use in-class initialization)
+/*
+Person::Person() : middleInitial('\0')
 {
+   // Remember, string members are automatically initialized to empty with the default string constructor
+   // dynamically allocate memory for any pointer data members here
 }
+*/
 
 Person::Person(const string &fn, const string &ln, char mi, const string &t) : 
                firstName(fn), lastName(ln), middleInitial(mi), title(t)
 {
 }
 
+// We're using default copy constructor, but if you wrote it, this is what it would look like:
+/*
 Person::Person(const Person &p) : firstName(p.firstName), lastName(p.lastName), 
                                   middleInitial(p.middleInitial), title(p.title)
 {
 }
+*/
 
+// We're using default destructor, but if you wrote it, here's what it would look like:
+/*
 Person::~Person()
 {
 }
+*/
 
 void Person::ModifyTitle(const string &newTitle)
 {
@@ -105,7 +117,7 @@ class Student : public Person  // whole
 {
 private: 
     // data members
-    float gpa;
+    float gpa = 0.0;    // in-class initializataion
     string currentCourse;
     static int numStudents;
     Id studentId;  // part 
@@ -114,13 +126,13 @@ public:
     Student();  // default constructor
     Student(const string &, const string &, char, const string &, float, const string &, const string &); 
     Student(const Student &);  // copy constructor
-    virtual ~Student();  // destructor
+    ~Student() override;  // destructor
     void EarnPhD();  
     float GetGpa() const { return gpa; }  // various inline fns.
     const string &GetCurrentCourse() const { return currentCourse; }
     void SetCurrentCourse(const string &); // prototype only
-    virtual void Print() const override;
-    virtual void IsA() const override;
+    void Print() const override;
+    void IsA() const override;
     static int GetNumberStudents() { return numStudents; }
     
     // Access function for associated Id object
@@ -135,7 +147,7 @@ inline void Student::SetCurrentCourse(const string &c)
     currentCourse = c;
 }
 
-Student::Student() : gpa(0.0), currentCourse(""), studentId ("None") 
+Student::Student() : studentId (to_string(numStudents + 100) + "Id")   // set studentId with manufactured id 
 {
     numStudents++;
 }
