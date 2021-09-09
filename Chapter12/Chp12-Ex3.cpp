@@ -16,12 +16,12 @@ class Person
 private: 
    string firstName;
    string lastName;
-   char middleInitial;
-   char *title;  // Mr., Ms., Mrs., Miss, Dr., etc.
+   char middleInitial = '\0';  // in-class initialization -- value to be used in default constructor
+   char *title = nullptr;  // Mr., Ms., Mrs., Miss, Dr., etc.
 protected:
    void ModifyTitle(const string &);  // Make this operation available to derived classes
 public:
-   Person();   // default constructor
+   Person() = default;   // default constructor
    Person(const string &, const string &, char, const char *);  // alternate constructor
    Person(const Person &);  // copy constructor
    virtual ~Person();  // destructor
@@ -47,9 +47,15 @@ public:
    friend Person &operator+(const string &, Person &);  // non-member friend function for operator+ 
 };                                                    // so operands can be associative
 
-Person::Person() : firstName(""), lastName(""), middleInitial('\0'), title(nullptr)
+// With in-class initialization, writing the default constructor yourself is no longer necessary
+// Here's how it would look if you did choose to provide one (and also chose not to use in-class initialization)
+/*
+Person::Person() : middleInitial('\0'), title(nullptr)
 {
+   // Remember, string members are automatically initialized to empty with the default string constructor
+   // dynamically allocate memory for any pointer data members here
 }
+*/
 
 Person::Person(const string &fn, const string &ln, char mi, const char *t) :
                firstName(fn), lastName(ln), middleInitial(mi)
