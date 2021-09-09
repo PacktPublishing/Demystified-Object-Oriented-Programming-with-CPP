@@ -9,6 +9,7 @@ using std::cout;   // preferred to using namespace std;
 using std::endl;
 using std::setprecision;
 using std::string;
+using std::to_string;
 
 class Student; // forward declaration
 
@@ -16,40 +17,43 @@ class Id
 {
 private:
    string idNumber;
-   Student *student;
+   Student *student = nullptr;  // in-class initialization
    const string &GetId() const { return idNumber; }  // provide private access method for a friend scope usage
 public:
-   Id() : idNumber(""), student(nullptr) { }
+   Id() = default;           // in-class init will set student(nullptr)
    Id(const string &); 
-   Id(const Id &);  
-   ~Id() { }
+   Id(const Id &) = default;  
+   ~Id() = default; 
    void SetStudent(Student *s);  
    friend class Student;    // all member functions in Student are friends of Id
 };
 
-Id::Id(const string &id) : idNumber(id), student(nullptr)
+// Note: do not need to set student(nullptr) since it is done with in-class initialization
+Id::Id(const string &id) : idNumber(id)
 {
 }
 
+// We're using default copy constructor, but if we wrote it, it would look like:
+/*
 Id::Id(const Id &id) : idNumber(id.idNumber), student(id.student)
 {
 }
+*/
 
 class Person
 {
 private:
-    // data members
     string firstName;
     string lastName;
-    char middleInitial;
+    char middleInitial = '\0';  // in-class initialization -- value to be used in default constructor
     string title;  // Mr., Ms., Mrs., Miss, Dr., etc.
 protected:
     void ModifyTitle(const string &);
 public:
-    Person();   // default constructor
+    Person() = default;   // default constructor
     Person(const string &, const string &, char, const string &);
-    Person(const Person &);  // copy constructor
-    virtual ~Person();  // virtual destructor
+    Person(const Person &) = default;  // copy constructor
+    virtual ~Person() = default;  // virtual destructor
 
     // inline function definitions
     const string &GetFirstName() const { return firstName; }
@@ -57,33 +61,48 @@ public:
     const string &GetTitle() const { return title; }
     char GetMiddleInitial() const { return middleInitial; }
 
-    // Virtual functions
+    // Virtual functions will (usually) not be inlined since their method must be determined at run time using v-table (except rare cases)
     virtual void Print() const;
     virtual void IsA() const;
     virtual void Greeting(const string &) const;
 };
 
-Person::Person() : firstName(""), lastName(""), middleInitial('\0'), title("")
+// With in-class initialization, writing the default constructor yourself is no longer necessary
+// Here's how it would look if you did choose to provide one (and also chose not to use in-class initialization)
+/*
+Person::Person() : middleInitial('\0')
 {
+   // Remember, string members are automatically initialized to empty with the default string constructor
+   // dynamically allocate memory for any pointer data members here
 }
+*/
 
 Person::Person(const string &fn, const string &ln, char mi, const string &t) :
                firstName(fn), lastName(ln), middleInitial(mi), title(t)
 {
+   // dynamically allocate memory for any pointer data members here
 }
 
-Person::Person(const Person &p) : firstName(p.firstName), lastName(p.lastName),
-                                  middleInitial(p.middleInitial), title(p.title)
+// We are using default copy constructor, but if you needed to write it yourself, here is what it would look like:
+/*
+Person::Person(const Person &p) :
+               firstName(p.firstName), lastName(p.lastName),
+               middleInitial(p.middleInitial), title(p.title)
 {
+   // deep copy any pointer data members here
 }
 
+// We're using default destructor, but if you wanted to write it yourself, this is what it would look like:
+/*
 Person::~Person()
 {
+    // release memory for any dynamically allocated data members
 }
+*/
 
 void Person::ModifyTitle(const string &newTitle)
 {
-    title = newTitle;
+    title = newTitle;     // assignment between strings ensures a deep assignment
 }
 
 void Person::Print() const
@@ -106,25 +125,30 @@ class Student : public Person  // whole
 {
 private: 
     // data members
-    float gpa;
+    float gpa = 0.0;    // in-class initialization
     string currentCourse;
     static int numStudents;
-    Id *studentId;  
+    Id *studentId = nullptr;  
 public:
     // member function prototypes
     Student();  // default constructor
     Student(const string &, const string &, char, const string &, float, const string &, const string &);
     Student(const Student &);  // copy constructor
-    virtual ~Student();  // destructor
+    ~Student() override;  // virtual destructor
     void EarnPhD();  
     float GetGpa() const { return gpa; }  // various inline fns.
     const string &GetCurrentCourse() const { return currentCourse; }
     void SetCurrentCourse(const string &); // prototype only
-    virtual void Print() const override;
-    virtual void IsA() const override;
+
+    void Print() const override;
+    void IsA() const override;
+    // note: we choose not to redefine Person::Greeting(const string &) const
+
     static int GetNumberStudents() { return numStudents; }
+
     // Access function for associated Id object
     const string &GetStudentId() const; // prototype only 
+
     // Only the following member function of Id is a friend function 
     friend void Id::SetStudent(Student *);  
 };
@@ -136,7 +160,7 @@ inline void Student::SetCurrentCourse(const string &c)
     currentCourse = c;
 }
 
-Student::Student() : gpa(0.0), currentCourse(""), studentId(new Id("None"))
+Student::Student() : studentId(new Id(to_string(numStudents + 100) + "Id"))
 {
     studentId->SetStudent(this);  // create back link - note forward link in member init list
     numStudents++;

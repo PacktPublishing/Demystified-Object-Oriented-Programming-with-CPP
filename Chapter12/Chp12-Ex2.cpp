@@ -19,15 +19,15 @@
 #include <iostream>
 using namespace std;
 
-typedef int Item;  
+using Item = int;  
 
 class LinkList;  // forward declaration
 
 class LinkListElement
 {
 private:
-   void *data;
-   LinkListElement *next;
+   void *data = nullptr;    // in-class initialization
+   LinkListElement *next = nullptr;
 
    // These member functions should not be part of the public interface
    // It is only appropriate for them to be used within the scope of LinkList,
@@ -39,17 +39,17 @@ private:
 public:
    // All member functions of LinkList are friend functions of LinkListElement 
    friend class LinkList;   
-   LinkListElement() { data = nullptr; next = nullptr; }
-   LinkListElement(Item *i) { data = i; next = nullptr; }
+   LinkListElement() = default;  // in class init will set data and next 
+   LinkListElement(Item *i) : data(i), next(nullptr) { }
    ~LinkListElement() { delete static_cast<Item *>(data); next = nullptr; }
 };
 
 class LinkList
 {
 private:
-   LinkListElement *head, *tail, *current;
+   LinkListElement *head = nullptr, *tail = nullptr, *current = nullptr;   // in-class initialization
 public:
-   LinkList() { head = tail = current = nullptr; }
+   LinkList() = default; 
    LinkList(LinkListElement *e) { head = tail = current = e; }
    void InsertAtFront(Item *);
    LinkListElement *RemoveAtFront();
@@ -59,13 +59,20 @@ public:
    ~LinkList() { while (!IsEmpty()) DeleteAtFront(); }
 };
 
+// If we chose to write the default constructor (versus in-class initialization), it might look like this (or use mbr init list)
+/*
+LinkList::LinkList()
+{
+   head = tail = current = nullptr;
+}
+*/
 
 void LinkList::InsertAtFront(Item *theItem)
 {
-   LinkListElement *temp = new LinkListElement(theItem);
+   LinkListElement *newHead = new LinkListElement(theItem);
 
-   temp->SetNext(head);  // temp->next = head;
-   head = temp;
+   newHead->SetNext(head);  // newHead->next = head;
+   head = newHead;
 }
 
 LinkListElement *LinkList::RemoveAtFront()
@@ -78,13 +85,12 @@ LinkListElement *LinkList::RemoveAtFront()
  
 void LinkList::Print()
 {
-   Item output;
-
    if (!head)
       cout << "<EMPTY>" << endl;
    current = head;
    while (current)
    {
+      Item output;   // localize the output temporary variable
       output = *(static_cast<Item *>(current->GetData()));
       cout << output << " ";
       current = current->GetNext();
