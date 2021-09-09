@@ -12,15 +12,15 @@ template <class Type>   // template preamble for class def
 class LinkListElement
 {
 private:
-   Type *data;
-   LinkListElement *next;
+   Type *data = nullptr;   // in-class initialization
+   LinkListElement *next = nullptr;
    // private access methods to be used in scope of friend 
    Type *GetData() { return data; } 
    LinkListElement *GetNext() { return next; }
    void SetNext(LinkListElement *e) { next = e; }
 public:
    friend class LinkList<Type>;   
-   LinkListElement() : data(nullptr), next(nullptr) { }
+   LinkListElement() = default; 
    LinkListElement(Type *i) : data(i), next(nullptr) { }
    ~LinkListElement(){ delete data; next = nullptr;}
 };
@@ -32,9 +32,9 @@ template <class Type>
 class LinkList
 {
 private:
-   LinkListElement<Type> *head, *tail, *current;
+   LinkListElement<Type> *head = nullptr, *tail = nullptr, *current = nullptr;  // in-class initialization
 public:
-   LinkList() { head = tail = current = nullptr; }
+   LinkList() = default; 
    LinkList(LinkListElement<Type> *e) { head = tail = current = e; }
    void InsertAtFront(Type *);
    LinkListElement<Type> *RemoveAtFront();  
@@ -44,13 +44,21 @@ public:
    ~LinkList() { while (!IsEmpty()) DeleteAtFront(); }
 };
 
+// If we chose to write the default constructor (versus in-class initialization), it might look like this (or use mbr init list)
+/*
+LinkList::LinkList()
+{
+   head = tail = current = nullptr;
+}
+*/
+
 template <class Type>
 void LinkList<Type>::InsertAtFront(Type *theItem)
 {
-   LinkListElement<Type> *temp;
-   temp = new LinkListElement<Type>(theItem);
-   temp->SetNext(head);  // temp->next = head;
-   head = temp;
+   LinkListElement<Type> *newHead;
+   newHead = new LinkListElement<Type>(theItem);
+   newHead->SetNext(head);  // newHead->next = head;
+   head = newHead;
 }
 
 template <class Type>
@@ -65,13 +73,12 @@ LinkListElement<Type> *LinkList<Type>::RemoveAtFront()
 template <class Type>
 void LinkList<Type>::Print() 
 {
-   Type output;
-
    if (!head)
       cout << "<EMPTY>" << endl;
    current = head;
    while (current)
    {
+      Type output;   // localize the output temp variable
       output = *(current->GetData());
       cout << output << " ";
       current = current->GetNext();

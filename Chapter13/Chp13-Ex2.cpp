@@ -12,8 +12,8 @@ template <class Type>  // template class preamble
 class Array
 {
 private:
-    int numElements;
-    Type *contents;
+    int numElements = 0;   // in-class init; will be over written after successful completion of alt constructor
+    Type *contents = nullptr;
 public:
     Array(int size) : numElements(size) { contents = new Type [size]; }
     ~Array() { delete [] contents; }
