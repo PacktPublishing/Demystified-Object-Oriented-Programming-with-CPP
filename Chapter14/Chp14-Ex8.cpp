@@ -9,6 +9,7 @@ using std::cout;   // preferred to: using namespace std;
 using std::endl;
 using std::setprecision;
 using std::string;
+using std::to_string;
 using std::map;
 using std::pair;
 
@@ -17,16 +18,16 @@ class Person
 private: 
     string firstName;
     string lastName;
-    char middleInitial;
+    char middleInitial = '\0';  // in-class initialization -- value to be used in default constructor
     string title;  // Mr., Ms., Mrs., Miss, Dr., etc.
 protected:
     void ModifyTitle(const string &); 
 public:
-    Person();   // default constructor
+    Person() = default;   // default constructor
     Person(const string &, const string &, char, const string &);  
-    Person(const Person &);  // copy constructor
+    Person(const Person &) = default;  // copy constructor
     Person &operator=(const Person &); // overloaded assignment operator
-    virtual ~Person();  // virtual destructor
+    virtual ~Person() = default;  // virtual destructor
 
     // inline function definitions
     const string &GetFirstName() const { return firstName; }  
@@ -34,28 +35,17 @@ public:
     const string &GetTitle() const { return title; } 
     char GetMiddleInitial() const { return middleInitial; }
 
-    // Virtual functions will not be inlined since their 
-    // method must be determined at run time using v-table.
+    // Virtual functions will (usually) not be inlined since their method must be determined at run time using v-table (except rare cases)
     virtual void Print() const; 
     virtual void IsA() const;  
     virtual void Greeting(const string &) const;
 };
 
-Person::Person() : firstName(""), lastName(""), middleInitial('\0'), title("")
-{
-}
+//  Remember, we're using default versions of default constructor, copy constructor and destructor
+//  so the code for these methods is not included below by us
 
 Person::Person(const string &fn, const string &ln, char mi, const string &t) :
                firstName(fn), lastName(ln), middleInitial(mi), title(t)
-{
-}
-
-Person::Person(const Person &p) : firstName(p.firstName), lastName(p.lastName),
-                                  middleInitial(p.middleInitial), title(p.title)
-{
-}
-
-Person::~Person()
 {
 }
 
@@ -103,9 +93,9 @@ void Person::Greeting(const string &msg) const
 class Student : public Person
 {
 private: 
-    float gpa;
+    float gpa = 0.0;
     string currentCourse;
-    string studentId;      // decided to make studentId not const (a design decision that makes copy constuctor more productive, etc.) 
+    string studentId;      // decided to make studentId not const (a design decision that makes op= more productive, etc.) 
     static int numStudents;
 public:
     // member function prototypes
@@ -113,7 +103,7 @@ public:
     Student(const string &, const string &, char, const string &, float, const string &, const string &); 
     Student(const Student &);  // copy constructor
     Student &operator=(const Student &); // overloaded assignment operator
-    virtual ~Student();  // destructor
+    ~Student() override;  // virtual destructor
     void EarnPhD();  
     // inline function definitions
     float GetGpa() const { return gpa; }
@@ -121,11 +111,12 @@ public:
     const string &GetStudentId() const { return studentId; }
     void SetCurrentCourse(const string &); // prototype only
   
-    // In the derived class, the keyword virtual is optional, 
-    // but recommended for internal documentation. Same for override.
-    virtual void Print() const override;
-    virtual void IsA() const override;
+    // In the derived class, the keyword virtual is optional for overridden (polymorphic) methods, as is the keyword "override"
+    // Currently, "override" is recommended for internal documentation, however "virtual" is not recommended
+    void Print() const override;
+    void IsA() const override;
     // note: we choose not to redefine Person::Greeting(const string &); const
+
     static int GetNumberStudents() { return numStudents; }
 };
 
@@ -138,9 +129,16 @@ inline void Student::SetCurrentCourse(const string &c)
     currentCourse = c;
 }
 
-Student::Student() : gpa(0.0), currentCourse(""), studentId ("None")
+// Notice that data members using in-class initialization (above), will be set for those members not in the member init list.
+// However, those that can not be easily set with in-class initialization (such as static numStudents), we set below in method.
+// Recall that member objects (strings) will be default constructed, so no additional init is necessary (if an empty string is our goal)
+Student::Student() : studentId(to_string(numStudents + 100) + "Id")
 {
-    numStudents++;
+   // Note: since studentId is const, we need to set it at construction. We're doing so in member init list with
+   // a unique id (based upon numStudents counter + 100), concatenated with the string "Id" .
+   // Remember, string member currentCourse will be default constructed with an empty string - it is a member object
+   // Also, remember to dynamically allocate memory for any pointer data members here (not needed in this example)
+   numStudents++;
 }
 
 Student::Student(const string &fn, const string &ln, char mi, const string &t, float avg, const string &course,
@@ -158,7 +156,6 @@ Student::Student(const Student &s) : Person(s), gpa(s.gpa), currentCourse(s.curr
 Student::~Student()
 {
     numStudents--;
-    // the embedded object studentId will also be destructed
 }
 
 // overloaded assignment operator
@@ -201,7 +198,6 @@ void Student::IsA() const
 {
     cout << "Student" << endl;
 }
-
 
 
 bool operator==(const Student &s1, const Student &s2)
