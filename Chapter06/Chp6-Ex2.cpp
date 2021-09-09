@@ -70,7 +70,7 @@ LinkListElement *LinkList::RemoveAtFront()
  
 void LinkList::DeleteAtFront()
 {
-   LinkListElement *deallocate;
+   LinkListElement *deallocate = nullptr;
    deallocate = RemoveAtFront();
    delete deallocate;    // destructor will delete data, set next to nullptr
 }
