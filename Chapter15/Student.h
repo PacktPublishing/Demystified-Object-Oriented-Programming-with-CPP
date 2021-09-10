@@ -10,9 +10,10 @@ class Student : public Person
 {
 private:
     // data members
-    float gpa;
+    float gpa = 0.0;     // in-class initialization
     string currentCourse;
     const char *studentId;     // Again, we have one pointer data member to demonstrate deep copy / assignment
+    static int numStudents;
 public:
     // member function prototypes
     Student();  // default constructor
@@ -20,7 +21,7 @@ public:
             float, const string &, const char *);
     Student(const Student &);  // copy constructor
     Student(Student &&); // move copy constructor
-    virtual ~Student();  // destructor
+    ~Student() override;  // virtual destructor
     void EarnPhD();
     // inline function definitions
     float GetGpa() const { return gpa; }
@@ -28,13 +29,15 @@ public:
     const char *GetStudentId() const { return studentId; }
     void SetCurrentCourse(const string &); // prototype only
 
-    // In the derived class, the keyword virtual is optional,
-    // but recommended for internal documentation
-    virtual void Print() const override;
-    virtual void IsA() const override;
+    // In the derived class, the keyword virtual is optional for overridden (polymorphic) methods, as is the keyword "override"
+    // Currently, "override" is recommended for internal documentation, however "virtual" is not recommended
+    void Print() const override;
+    void IsA() const override;
     // note: we choose not to redefine Person::Greeting(const Student &) const
     Student &operator=(const Student &);  // overloaded assignment operator prototype
     Student &operator=(Student &&);  // overloaded move assignment operator prototype
+
+    static int GetNumberStudents();  
 };
 
 inline void Student::SetCurrentCourse(const string &c)
