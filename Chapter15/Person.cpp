@@ -13,9 +13,7 @@ using std::setprecision;
 using std::string;
 using std::move;
 
-Person::Person() : firstName(""), lastName(""), middleInitial('\0'), title(nullptr)
-{
-}
+// Remember, we're using system supplied default constructor. Data members middleInitial and title will be set using in-class initialization.
 
 Person::Person(const string &fn, const string &ln, char mi, const char *t) : firstName(fn), lastName(ln), middleInitial(mi)
 {
@@ -40,10 +38,10 @@ Person::Person(const Person &p): firstName(p.firstName), lastName(p.lastName), m
 Person::Person(Person &&p)
 {
     cout << "Person Move copy constructor" << endl;
-    firstName = p.firstName;
-    p.firstName = "";     // set source object member to empty string
+    firstName = p.firstName;    
+    p.firstName.clear();     // set source object member to empty string
     lastName = p.lastName;
-    p.lastName = "";
+    p.lastName.clear(); 
     middleInitial = p.middleInitial;
     p.middleInitial = '\0';   // set source object member to null character
     title = p.title;     // here, destinatation pointer takes over source pointer's memory
@@ -61,11 +59,12 @@ void Person::ModifyTitle(const string &newTitle)
     delete title;  // delete old title
     title = new char[strlen(newTitle.c_str()) + 1];   // get the c string equivalent from the string
     strcpy(title, newTitle.c_str());
+
 }
 
 const string &Person::SetLastName(const string &ln)
-{
-    lastName = ln;
+{ 
+    lastName = ln; 
     return lastName;
 }
 
@@ -124,16 +123,16 @@ Person &Person::operator=(Person &&p)
    // make sure we're not assigning an object to itself
    if (this != &p)
    {
-      // delete lhs original memory for pointer data members
+      // delete lhs original memory for pointer data members 
       delete title;    // or call ~Person() - unusual
 
       // Take over rhs object's data members (at least those which are pointers)
       // Once pointer data members are taken over by lhs, null out the rhs object's pointer to them
       // Non-pointer data members can be copied easily via assignment and then set to a zeroed or empty type value
       firstName = p.firstName;  // assignment between strings will be deep assignment
-      p.firstName = "";         // set source data member to empty string to indicate non-use/existence
-      lastName = p.lastName;
-      p.lastName = "";
+      p.firstName.clear();         // set source data member to empty string to indicate non-use/existence
+      lastName = p.lastName; 
+      p.lastName.clear();
       middleInitial = p.middleInitial;
       p.middleInitial = '\0';
       title = p.title;    // with ptr data member, this is a pointer assignemt - destination takes over source object's memory
@@ -141,4 +140,5 @@ Person &Person::operator=(Person &&p)
    }
    return *this;  // allow for cascaded assignments
 }
+
 
