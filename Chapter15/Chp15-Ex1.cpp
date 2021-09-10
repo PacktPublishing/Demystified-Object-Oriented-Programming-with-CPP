@@ -7,10 +7,12 @@
 #include <iomanip>
 #include <cstring>    // Try not to worry -- We'll need one pointer data member to demonstrate a deep copy and assignment
                       // and a char * will provide a very easy to demonstrate data member for this purpose 
+
 using std::cout;      // preferred to: using namespace std;
 using std::endl;
 using std::setprecision;
 using std::string;
+using std::to_string;
 using std::move;
 
 constexpr int MAX = 5;
@@ -20,12 +22,12 @@ class Person
 private: 
     string firstName;
     string lastName;
-    char middleInitial;
-    char *title;  // Mr., Ms., Mrs., Miss, Dr., etc. // we'll keep this data member as a char * to demonstrate deep copy/assignment
+    char middleInitial = '\0';   // in-class initialization
+    char *title = nullptr;       // we'll keep this data member as a char * to demonstrate deep copy/assignment
 protected:
     void ModifyTitle(const string &); 
 public:
-    Person();   // default constructor
+    Person() = default;   // default constructor
     Person(const string &, const string &, char, const char *);  
     Person(const Person &);  // copy constructor
     Person(Person &&);  // move copy constructor
@@ -38,8 +40,8 @@ public:
     char GetMiddleInitial() const { return middleInitial; }
 
     const string &SetLastName(const string &); 
-    // Virtual functions will not be inlined since their 
-    // method must be determined at run time using v-table.
+
+    // Virtual functions will (usually) not be inlined since their method must be determined at run time using v-table (except rare cases)
     virtual void Print() const;
     virtual void IsA() const;  
     virtual void Greeting(const string &) const;
@@ -49,9 +51,7 @@ public:
 
 };
 
-Person::Person() : firstName(""), lastName(""), middleInitial('\0'), title(nullptr)
-{
-}
+// Remember, we're using system supplied default constructor. Data members middleInitial and title will be set using in-class initialization.
 
 Person::Person(const string &fn, const string &ln, char mi, const char *t) : firstName(fn), lastName(ln), middleInitial(mi)
 {
@@ -77,9 +77,9 @@ Person::Person(Person &&p)
 {
     cout << "Person Move copy constructor" << endl;
     firstName = p.firstName;    
-    p.firstName = "";     // set source object member to empty string
+    p.firstName.clear();     // set source object member to empty string
     lastName = p.lastName;
-    p.lastName = ""; 
+    p.lastName.clear(); 
     middleInitial = p.middleInitial;
     p.middleInitial = '\0';   // set source object member to null character
     title = p.title;     // here, destinatation pointer takes over source pointer's memory
@@ -168,9 +168,9 @@ Person &Person::operator=(Person &&p)
       // Once pointer data members are taken over by lhs, null out the rhs object's pointer to them
       // Non-pointer data members can be copied easily via assignment and then set to a zeroed or empty type value
       firstName = p.firstName;  // assignment between strings will be deep assignment
-      p.firstName = "";         // set source data member to empty string to indicate non-use/existence
+      p.firstName.clear();         // set source data member to empty string to indicate non-use/existence
       lastName = p.lastName; 
-      p.lastName = "";
+      p.lastName.clear();
       middleInitial = p.middleInitial;
       p.middleInitial = '\0';
       title = p.title;    // with ptr data member, this is a pointer assignemt - destination takes over source object's memory
@@ -184,9 +184,10 @@ class Student : public Person
 {
 private: 
     // data members
-    float gpa;
+    float gpa = 0.0;     // in-class initialization
     string currentCourse;
     const char *studentId;     // Again, we have one pointer data member to demonstrate deep copy / assignment
+    static int numStudents;
 public:
     // member function prototypes
     Student();  // default constructor
@@ -194,7 +195,7 @@ public:
             float, const string &, const char *); 
     Student(const Student &);  // copy constructor
     Student(Student &&); // move copy constructor
-    virtual ~Student();  // destructor
+    ~Student() override;  // virtual destructor
     void EarnPhD();  
     // inline function definitions
     float GetGpa() const { return gpa; }
@@ -202,22 +203,39 @@ public:
     const char *GetStudentId() const { return studentId; }
     void SetCurrentCourse(const string &); // prototype only
   
-    // In the derived class, the keyword virtual is optional, 
-    // but recommended for internal documentation
-    virtual void Print() const override;
-    virtual void IsA() const override;
+    // In the derived class, the keyword virtual is optional for overridden (polymorphic) methods, as is the keyword "override"
+    // Currently, "override" is recommended for internal documentation, however "virtual" is not recommended
+    void Print() const override;
+    void IsA() const override;
     // note: we choose not to redefine Person::Greeting(const Student &) const
     Student &operator=(const Student &);  // overloaded assignment operator prototype
     Student &operator=(Student &&);  // overloaded move assignment operator prototype
+
+    static int GetNumberStudents() { return numStudents; }
 };
+
+int Student::numStudents = 0;  // definition of static data member
 
 inline void Student::SetCurrentCourse(const string &c)
 {
     currentCourse = c;
 }
 
-Student::Student() : gpa(0.0), currentCourse(""), studentId (0) 
+// Notice that data members using in-class initialization (above), will be set for those members not in the member init list.
+// However, those that can not be easily set with in-class initialization (such as static numStudents), we set below in method.
+// Recall that member objects (strings) will be default constructed, so no additional init is necessary (if an empty string is our goal)
+Student::Student() 
 {
+   // studentId is temporarily implemented as a char * to demonstrate copy and move copy ctor and op=, etc. more thoroughly
+   // Recall, the chars pointed to must be treated as const, but the pointer itself is not. Hence, we set it below
+   // to a unique id (based upon numStudents counter + 100), concatenated with the string "Id" using a temp (actually two of them) 
+   // Remember, string member currentCourse will be default constructed with an empty string - it is a member object
+   // Also, remember to dynamically allocate memory for any pointer data members here (not needed in this example)
+   string tempstr = to_string((numStudents + 100)) + "Id";   // build the studentId as a string 
+   char *temp = new char [tempstr.length() + 1];             // then allocate the char * the appropriate length 
+   strcpy (temp, tempstr.c_str());                           // and copy string into the char *
+   studentId = temp;                                         // now let studentId take over temp's memory
+   numStudents++;
 }
 
 // Alternate constructor member function definition
@@ -227,6 +245,7 @@ Student::Student(const string &fn, const string &ln, char mi, const char *t, flo
     char *temp = new char [strlen(id) + 1];
     strcpy (temp, id); 
     studentId = temp;
+    numStudents++;
 }
 
 // Copy constructor definition
@@ -237,6 +256,7 @@ Student::Student(const Student &s) : Person(s), gpa(s.gpa), currentCourse(s.curr
     char *temp = new char [strlen(s.studentId) + 1];
     strcpy (temp, s.studentId); 
     studentId = temp;
+    numStudents++;
 }
    
 // move copy constructor
@@ -248,17 +268,20 @@ Student::Student(Student &&s) : Person(move(s))   // make sure we call base clas
     gpa = s.gpa;   // copy then
     s.gpa = 0.0;   // zero out source object member
     currentCourse = s.currentCourse;
-    s.currentCourse = ""; 
+    s.currentCourse.clear();   // clear out original object's value
     // for ptr data member, destination data member takes over source data member's memory
     studentId = s.studentId;  // data is constant, pointer is not so assignment is ok
     s.studentId = nullptr;    // then null out source pointer data member 
+    numStudents++;    // It is a design choice whether you want to increment the counter here. After all, the source object is now
+                      // a shell of an instance with zeroed out values. Nonetheless, the source instance still exists in memory.
 }
 
 // destructor definition
 Student::~Student()
 {
     cout << "Student destructor" << endl;
-    delete (char *) studentId;    // fix cast
+    delete const_cast<char *>(studentId);    // fix cast
+    numStudents--;
 }
 
 void Student::EarnPhD()
@@ -336,7 +359,7 @@ Student &Student::operator=(Student &&s)
       gpa = s.gpa;           
       s.gpa = 0.0;  // zero out source objects data member value 
       currentCourse = s.currentCourse;  // take over memory from pointer data members
-      s.currentCourse = "";
+      s.currentCourse.clear(); // clear out original object's value
       // for ptr data members, destination data member will take over source data member's memory
       studentId = s.studentId;  // this is a pointer assignment    
       s.studentId = nullptr;      // null out source object's data member (so they won't share the memory)
