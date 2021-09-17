@@ -11,6 +11,7 @@ using std::cout;    // preferred to: using namespace std;
 using std::endl;
 using std::setprecision;
 using std::string;
+using std::to_string;
 
 constexpr int MAX = 3;
 
@@ -19,15 +20,15 @@ class Person
 private:
     string firstName;
     string lastName;
-    char middleInitial;
+    char middleInitial = '\0';  // in-class initialization -- value to be used in default constructor
     string title;  // Mr., Ms., Mrs., Miss, Dr., etc.
 protected:
     void ModifyTitle(const string &);
 public:
-    Person();   // default constructor
+    Person() = default;   // default constructor
     Person(const string &, const string &, char, const string &);
-    Person(const Person &);  // copy constructor
-    virtual ~Person();  // virtual destructor
+    Person(const Person &) = default;  // copy constructor
+    virtual ~Person() = default;  // virtual destructor
 
     const string &GetFirstName() const { return firstName; }
     const string &GetLastName() const { return lastName; }
@@ -39,23 +40,15 @@ public:
     virtual void Greeting(const string &) const;
 };
 
-Person::Person() : firstName(""), lastName(""), middleInitial('\0'), title("")
-{
-}
+// Remember, we are using the system-supplied default constructor and in-class initialization
 
 Person::Person(const string &fn, const string &ln, char mi, const string &t) :
                firstName(fn), lastName(ln), middleInitial(mi), title(t)
 {
 }
 
-Person::Person(const Person &p) : firstName(p.firstName), lastName(p.lastName),
-                                  middleInitial(p.middleInitial), title(p.title)
-{
-}
+// Remember, we are also using the system-supplied copy constructor as well as system-supplied default destructor definitions
 
-Person::~Person()
-{
-}
 
 void Person::ModifyTitle(const string &newTitle)
 {
@@ -85,53 +78,70 @@ class Student : public Person
 {
 private:
     // data members
-    float gpa;
+    float gpa = 0.0;   // in-class initialization
     string currentCourse;
     const string studentId;
+    static int numStudents;   // static data member is initialized outside of class definition
 public:
     // member function prototypes
     Student();  // default constructor
     Student(const string &, const string &, char, const string &, float, const string &, const string &);
     Student(const Student &);  // copy constructor
-    virtual ~Student();  // destructor
+    ~Student() override;  // virtual destructor
     // inline function definitions
     float GetGpa() const { return gpa; }
     const string &GetCurrentCourse() const { return currentCourse; }
     const string &GetStudentId() const { return studentId; }
     void SetCurrentCourse(const string &); // prototype only
 
-    // In the derived class, the keyword virtual is optional,
-    // but recommended for internal documentation
-    virtual void Print() const override;
-    virtual string IsA() const override { return "Student"; }
+    // In the derived class, the keyword virtual is optional for overridden (polymorphic) methods, as is the keyword "override"
+    // Currently, "override" is recommended for internal documentation, however "virtual" is not recommended
+    void Print() const override;
+    string IsA() const override { return "Student"; }
     // note: we choose not to redefine Person::Greeting(const string &) const
 
     virtual void Graduate() = 0;  // Now Student is abstract
+
+    static int GetNumStudents() { return numStudents; }
 };
+
+// definition for static data member (which is implemented as external variable)
+int Student::numStudents = 0;  // notice initial value of 0
 
 inline void Student::SetCurrentCourse(const string &c)
 {
     currentCourse = c;
 }
 
-Student::Student() : gpa(0.0), currentCourse(""), studentId ("")
+// Notice that data members using in-class initialization (above), will be set for those members not in the member init list.
+// However, those that can not be easily set with in-class initialization (such as static numStudents), we set below in method.
+// Recall that member objects (strings) will be default constructed, so no additional init is necessary (if an empty string is our goal)
+Student::Student() : studentId(to_string(numStudents + 100) + "Id")
 {
+   // Note: since studentId is const, we need to set it at construction. We're doing so in member init list with
+   // a unique id (based upon numStudents counter + 100), concatenated with the string "Id" .
+   // Remember, string member currentCourse will be default constructed with an empty string - it is a member object
+   // Also, remember to dynamically allocate memory for any pointer data members here (not needed in this example)
+   numStudents++;
 }
 
 // Alternate constructor member function definition
 Student::Student(const string &fn, const string &ln, char mi, const string &t, float avg, const string &course, const string &id) :
                  Person(fn, ln, mi, t), gpa(avg), currentCourse(course), studentId(id)
 {
+   numStudents++;
 }
 
 // Copy constructor definition
 Student::Student(const Student &s) : Person(s), gpa(s.gpa), currentCourse(s.currentCourse), studentId(s.studentId)
 {
+   numStudents++;
 }
 
 // destructor definition
 Student::~Student()
 {
+   numStudents--;
 }
 
 void Student::Print() const
@@ -150,14 +160,16 @@ private:
     string degree;  // PhD, MS, MA, etc.
 public:
     // member function prototypes
-    GradStudent(): degree("") { }  // default constructor
+    GradStudent() = default;  // default constructor
     GradStudent(const string &, const string &, const string &, char, const string &, float, const string &, const string &);
-    GradStudent(const GradStudent &);  // copy constructor
-    virtual ~GradStudent() { } // destructor
+    GradStudent(const GradStudent &) = default;  // copy constructor
+    ~GradStudent() override = default; // virtual destructor
     void EarnPhD();
-    virtual string IsA() const override { return "GradStudent"; }
-    virtual void Graduate() override;
+    string IsA() const override { return "GradStudent"; }
+    void Graduate() override;
 };
+
+// Remember, we're using the system-supplied default constructor and also destructor
 
 // Alternate constructor member function definition
 GradStudent::GradStudent(const string &deg, const string &fn, const string &ln, char mi,
@@ -166,10 +178,12 @@ GradStudent::GradStudent(const string &deg, const string &fn, const string &ln, 
 {
 }
 
-// Copy constructor definition
+// We're using the default Copy constructor, but if we chose to write it ourselves, it would look like this:
+/*
 GradStudent::GradStudent(const GradStudent &gs) : Student(gs), degree(gs.degree)
 {
 }
+*/
 
 void GradStudent::EarnPhD()
 {
@@ -192,14 +206,16 @@ private:
     string degree;  // BS, BA, etc
 public:
     // member function prototypes
-    UnderGradStudent() : degree("") { }  // default constructor
+    UnderGradStudent() = default;  // default constructor
     UnderGradStudent(const string &, const string &, const string &, char, const string &,
                      float, const string &, const string &);
-    UnderGradStudent(const UnderGradStudent &);  // copy constructor
-    virtual ~UnderGradStudent() { } // destructor
-    virtual string IsA() const override { return "UnderGradStudent"; }
-    virtual void Graduate() override;
+    UnderGradStudent(const UnderGradStudent &) = default;  // copy constructor
+    ~UnderGradStudent() override = default; // virtual destructor
+    string IsA() const override { return "UnderGradStudent"; }
+    void Graduate() override;
 };
+
+// Remember, we're using the system-supplied default constructor and also destructor
 
 // Alternate constructor member function definition
 UnderGradStudent::UnderGradStudent(const string &deg, const string &fn, const string &ln, char mi,
@@ -208,10 +224,12 @@ UnderGradStudent::UnderGradStudent(const string &deg, const string &fn, const st
 {
 }
 
-// Copy constructor definition
+// We're using the default Copy constructor, but if we chose to write it ourselves, it would look like this:
+/*
 UnderGradStudent::UnderGradStudent(const UnderGradStudent &gs) : Student(gs), degree(gs.degree)
 {
 }
+*/
 
 void UnderGradStudent::Graduate()
 {
@@ -226,13 +244,15 @@ class NonDegreeStudent : public Student
 private:
 public:
     // member function prototypes
-    NonDegreeStudent() { }  // default constructor
+    NonDegreeStudent() = default;  // default constructor
     NonDegreeStudent(const string &, const string &, char, const string &, float, const string &, const string &);
-    NonDegreeStudent(const NonDegreeStudent &s): Student(s) { }  // copy constructor
-    virtual ~NonDegreeStudent() { } // destructor
-    virtual string IsA() const override { return "NonDegreeStudent"; }
-    virtual void Graduate() override;
+    NonDegreeStudent(const NonDegreeStudent &s) = default; // copy constructor, if we chose to write it, we'd add : Student(s) { }  
+    ~NonDegreeStudent() override = default; // destructor
+    string IsA() const override { return "NonDegreeStudent"; }
+    void Graduate() override;
 };
+
+// Remember, we're using system-supplied default constructor, copy constructor and destructor
 
 // Alternate constructor member function definition
 NonDegreeStudent::NonDegreeStudent(const string &fn, const string &ln, char mi,
