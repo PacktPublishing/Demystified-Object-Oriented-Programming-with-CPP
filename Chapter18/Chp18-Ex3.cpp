@@ -12,17 +12,17 @@ class Person
 private:
    string firstName;
    string lastName;
-   char middleInitial;
+   char middleInitial = '\0';  // in-class initialization -- value to be used in default constructor
    string title;  // Mr., Ms., Mrs., Miss, Dr., etc.
    string greeting;
 protected:
    void ModifyTitle(const string &);  // Make this operation available to derived classes
 public:
-   Person();   // default constructor
+   Person() = default;   // default constructor
    Person(const string &, const string &, char, const string &);  // alternate constructor
-   Person(const Person &);  // copy constructor
+   Person(const Person &) = default;  // copy constructor
    Person &operator=(const Person &); // overloaded assignment operator
-   virtual ~Person();  // destructor
+   virtual ~Person() = default;  // destructor
    const string &GetFirstName() const { return firstName; }  // firstName returned as reference to const string
    const string &GetLastName() const { return lastName; }    // so is lastName (via implicit cast)
    const string &GetTitle() const { return title; }
@@ -34,9 +34,7 @@ public:
 
 Person objectRead;   // holds the object from the current read to support a simulation of a DB read
 
-Person::Person() : firstName(""), lastName(""), middleInitial('\0'), title(""), greeting("")
-{
-}
+// Remember, using system-supplied default constructor, copy constructor and destructor
 
 Person::Person(const string &fn, const string &ln, char mi, const string &t) :
                firstName(fn), lastName(ln), middleInitial(mi), title(t), greeting("Hello")
@@ -44,10 +42,13 @@ Person::Person(const string &fn, const string &ln, char mi, const string &t) :
 {
 }
 
+// We're using the default, system-supplied copy constructor, but if you wrote it, it would look like:
+/*
 Person::Person(const Person &p) : firstName(p.firstName), lastName(p.lastName),
                                   middleInitial(p.middleInitial), title(p.title), greeting(p.greeting)
 {
 }
+*/
 
 Person &Person::operator=(const Person &p)
 {
@@ -62,10 +63,6 @@ Person &Person::operator=(const Person &p)
       greeting = p.greeting;
    }
    return *this;  // allow for cascaded assignments
-}
-
-Person::~Person()
-{
 }
 
 void Person::ModifyTitle(const string &newTitle)

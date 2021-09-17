@@ -15,17 +15,17 @@ class Person
 private: 
    string firstName;
    string lastName;
-   char middleInitial;
+   char middleInitial = '\0';  // in-class initialization -- value to be used in default constructor
    string title;  // Mr., Ms., Mrs., Miss, Dr., etc.
    string greeting;
 protected:
    void ModifyTitle(const string &);  // Make this operation available to derived classes
 public:
-   Person();   // default constructor
+   Person() = default;   // default constructor
    Person(const string &, const string &, char, const string &);  // alternate constructor
-   Person(const Person &);  // copy constructor
+   Person(const Person &) = default;  // copy constructor
    Person &operator=(const Person &); // overloaded assignment operator
-   virtual ~Person();  // destructor
+   virtual ~Person() = default;  // virtual destructor
    const string &GetFirstName() const { return firstName; }  // firstName returned as reference to const string  
    const string &GetLastName() const { return lastName; }    // so is lastName (via implicit cast)
    const string &GetTitle() const { return title; } 
@@ -35,9 +35,7 @@ public:
    virtual void Print() const; 
 };
 
-Person::Person() : firstName(""), lastName(""), middleInitial('\0'), title(""), greeting("")
-{
-}
+// Remember, using system-supplied default constructor, copy constructor and destructor
 
 Person::Person(const string &fn, const string &ln, char mi, const string &t) :
                firstName(fn), lastName(ln), middleInitial(mi), title(t), greeting("Hello")
@@ -45,10 +43,13 @@ Person::Person(const string &fn, const string &ln, char mi, const string &t) :
 {
 }
 
+// We're using the default, system-supplied copy constructor, but if you wrote it, it would look like:
+/*
 Person::Person(const Person &p) : firstName(p.firstName), lastName(p.lastName), 
                                   middleInitial(p.middleInitial), title(p.title), greeting(p.greeting)
 {
 }
+*/
 
 Person &Person::operator=(const Person &p)
 {
@@ -63,10 +64,6 @@ Person &Person::operator=(const Person &p)
       greeting = p.greeting;
    }
    return *this;  // allow for cascaded assignments
-}
-
-Person::~Person()
-{
 }
 
 void Person::ModifyTitle(const string &newTitle)
@@ -96,11 +93,12 @@ class Humanoid: private Person
 protected:
    void SetTitle(const string &t) { ModifyTitle(t); }  // calls Person::ModifyTitle()
 public:
-   Humanoid();   
+   Humanoid() = default;   
    Humanoid(const string &, const string &, const string &, const string &); 
-   Humanoid(const Humanoid &h) : Person(h) { }  
+   Humanoid(const Humanoid &h) = default; // if we wrote copy constructor ourselves, we'd add : Person(h) { }  
    Humanoid &operator=(const Humanoid &h) { return dynamic_cast<Humanoid &>(Person::operator=(h)); }  
-   virtual ~Humanoid() { }  
+   ~Humanoid() override = default;   
+   // Added interfaces for the Adapter class - due to private inheritance, inherited interfaces are hidden outside the scope of Humaniod
    const string &GetSecondaryName() const { return GetFirstName(); }  
    const string &GetPrimaryName() const { return GetLastName(); } 
    const string &GetTitle() const { return Person::GetTitle(); }   // Scope resolution needed on GetTitle() to avoid recursion
@@ -125,12 +123,12 @@ const string &Humanoid::Converse()   // Yes, there can be a default implementati
 class Orkan: public Humanoid
 {
 public:
-   Orkan();   // default constructor
+   Orkan() = default;   // default constructor
    Orkan(const string &n2, const string &n1, const string &t) : Humanoid(n2, n1, t, "Nanu nanu") { } 
-   Orkan(const Orkan &h) : Humanoid(h) { }  // copy constructor
+   Orkan(const Orkan &h) = default;  // If we instead wrote copy constructor ourselves, we'd add : Humanoid(h) { } 
    Orkan &operator=(const Orkan &h) { return dynamic_cast<Orkan &>(Humanoid::operator=(h)); }
-   virtual ~Orkan() { }  // destructor
-   virtual const string &Converse() override;  // We must override this method if we want Orkan to be a concrete class
+   ~Orkan() override = default;  // virtual destructor
+   const string &Converse() override;  // We must override this method if we want Orkan to be a concrete class
 };
 
 const string &Orkan::Converse()    
@@ -143,12 +141,12 @@ const string &Orkan::Converse()
 class Romulan: public Humanoid
 {
 public:
-   Romulan();   // default constructor
+   Romulan() = default;   // default constructor
    Romulan(const string &n2, const string &n1, const string &t) : Humanoid(n2, n1, t, "jolan'tru") { } 
-   Romulan(const Romulan &h) : Humanoid(h) { }  // copy constructor
+   Romulan(const Romulan &h) = default;  // If we instead wrote copy constructor ourselves, we'd add : Humanoid(h) { } 
    Romulan &operator=(const Romulan &h) { return dynamic_cast<Romulan &>(Humanoid::operator=(h)); }
-   virtual ~Romulan() { }  // destructor
-   virtual const string &Converse() override;  // We must override this method if we want Romulan to be a concrete class
+   ~Romulan() override = default; // virtual destructor
+   const string &Converse() override;  // We must override this method if we want Romulan to be a concrete class
 };
 
 const string &Romulan::Converse()    
@@ -161,12 +159,12 @@ const string &Romulan::Converse()
 class Earthling: public Humanoid
 {
 public:
-   Earthling();   // default constructor
+   Earthling() = default;   // default constructor
    Earthling(const string &n2, const string &n1, const string &t) : Humanoid(n2, n1, t, "Hello") { } 
-   Earthling(const Romulan &h) : Humanoid(h) { }  // copy constructor
+   Earthling(const Earthling &h) = default;  // If we instead wrote copy constructor, we'd add : Humanoid(h) { }  
    Earthling &operator=(const Earthling &h) { return dynamic_cast<Earthling &>(Humanoid::operator=(h)); }
-   virtual ~Earthling() { }  // destructor
-   virtual const string &Converse() override;  // We must override this method if we want Romulan to be a concrete class
+   ~Earthling() { }  // virtual destructor
+   const string &Converse() override;  // We must override this method if we want Romulan to be a concrete class
 };
 
 const string &Earthling::Converse()    
