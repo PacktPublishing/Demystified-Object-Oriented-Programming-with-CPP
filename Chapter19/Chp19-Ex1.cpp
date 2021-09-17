@@ -9,7 +9,7 @@ using std::endl;
 class Singleton
 {
 private:
-    static Singleton *theInstance;
+    static Singleton *theInstance;   // static pointer will not use in-class initialization, see initialization below
     Singleton(); // private to prevent multiple instantiation
 public:
     static Singleton *instance();
@@ -23,7 +23,7 @@ Singleton *Singleton::theInstance = nullptr;
 Singleton::Singleton() 
 { 
     cout << "Constructor" << endl; 
-    theInstance = nullptr;
+    // theInstance = nullptr;    // not necessary -- set above
 }  
 
 Singleton::~Singleton()

@@ -22,7 +22,7 @@ class President;
 class SingletonDestroyer
 {
 private:
-    Singleton *theSingleton;
+    Singleton *theSingleton = nullptr;
 public:
     SingletonDestroyer(Singleton *s = nullptr) { theSingleton = s; }
     SingletonDestroyer(const SingletonDestroyer &) = delete; // disallow copies
@@ -38,10 +38,10 @@ public:
 class Singleton
 {
 protected:
-    static Singleton *theInstance;
+    static Singleton *theInstance;   // static members initialized below
     static SingletonDestroyer destroyer;
 protected:
-    Singleton() {}
+    Singleton() = default; 
     Singleton(const Singleton &) = delete; // disallow copies
     Singleton &operator=(const Singleton &) = delete; // disallow assignment
     friend class SingletonDestroyer;
@@ -87,17 +87,17 @@ class Person
 private:
    string firstName;
    string lastName;
-   char middleInitial;
+   char middleInitial = '\0';  // in-class initialization -- value to be used in default constructor
    string title;  // Mr., Ms., Mrs., Miss, Dr., etc.
    string greeting;
 protected:
    void ModifyTitle(const string &);  // Make this operation available to derived classes
 public:
-   Person();   // default constructor
+   Person() = default;   // default constructor
    Person(const string &, const string &, char, const string &);  // alternate constructor
-   Person(const Person &);  // copy constructor
+   Person(const Person &) = default;  // copy constructor
    Person &operator=(const Person &); // overloaded assignment operator
-   virtual ~Person();  // destructor
+   virtual ~Person();  // virtual destructor
    const string &GetFirstName() const { return firstName; }  // firstName returned as reference to const string
    const string &GetLastName() const { return lastName; }    // so is lastName (via implicit cast)
    const string &GetTitle() const { return title; }
@@ -107,21 +107,24 @@ public:
    virtual void Print() const;
 };
 
-Person::Person() : firstName(""), lastName(""), middleInitial('\0'), title(""), greeting("")
-{
-}
+// Remember, we're using system provided default constructor (and in-class initialization)
 
+// Alternate constructor
 Person::Person(const string &fn, const string &ln, char mi, const string &t) :
                firstName(fn), lastName(ln), middleInitial(mi), title(t), greeting("Hello")
 
 {
 }
 
+// We're using default copy constructor, but if we wrote it, it would look like:
+/*
 Person::Person(const Person &p) : firstName(p.firstName), lastName(p.lastName),
                                   middleInitial(p.middleInitial), title(p.title), greeting(p.greeting)
 {
 }
+*/
 
+// Demonstrating simple overloaded operator= implementation
 Person &Person::operator=(const Person &p)
 {
    // make sure we're not assigning an object to itself
@@ -165,7 +168,7 @@ private:
     President(const string &, const string &, char, const string &);
     // No default constructor - rare
 public:
-    virtual ~President(); // { destroyer.setSingleton(NULL); cout << "President destructor" << endl; }
+    ~President() override; // { destroyer.setSingleton(NULL); cout << "President destructor" << endl; }
     President(const President &) = delete;  // disallow copies
     President &operator=(const President &) = delete;
     static President *instance(const string &, const string &, char, const string &);
