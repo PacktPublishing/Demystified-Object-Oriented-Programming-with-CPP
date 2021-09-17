@@ -10,6 +10,7 @@ using std::cout;   // prefered to: using namespace std;
 using std::endl;
 using std::setprecision;
 using std::string;
+using std::to_string;
 using std::list;
 
 constexpr int MAXCOURSES = 5, MAXSTUDENTS = 5;
@@ -20,14 +21,14 @@ class Student;
 class Observer
 {
 private:
-    int observerState;
+    int observerState = 0;   // in-class initialization
 protected:
-    Observer() { observerState = 0; }
+    Observer() = default;    // default constructor will use in-class initialization 
     Observer(int s) { observerState = s; }
     void SetState(int s) { observerState = s; }
 public: 
     int GetState() const { return observerState; }
-    virtual ~Observer() {}
+    virtual ~Observer() = default; 
     virtual void Update() = 0;
 };
 
@@ -35,17 +36,17 @@ class Subject
 {
 private:
     list<class Observer *> observers;  // List of Observers will be Students on wait-list
-    int numObservers;
-    int subjectState;
+    int numObservers = 0;    // in-class initialization
+    int subjectState = 0;
     list<Observer *>::iterator newIter;
 protected:
-    Subject() { subjectState = 0; numObservers = 0; }
+    Subject() = default;  // default constructor will use initialization 
     Subject(int s) { subjectState = s; numObservers = 0; }
     void SetState(int s) { subjectState = s; }
 public:
     int GetState() const { return subjectState; }
     int GetNumObservers() const { return numObservers; }
-    virtual ~Subject() {}
+    virtual ~Subject()  = default; 
     virtual void Register(Observer *);
     virtual void Release(Observer *);
     virtual void Notify();
@@ -59,7 +60,7 @@ void Subject::Register(Observer *ob)
 
 void Subject::Release(Observer *ob)
 {
-    bool found;
+    bool found = false;
     for (list<Observer *>::iterator iter = observers.begin(); iter != observers.end() && !found; iter++)
     {
         Observer *temp = *iter;
@@ -96,9 +97,9 @@ class Course: public Subject   // over-simplified Course class
 {                              // inherits observer list (from Subject) which will represent Students on wait-list
 private:
     string title;
-    int number;
-    Student *students[MAXSTUDENTS];  // List of Students enrolled in Course
-    int totalStudents;
+    int number = 0;   // in-class initialization will be over-written with alt. constructor
+    Student *students[MAXSTUDENTS];  // List of Students enrolled in Course -- will be set to nullptr in constructor
+    int totalStudents = 0;
 public:
     Course(const string &title, int num): number(num), totalStudents(0)
     {
@@ -106,7 +107,8 @@ public:
         for (int i = 0; i < MAXSTUDENTS; i++)
             students[i] = nullptr;
     }
-    virtual ~Course() { }  // More work needed - don't forget to remove Students from Course!
+    // Note: destructor body shown to provide a place to add the more work required -- see note below (hence why not = default)
+    ~Course() override { }  // More work needed - don't forget to remove Students from Course!
     int GetCourseNum() const { return number; }
     const string &GetTitle() const { return title; }
     bool AddStudent(Student *);
@@ -131,15 +133,15 @@ class Person
 private: 
     string firstName;
     string lastName;
-    char middleInitial;
+    char middleInitial = '\0';  // in-class initialization -- value to be used in default constructor
     string title;  // Mr., Ms., Mrs., Miss, Dr., etc.
 protected:
     void ModifyTitle(const string &); 
 public:
-    Person();   // default constructor
+    Person() = default;   // default constructor
     Person(const string &, const string &, char, const string &);  
-    Person(const Person &);  // copy constructor
-    virtual ~Person();  // virtual destructor
+    Person(const Person &) = default;  // copy constructor
+    virtual ~Person() = default;  // virtual destructor
 
     const string &GetFirstName() const { return firstName; }  
     const string &GetLastName() const { return lastName; }    
@@ -151,23 +153,15 @@ public:
     virtual void Greeting(const string &) const;
 };
 
-Person::Person() : firstName(""), lastName(""), middleInitial('\0'), title("")
-{
-}
+// Remember, using system-supplied default constructor (and in-class initialization)
 
 Person::Person(const string &fn, const string &ln, char mi, const string &t) :
                firstName(fn), lastName(ln), middleInitial(mi), title(t)
 {
 }
 
-Person::Person(const Person &p) : firstName(p.firstName), lastName(p.lastName),
-                                  middleInitial(p.middleInitial), title(p.title)
-{
-}
-
-Person::~Person()
-{
-}
+// Remember, we are using default, system-supplied copy constructor
+// and default, system-supplied destructor
 
 void Person::ModifyTitle(const string &newTitle)
 {
@@ -193,37 +187,45 @@ void Person::Greeting(const string &msg) const
 class Student : public Person, public Observer
 {
 private: 
-    float gpa;
+    float gpa = 0.0;   // in-class initialization
     const string studentId;  
-    int currentNumCourses;
-    Course *courses[MAXCOURSES];
-    Course *waitList;  // Course we'd like to take - we're on the waitlist -- this is our Subject in specialized form
+    int currentNumCourses = 0;
+    Course *courses[MAXCOURSES]; // will be set to nullptr in constructor
+    Course *waitList = nullptr;  // Course we'd like to take - we're on the waitlist -- this is our Subject in specialized form
+    static int numStudents;
 public:
     Student();  // default constructor
     Student(const string &, const string &, char, const string &, float, const string &, Course *); 
     Student(const string &, const string &, char, const string &, float, const string &); 
     Student(const Student &) = delete;  // copy constructor is now Disallowed 
-    virtual ~Student();  // destructor
+    ~Student() override;  // virtual destructor
     void EarnPhD();  
 
     float GetGpa() const { return gpa; }
     const string &GetStudentId() const { return studentId; }
   
-    virtual void Print() const override;
-    virtual void IsA() const override;
-    virtual void Update() override;
+    void Print() const override;  // overridden from Person
+    void IsA() const override;    // overridden from Person
+    void Update() override;       // overridden from Observer
     // note: we choose not to redefine Person::Greeting(const string &)
     virtual void Graduate();   // newly introduced virtual fn.
     bool AddCourse(Course *);
     void PrintCourses() const;
+
+    static int GetNumberStudents() { return numStudents; } // static member function
 };
 
 
-Student::Student() : gpa(0.0), studentId (""), currentNumCourses(0) 
+// definition for static data member (which is implemented as external variable)
+int Student::numStudents = 0;  // notice initial value of 0
+
+// Remember, gpa, currentNumCourses and waitList have already been set with in-class initialization
+Student::Student() : studentId (to_string(numStudents + 100) + "Id")
 {
     for (int i = 0; i < MAXCOURSES; i++)
         courses[i] = nullptr;
-    waitList = nullptr;
+    // again, remember, waitList = nullptr; has already been set using in-class initialization
+    numStudents++;
 }
 
 // Alternate constructor member function definition
@@ -234,6 +236,7 @@ Student::Student(const string &fn, const string &ln, char mi, const string &t, f
         courses[i] = nullptr;
     waitList = c;      // Set waitlist to Course (Subject) 
     c->Register(this); // Add the Student (Observer) to the Subject's list
+    numStudents++;
 }
 
 // Another alternate constructor member function definition
@@ -243,6 +246,7 @@ Student::Student(const string &fn, const string &ln, char mi, const string &t, f
     waitList = nullptr;   // no Course on waitlist 
     for (int i = 0; i < MAXCOURSES; i++)
         courses[i] = nullptr;
+    numStudents++;
 }
 
    
@@ -250,6 +254,7 @@ Student::Student(const string &fn, const string &ln, char mi, const string &t, f
 Student::~Student()
 {
     // Add code to remove this Student from the respective course lists
+    numStudents--;
 }
 
 void Student::EarnPhD()
