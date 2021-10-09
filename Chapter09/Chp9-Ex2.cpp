@@ -18,12 +18,12 @@ private:
 public:
    LifeForm() = default; 
    LifeForm(int life) : lifeExpectancy(life) { }
-   LifeForm(const LifeForm &form) = default; 
-   // If we wanted to write the copy constructor, this is what it would look like:
+   // We will use the default copy constructor, however,
+   // if we wanted to write the copy constructor, this is what it would look like:
    // LifeForm(const LifeForm &form) : lifeExpectancy(form.lifeExpectancy) { }   OR
    // LifeForm(const LifeForm &form) { lifeExpectancy = form.lifeExpectancy; }
-   virtual ~LifeForm() = default; 
-   int GetLifeExpectancy() const { return lifeExpectancy; }
+   virtual ~LifeForm() = default;    // prototype necessary to specify virtual destructor
+   [[nodiscard]] int GetLifeExpectancy() const { return lifeExpectancy; }
 
    // Virtual functions will (almost) never be inlined since their method must be determined
    // at run time using the v-table (except a few rare situations).
@@ -36,18 +36,21 @@ class Horse: public LifeForm
 {
 private:
    string name;
+   static constexpr int HORSE_LIFE = 35; // horse life expectancy
 public:
-   Horse(): LifeForm(35) { }   // set Horse life exp to 35. string name will be default constructed to empty (a horse with no name)
+   Horse(): LifeForm(HORSE_LIFE) { }   // set Horse life exp to 35. string name will be default constructed to empty (a horse with no name)
    Horse(const string &n);
-   Horse(const Horse &) = default;
-   ~Horse() override = default; 
+   // Remember, it isn't necessary for us to prototype default copy constructor
+   // Horse(const Horse &) = default;
+   // Because base class destructor is virtual, ~Horse() is automatically virtual (overridden) whether or not explicitly prototyped
+   // ~Horse() override = default; 
    const string &GetName() const { return name; }
    void Print() const override;
    string IsA() const override;
    string Speak() const override;
 };
 
-Horse::Horse(const string &n) : LifeForm(35), name(n)
+Horse::Horse(const string &n) : LifeForm(HORSE_LIFE), name(n)
 {
 }
 
@@ -82,13 +85,16 @@ private:
    string lastName;
    char middleInitial = '\0';  // in-class initialization
    string title;  // Mr., Ms., Mrs., Miss, Dr., etc.
+   static constexpr int PERSON_LIFE = 80; // life expectancy of Person
 protected:
    void ModifyTitle(const string &);  // Make this operation available to derived classes
 public:
    Person();   // programmer supplied default constructor
    Person(const string &, const string &, char, const string &);  // alternate constructor
-   Person(const Person &) = default;  // copy constructor
-   ~Person() override = default;  // destructor
+   // Remember, default copy constructor prototype is not necessary
+   // Person(const Person &) = default;  // copy constructor
+   // Because base class destructor is virtual, ~Person() is automatically virtual (overridden) whether or not explicitly prorotyped
+   // ~Person() override = default;  // destructor
 
    // inline function definitions
    const string &GetFirstName() const { return firstName; }  // firstName returned as ref to const string  
@@ -96,8 +102,7 @@ public:
    const string &GetTitle() const { return title; } 
    char GetMiddleInitial() const { return middleInitial; }
 
-   // Virtual functions will not be inlined since their method must be determined
-   // at run time using the v-table.
+   // Virtual functions will (most often) not be inlined since their method must be determined at run time using the v-table.
    void Print() const override;
    string IsA() const override;   
    string Speak() const override;
@@ -106,11 +111,11 @@ public:
 // With in-class initialization, we don't need to set middleInitial.
 // Remember, string members are automatically initialized to empty with the default string constructor
 // However, we will select the LifeForm(int) constructor in the member init list to allow us to pass a lifexpectancy of 80
-Person::Person() : LifeForm(80)
+Person::Person() : LifeForm(PERSON_LIFE)
 {
 }
 
-Person::Person(const string &fn, const string &ln, char mi, const string &t) : LifeForm(80),
+Person::Person(const string &fn, const string &ln, char mi, const string &t) : LifeForm(PERSON_LIFE),
                              firstName(fn), lastName(ln), middleInitial(mi), title(t)
 
 {
@@ -154,9 +159,10 @@ private:
 public:
    Centaur() = default; 
    Centaur(const string &, const string &, char = ' ', const string & = "Mythological Creature");  // note default args in alt ctor
+   // Let's show copy constructor so we can compare it to the next example
    Centaur(const Centaur &c): Person(c), Horse(c) { }  // same as default copy constructor
-   // Note: we get default copy constructor automatically; prototype with =default not necessary
-   ~Centaur() override = default;
+   // Because base classes destructors are virtual, ~Centaur() is automatically virtual (overridden) whether or not explicitly prorotyped
+   // ~Centaur() override = default;
    void Print() const override;
    string IsA() const override;   
    string Speak() const override;

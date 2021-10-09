@@ -65,7 +65,7 @@ public:
     virtual ~BillableEntity(); 
     void Pay(float amt) { invoiceAmt -= amt; }
     float GetBalance() const { return invoiceAmt; }
-    void Balance();
+    void Balance() const;
 };
 
 // Simple destructor written ourselves, just so we can trace the destructor chain using cout statements
@@ -74,7 +74,7 @@ BillableEntity::~BillableEntity()
     cout << "BillableEntity destructor" << endl;
 }
 
-void BillableEntity::Balance()
+void BillableEntity::Balance() const
 {
     if (invoiceAmt)
        cout << "Owed amount: $ " << invoiceAmt << endl;
