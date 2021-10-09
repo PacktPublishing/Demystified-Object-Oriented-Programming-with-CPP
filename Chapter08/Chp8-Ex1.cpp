@@ -27,12 +27,11 @@ private:
 public:
    LifeForm() = default;    // use default ctor and in-class initialization
    LifeForm(int life) : lifeExpectancy(life) { }
-   LifeForm(const LifeForm &) = default;
    // If we wanted to write the copy constructor, this is what it would look like:
    // LifeForm(const LifeForm &form) : lifeExpectancy(form.lifeExpectancy) { }   OR
    // LifeForm(const LifeForm &form) { lifeExpectancy = form.lifeExpectancy; }
-   virtual ~LifeForm() = default;      // virtual destructor
-   int GetLifeExpectancy() const { return lifeExpectancy; }
+   virtual ~LifeForm() = default;      // prototype necessary to specify virtual destructor
+   [[nodiscard]] int GetLifeExpectancy() const { return lifeExpectancy; } // require user to utilize return value
    virtual void Print() const = 0;   // pure virtual functions 
    virtual string IsA() const = 0;   
    virtual string Speak() const = 0;
@@ -43,11 +42,13 @@ class Cat: public LifeForm
 private:
    int numberLivesLeft = 9;   // in-class initialization
    string name;
+   static constexpr int CAT_LIFE = 15;  // Life expectancy for a cat
 public:
-   Cat() : LifeForm(15) { }  // remember, numberLivesLeft is set with in-class init and name will be an empty string
-   Cat(int lives) : LifeForm(15), numberLivesLeft(lives) {  }
+   Cat() : LifeForm(CAT_LIFE) { }  // remember, numberLivesLeft is set with in-class init and name will be an empty string
+   Cat(int lives) : LifeForm(CAT_LIFE), numberLivesLeft(lives) {  }
    Cat(const string &);
-   ~Cat() override = default;    // virtual destructor
+   // Because base class destructor is virtual, ~Cat() is automatically virtual (overridden) whether or not explicitly prototyped
+   // ~Cat() override = default;    // virtual destructor
    const string &GetName() const { return name; }
    int GetNumberLivesLeft() const { return numberLivesLeft; }
    void Print() const override;   // redefine pure virtual functions
@@ -55,7 +56,7 @@ public:
    string Speak() const override { return "Meow!"; }
 };
 
-Cat::Cat(const string &n) : LifeForm(15), name(n)  // numLivesLeft will be set to 9 with in-class init
+Cat::Cat(const string &n) : LifeForm(CAT_LIFE), name(n)  // numLivesLeft will be set to 9 with in-class init
 {
 }
 
@@ -73,13 +74,16 @@ private:
    string lastName;
    char middleInitial = '\0';  // in-class initialization
    string title;  // Mr., Ms., Mrs., Miss, Dr., etc.
+   static constexpr int PERSON_LIFE = 80;  // Life expectancy for a Person 
 protected:
    void ModifyTitle(const string &);  
 public:
    Person();   // programmer supplied default constructor
    Person(const string &, const string &, char, const string &);  
+   // Default copy constructor protytpe is not necessary:
    Person(const Person &) = default;  // copy constructor
-   ~Person() override = default;  // destructor
+   // Because base class destructor is virtual, ~Person() is automatically virtual (overridden) whether or not explicitly prorotyped
+   // ~Person() override = default;  // destructor
    const string &GetFirstName() const { return firstName; }  
    const string &GetLastName() const { return lastName; }    
    const string &GetTitle() const { return title; } 
@@ -93,12 +97,12 @@ public:
 // With in-class initialization, we don't need to set middleInitial.  
 // Remember, string members are automatically initialized to empty with the default string constructor
 // However, we will select the LifeForm(int) constructor in the member init list to allow us to pass a lifexpectancy of 80
-Person::Person() : LifeForm(80)
+Person::Person() : LifeForm(PERSON_LIFE)
 {
 }
 
 Person::Person(const string &fn, const string &ln, char mi, const string &t) : 
-               LifeForm(80), firstName(fn), lastName(ln), middleInitial(mi), title(t)
+               LifeForm(PERSON_LIFE), firstName(fn), lastName(ln), middleInitial(mi), title(t)
 {
 }
 
@@ -235,6 +239,25 @@ int main()
    entity[3] = new Cat("Katje"); 
    entity[4] = new Person("Giselle", "LeBrun", 'R', "Miss");
 
+   // Use a range based loop, instead of a traditional loop (shown below) 
+   for (LifeForm *item : entity)   // loop over each member in the array of LifeForm pointers (entity)
+   {                               // The current element will be item (used versus entity[i] as shown below)
+      cout << item->Speak();   
+      cout << " I am a " << item->IsA() << endl;
+      item->Print();           
+      cout << "\tHas a life expectancy of: ";
+      cout << item->GetLifeExpectancy();
+      cout << "\n";
+   } 
+
+   for (LifeForm *item : entity)   // note: we can also use 'auto' to allow C++ to determine the type for us (of item) vs Lifeform *
+   {                          // recall, item is equivalent to entity[i] in the loop below
+      delete item;    
+      item = nullptr;   // ensure deleted pointer isn't used
+   }
+
+   // Above range based for loop replaces below loop style and array member access. This method shown for comparison.
+   /*    
    for (int i = 0; i < MAX; i++)
    {
       cout << entity[i]->Speak();
@@ -243,13 +266,13 @@ int main()
       cout << "\tHas a life expectancy of: ";
       cout << entity[i]->GetLifeExpectancy();
       cout << "\n";
-   } 
-
+   }
    for (int i = 0; i < MAX; i++)
    {
       delete entity[i];
       entity[i] = nullptr;   // ensure deleted pointer isn't used
    }
+   */  
 
    return 0;
 }
