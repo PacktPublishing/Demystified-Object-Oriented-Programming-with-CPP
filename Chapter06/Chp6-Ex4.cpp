@@ -201,8 +201,9 @@ public:
    // Constructor prototype shown below is not needed; we get default without prorotype (since there are no other ctors)
    // Shown in comments to show optional use of =default to get default ctor
    // PriorityQueue() = default;   // will call Queue() default constructor 
-   // Destructor prototype is needed (per virtual/override)
-   ~PriorityQueue() override = default; // we'll discuss override in Chp 7
+   // Destructor prototype is needed is not needed for overridden virtual destructor, hence commented out 
+   // ~PriorityQueue() override = default; // we'll discuss override in Chp 7
+
    // Here, we specify the pubilc interface which PriorityQueue instances may utilize.
    // Since we are inherited from Queue publicly, we inherit the public interface
    // from Queue.  Since Queue is inherited protectedly from LinkList, the public
