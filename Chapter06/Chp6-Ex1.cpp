@@ -28,8 +28,9 @@ protected:
 public:
    Person() = default;   // default constructor 
    Person(const string &, const string &, char, const string &);  // alternate constructor
-   Person(const Person &) = default;  // use default copy constructor
-   ~Person() = default;  // default destructor; note: = default prototype is optional (we'd get default dest w/o any prototype)
+   // We get the default copy constructor and destructor, even without the =default prototypes. Hence, these are commented out
+   // Person(const Person &) = default;  // use default copy constructor
+   // ~Person() = default;  // default destructor; note: = default prototype is optional (we'd get default dest w/o any prototype)
 
    // inline function definitions
    const string &GetFirstName() const { return firstName; }  // firstName returned as const string  
