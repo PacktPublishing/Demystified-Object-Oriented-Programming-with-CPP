@@ -25,7 +25,8 @@ protected:
 public:
     Person() = default;   // default constructor
     Person(const string &, const string &, char, const string &);  
-    Person(const Person &) = default;  // copy constructor
+    // The copy constructor prototype with =default is unnecessary - we get this by automatically. Hence, it is commented out.
+    // Person(const Person &) = default;  // copy constructor
     virtual ~Person();   // virtual destructor
 
     // inline function definitions
