@@ -13,17 +13,16 @@ using std::setprecision;
 using std::string;
 using std::to_string;
 
-constexpr int MAX = 25;
-
 class Student; // forward declaration 
 
 class University
 {
 private:
    string name;
+   static constexpr int MAX = 25;  // maximum students supported by university
    // Association to many students
-   Student *studentBody[MAX];    // pointers will be nulled out in constructors with nullptr
-   int currentNumStudents = 0;   // in-class initialization
+   Student *studentBody[MAX] = { };    // initializes all pointerse to 0; could alternatively init all pointers in constructors to nullptr
+   int currentNumStudents = 0;    // in-class initialization
 public:
    University();
    University(const string &);
@@ -37,19 +36,21 @@ public:
 // Remember, currentNumStudents is set with in-class initialization and name, as a string member object is constructed as empty
 University::University() 
 {
-   for (int i = 0; i < MAX; i++)    // let's set each to nullptr for safety 
-      studentBody[i] = nullptr;  
+   // In lieu of in-class initialization, we could alternatively set each studentBody pointer to nullptr
+   // for (int i = 0; i < MAX; i++)    // let's set each to nullptr for safety 
+      // studentBody[i] = nullptr;  
 }
 
 University::University(const string &n) : name(n)   // remember, currentNumStudents is set with in-class init
 {
-   for (int i = 0; i < MAX; i++)   // let's set each to nullptr
-      studentBody[i] = nullptr;  
+   // In lieu of in-class initialization, we could alternatively set each studentBody pointer to nullptr
+   // for (int i = 0; i < MAX; i++)   // let's set each to nullptr
+      // studentBody[i] = nullptr;  
 }
 
 University::~University()
 {
-   // The students will delete themselves, but we can null out our pointers to them!
+   // The students will be deleted by whatever means they were created, however we can null out our pointers to them!
    for (int i = 0; i < MAX; i++)
       studentBody[i] = nullptr; 
 }
@@ -61,15 +62,16 @@ void University::EnrollStudent(Student *s)
 }
 
 
-class Id
+class Id final
 {
 private:
    string idNumber;
 public:
    Id() = default;   // we do want this interface for construction
    Id(const string &id) : idNumber(id) { }
-   Id(const Id &) = default;
-   ~Id() = default;
+   // Remember, we get the default copy constructor and destructor, even without the following prototypes:
+   // Id(const Id &) = default;
+   // ~Id() = default;
    const string &GetId() const { return idNumber; }
 };
 
@@ -94,7 +96,9 @@ protected:
 public:
     Person() = default;   // default constructor
     Person(const string &, const string &, char, const string &);  
-    Person(const Person &) = default;  // copy constructor
+    // We get the default copy constructor, even without the following prototype:
+    // Person(const Person &) = default;  // copy constructor
+    // However, we need the following destructor prototype to mark the default destructor virtual
     virtual ~Person() = default;  // virtual destructor
 
     // inline function definitions
@@ -220,7 +224,7 @@ Student::Student(const Student &s) : Person(s), gpa(s.gpa), currentCourse(s.curr
 Student::~Student()
 {
     numStudents--;
-    univ = nullptr;  // the University will delete itself
+    univ = nullptr;  // a Student does not delete its University 
     // the embedded object studentId will also be destructed
 }
 
@@ -246,6 +250,7 @@ void Student::IsA() const
 void University::PrintStudents() const
 {
    cout << name << " has the following students:" << endl;
+
    for (int i = 0; i < currentNumStudents; i++)
    {
       cout << "\t" << studentBody[i]->GetFirstName() << " ";

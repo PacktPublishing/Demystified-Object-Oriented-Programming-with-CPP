@@ -15,15 +15,16 @@ using std::setprecision;
 using std::string;
 using std::to_string;
 
-class Id
+class Id final   // This class is not intended to be extended
 {
 private:
    string idNumber;
 public:
    Id() = default;   // we do want this interface for construction
    Id(const string &id) : idNumber(id) { }
-   Id(const Id &) = default;
-   ~Id() = default;
+   // Remember, we get the default copy constructor and destructor, even without these prototypes. Hence, they are commented out.
+   // Id(const Id &) = default;
+   // ~Id() = default;
    const string &GetId() const { return idNumber; }
 };
 
@@ -47,7 +48,9 @@ protected:
 public:
     Person() = default;   // default constructor
     Person(const string &, const string &, char, const string &);  
-    Person(const Person &) = default;  // copy constructor
+    // Remember, we get the default copy constructor, even without below prototype:
+    // Person(const Person &) = default;  // copy constructor
+    // But, we need the following prototype to add virtual to the default destructor
     virtual ~Person() = default;  // virtual destructor
 
     // inline function definitions
