@@ -215,8 +215,8 @@ struct comparison   // This struct represents a ‘functor’
         else 
             return false;  // return false if they are equal or less than
     }
-    comparison() { }
-    ~comparison() { }
+    // comparison() { }   // we can use default constructor and destructor 
+    // ~comparison() { }
 };
 
 
