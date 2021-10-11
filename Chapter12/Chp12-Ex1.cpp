@@ -22,8 +22,9 @@ private:
 public:
    Id() = default;           // in-class init will set student(nullptr)
    Id(const string &); 
-   Id(const Id &) = default;  
-   ~Id() = default; 
+   // Remember, default copy constructor and default destructor do not need to be prototyped
+   // Id(const Id &) = default;  
+   // ~Id() = default; 
    void SetStudent(Student *s);  
    friend class Student;    // all member functions in Student are friends of Id
 };
@@ -52,7 +53,9 @@ protected:
 public:
     Person() = default;   // default constructor
     Person(const string &, const string &, char, const string &);
+    // Remember, it isn't necessary to prototype the default copy constructor
     Person(const Person &) = default;  // copy constructor
+    // It is, however, important to prototype the default destructor if we want it to be virtual
     virtual ~Person() = default;  // virtual destructor
 
     // inline function definitions
