@@ -210,6 +210,7 @@ int main()
     people[3] = new Person("Giselle", "LeBrun", 'R', "Miss");
     people[4] = new Person("Linus", "Van Pelt", 'S', "Mr.");
 
+    // We will soon see a more modern way to use for loops (range for)
     for (int i = 0; i < MAX; i++)
     {
        people[i]->IsA();
