@@ -42,16 +42,32 @@ int main()
     people[1] = new Student("Zack", "Moon", 'R', "Dr.", 3.8, "C++", "UMD1234");  // derived instances
     people[2] = new Student("Gabby", "Doone", 'A', "Dr.", 3.9, "C++", "GWU4321"); 
 
+    // Compare range for loop to older style, below
+    for (auto item : people)   // note item is a Person * (auto can determine this)
+    {
+       item->IsA();
+       cout << "  ";
+       item->Print();
+    } 
+
+    // Less-modern looping style
+    /*
     for (int i = 0; i < MAX; i++)
     {
        people[i]->IsA();
        cout << "  ";
        people[i]->Print();
     } 
+    */
 
     // Test destruction sequence (for dynamically allocated instances)
-    for (int i = 0; i < MAX; i++)
-       delete people[i];   // engage virtual dest. sequence
+    // Compare range for loop to older style below
+    for (auto item : people)
+       delete item;   // engage virtual dest. sequence
+
+    // Older style looping for comparison
+    // for (int i = 0; i < MAX; i++)
+       // delete people[i];   // engage virtual dest. sequence
 
     return 0;
 }
