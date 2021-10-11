@@ -32,7 +32,9 @@ protected:
 public:
     Person() = default;   // default constructor
     Person(const string &, const string &, char, const string &);
-    Person(const Person &) = default;  // copy constructor
+    // Remember, it isn't necessary to prototype the default copy constructor
+    // Person(const Person &) = default;  // copy constructor
+    // It is, however, important to prototype the default destructor if we want it to be virtual
     virtual ~Person() = default;  // virtual destructor
 
     // inline function definitions
@@ -140,7 +142,8 @@ public:
         int number = 0;     // will be over written after successful alt. constructor (we aren't offering default constuctor)
     public:
         StudentException(int num): number(num) { }
-        ~StudentException() = default; 
+        // Remember, it is not necessary to prototype the default destructor
+        // ~StudentException() = default; 
         int GetNum() const { return number;}
     }; 
 };

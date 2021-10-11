@@ -27,7 +27,9 @@ private:
     string details;
 public:   
     StudentException(const string &det, int num): errCode(num), details(det) { }   
-    virtual ~StudentException() = default; 
+    // Base class destructor (exception) is virtual. Override at this level if you have work to do.
+    // We can omit the default destructor prototype
+    // ~StudentException() override = default;     
     const char *what() const throw() override   // note: what() returns a const char * (we must override with the same signature)
     {
         return "Student Exception";
@@ -48,7 +50,9 @@ protected:
 public:
     Person() = default;   // default constructor
     Person(const string &, const string &, char, const string &);
-    Person(const Person &) = default;  // copy constructor
+    // Remember, it isn't necessary to prototype the default copy constructor
+    // Person(const Person &) = default;  // copy constructor
+    // It is, however, important to prototype the default destructor if we want it to be virtual
     virtual ~Person() = default;  // virtual destructor
 
     // inline function definitions

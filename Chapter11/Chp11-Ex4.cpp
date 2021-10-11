@@ -29,7 +29,8 @@ public:
     {
         this->title = title;  // disambiguate with this since both data member and input parameter have same identifier
     }
-    ~Course() = default; 
+    // Not necessary to prototype the default destructor
+    // ~Course() = default; 
     int GetCourseNum() const { return number; }
     const string &GetTitle() const { return title; }
 }; 
@@ -46,7 +47,9 @@ protected:
 public:
     Person() = default;   // default constructor
     Person(const string &, const string &, char, const string &);
-    Person(const Person &) = default;  // copy constructor
+    // Remember, it isn't necessary to prototype the default copy constructor
+    // Person(const Person &) = default;  // copy constructor
+    // It is, however, important to prototype the default destructor if we want it to be virtual
     virtual ~Person() = default;  // virtual destructor
 
     // inline function definitions

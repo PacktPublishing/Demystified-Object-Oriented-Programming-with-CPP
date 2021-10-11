@@ -31,7 +31,9 @@ protected:
 public:
     Person() = default;   // default constructor
     Person(const string &, const string &, char, const string &);
+    // Remember, it isn't necessary to prototype the default copy constructor
     Person(const Person &) = default;  // copy constructor
+    // It is, however, important to prototype the default destructor if we want it to be virtual
     virtual ~Person() = default;  // virtual destructor
 
     // inline function definitions
