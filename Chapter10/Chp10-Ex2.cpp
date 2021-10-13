@@ -76,6 +76,7 @@ public:
 };
 
 // We're using the default copy constructor, but if you wrote it yourself, this is what it would look like:
+// Remember to prototype it if you define it!
 /*
 Id::Id(const Id &id) : idNumber(id.idNumber)
 {
