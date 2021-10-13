@@ -56,6 +56,7 @@ Person::Person(const string &fn, const string &ln, char mi, const string &t) :
 }
 
 // We are using default copy constructor, but if you needed to write it yourself, here is what it would look like:
+// Remember to prototype it too!
 /*
 Person::Person(const Person &p) :
                firstName(p.firstName), lastName(p.lastName), 
