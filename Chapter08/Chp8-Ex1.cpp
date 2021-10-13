@@ -107,7 +107,7 @@ Person::Person(const string &fn, const string &ln, char mi, const string &t) :
 }
 
 // We don't need to write the copy constructor ourselves (there are no ptr data members in class).
-// If we did choose to do so, this is how it would look:
+// If we did choose to prototype and define it, this is how method would look: 
 /*
 Person::Person(const Person &p) : LifeForm(p), firstName(p.firstName), lastName(p.lastName), 
                                                middleInitial(p.middleInitial), title(p.title)
