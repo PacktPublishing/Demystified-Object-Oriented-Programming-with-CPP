@@ -55,6 +55,7 @@ Horse::Horse(const string &n) : LifeForm(HORSE_LIFE), name(n)
 }
 
 // We are using the default (system supplied) copy constructor, but if we wanted to write it, it would look like:
+// Remember to prototype it if you define it yourself.
 /*
 Horse::Horse(const Horse &h) : LifeForm (h), name(h.name)
 {
@@ -123,6 +124,7 @@ Person::Person(const string &fn, const string &ln, char mi, const string &t) : L
 
 // We don't need to write the copy constructor ourselves (there are no ptr data members in class).
 // If we did choose to do so, this is how it would look:
+// Remember to prototype it if you define it yourself.
 /*
 Person::Person(const Person &p) : LifeForm(p), firstName(p.firstName), lastName(p.lastName),
                                                middleInitial(p.middleInitial), title(p.title)
