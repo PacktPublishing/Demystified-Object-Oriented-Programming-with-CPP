@@ -219,10 +219,10 @@ int main()
     studentBody.push_front(Student("Giselle", "LeBrun", 'R', "Ms.", 3.4, "C++", "299TU")); 
 
     // Note, operator= is called both by insert (twice) and in the explicit assignment on the line below insert
-    studentBody.insert(studentBody.begin() + 1, Student("Anne", "Brennan", 'B', "Ms.", 3.9, "C++", "299CU")); 
+    studentBody.insert(std::next(studentBody.begin()), Student("Anne", "Brennan", 'B', "Ms.", 3.9, "C++", "299CU")); 
     studentBody[0] = s1;  // no bounds checking is done, be careful!
 
-    while (studentBody.empty() == false)
+    while (!studentBody.empty())
     {
         studentBody.front().Print();
         studentBody.pop_front();

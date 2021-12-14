@@ -203,7 +203,7 @@ void Student::IsA() const
 
 bool operator<(const Student &s1, const Student &s2)
 {
-    return (s1.GetGpa() < s2.GetGpa());
+    return s1.GetGpa() < s2.GetGpa();
 }
 
 int main()
@@ -225,13 +225,21 @@ int main()
     studentBody.push_back(Student("Giselle", "LeBrun", 'R', "Ms.", 3.4, "C++", "299TU")); 
 
     studentBody.sort();  // sort() will rely on operator< being defined for two Students
-    // Create a list iterator and set to first item in the list
+    // Create a list iterator (explicitly using its type) and set to first item in the list
     list <Student>::iterator listIter = studentBody.begin();
     while (listIter != studentBody.end())
     {
         Student &temp = *listIter;
-        temp.Print();
-        listIter++;
+        temp.EarnPhD();
+        ++listIter;  // pre-increment is preferred (less expensive, except for intrinsic types)
+    }
+
+    // Create a list iterator (using auto) and set to first item in the list
+    auto autoIter = studentBody.begin();
+    while (autoIter != studentBody.end())
+    {
+        (*autoIter).Print();   // don't need a temp -- can just dereference autoIter first
+        ++autoIter;
     }
 
     return 0;

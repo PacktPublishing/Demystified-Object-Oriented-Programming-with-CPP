@@ -217,6 +217,8 @@ int main()
     studentBody1.push_back(Student("Sara", "Kato", 'B', "Dr.", 3.9, "C++", "272PSU"));
     studentBody1.push_back(Student("Giselle", "LeBrun", 'R', "Ms.", 3.4, "C++", "299TU"));
 
+    // Here we use traditional element, by element processing. We'll replace this type of looping below 
+    // with first an iterator and then a range-for loop (preferred)
     for (int i = 0; i < studentBody1.size(); i++)   
         studentBody1[i].Print();   // print vector1’s contents
 
@@ -224,9 +226,15 @@ int main()
     if (studentBody1 == studentBody2)
         cout << "Vectors are the same" << endl;
 
+    cout << "Everyone to earn a PhD" << endl;
     // the auto keyword will allow iter's type to be determined by its first usage (in for loop)
     for (auto iter = studentBody2.begin(); iter != studentBody2.end(); iter++)
-        (*iter).Print();
+        (*iter).EarnPhD();
+
+    // Here, we use the preferred modern looping -- we use a range-for loop AND auto to simplify type
+    for (const auto &student : studentBody2)
+        student.Print();
+   
 
     if (!studentBody1.empty())   // clear first vector 
         studentBody1.clear();

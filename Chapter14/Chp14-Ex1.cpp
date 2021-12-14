@@ -202,6 +202,8 @@ int main()
 {
     list<Student> studentBody;
     Student s1("Jul", "Li", 'M', "Ms.", 3.8, "C++", "117PSU");
+    // Heap instance (raw pointer), just to illustrate how it, too, can be added to the list. 
+    // You can use a smart pointer as an alternative (we'll see them later in the book)
     Student *s2 = new Student("Deb", "King", 'H', "Dr.", 3.8, "C++", "544UD"); 
 
     // Add Students to the studentBody list. The list will make copies of the objects internally and will

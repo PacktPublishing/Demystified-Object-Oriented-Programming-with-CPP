@@ -202,12 +202,12 @@ void Student::IsA() const
 
 bool operator<(const Student &s1, const Student &s2)
 {
-    return (s1.GetGpa() < s2.GetGpa());
+    return s1.GetGpa() < s2.GetGpa();
 }
 
 bool operator==(const Student &s1, const Student &s2)
 {
-    return (s1.GetGpa() == s2.GetGpa());
+    return s1.GetGpa() == s2.GetGpa();
 }
 
 int main()
@@ -217,13 +217,12 @@ int main()
     Student s3("Rui", "Qi", 'R', "Ms.", 3.4, "C++", "299TU"); 
     Student s4("Jiang", "Wu", 'C', "Ms.", 3.8, "C++", "887TU"); 
 
-    map<string, Student> studentBody;
-    map<string, Student>::iterator mapIter;
-
     // create three pairings of ids to Students
     pair<string, Student> studentPair1(s1.GetStudentId(), s1); 
     pair<string, Student> studentPair2(s2.GetStudentId(), s2); 
     pair<string, Student> studentPair3(s3.GetStudentId(), s3); 
+
+    map<string, Student> studentBody;   // Create a map between a string and a particular Student
 
     studentBody.insert(studentPair1);   // insert a pair instance
     studentBody.insert(studentPair2);
@@ -231,6 +230,11 @@ int main()
 
     // note: overloaded assignment operators will be called (Student, who in turns calls Person's)
     studentBody[s4.GetStudentId()] = s4;  // insert using virtual indices per map
+
+    // Let's first see a traditional way to iterate through a map using an iterator -- we'll compare to a range-for below
+    // This method shows how we explicitly declare the iterator and access each element in the pair. 
+    // The method below is simpler, but let's appreciate the evolution here.
+    map<string, Student>::iterator mapIter;   // Create a map iterator
     mapIter = studentBody.begin();
     while (mapIter != studentBody.end())
     {
@@ -238,8 +242,14 @@ int main()
         Student &tempS = temp.second;  // get second item in the 'pair' (a Student)
         cout << temp.first << " " << temp.second.GetFirstName();    // access using mapIter
         cout << " " << tempS.GetLastName() << endl;  // or access using temp Student
-        mapIter++;
+        ++mapIter;
     } 
+    
+    // Now, let's use a range-for and auto to go thru set - simpler! Also notice decomposition in []'s 
+    // You may need to compile with a special flag to get the decomposition (breaking from first, second) w certain compilers
+    // For example: g++ -std=gnu++1z Chp14-Ex7.cpp
+    for (auto &[id, student] : studentBody)
+        cout << id << " " << student.GetFirstName() << " " << student.GetLastName() << endl; 
 
     return 0;
 }
