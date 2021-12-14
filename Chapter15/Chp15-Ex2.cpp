@@ -8,7 +8,8 @@
 #include "Person.h"
 #include "Student.h"
 
-using namespace std;
+using std::cout;
+using std::endl;
 
 constexpr int MAX = 3;
 
@@ -37,13 +38,13 @@ int main()
     s4.Print();
    
     // Generalize derived instances as base types -- do methods work as expected?
-    Person *people[MAX] { nullptr, nullptr, nullptr };
+    Person *people[MAX] { };  // will be initialized to nullptrs
     people[0] = new Person("Juliet", "Martinez", 'M', "Ms.");   // base instance for comparison
     people[1] = new Student("Zack", "Moon", 'R', "Dr.", 3.8, "C++", "UMD1234");  // derived instances
     people[2] = new Student("Gabby", "Doone", 'A', "Dr.", 3.9, "C++", "GWU4321"); 
 
-    // Compare range for loop to older style, below
-    for (auto item : people)   // note item is a Person * (auto can determine this)
+    // Compare range for loop to older style, further below
+    for (auto *item : people)   // note item is a Person (auto can determine this); can also use: for (auto item : people)
     {
        item->IsA();
        cout << "  ";
@@ -62,10 +63,10 @@ int main()
 
     // Test destruction sequence (for dynamically allocated instances)
     // Compare range for loop to older style below
-    for (auto item : people)
+    for (auto *item : people)    // can also use: for (auto item : people)
        delete item;   // engage virtual dest. sequence
 
-    // Older style looping for comparison
+    // Older style looping for comparison with preferred loop style, just above
     // for (int i = 0; i < MAX; i++)
        // delete people[i];   // engage virtual dest. sequence
 
