@@ -244,11 +244,10 @@ void Student::Graduate()
     // throw numCreditsMissing;  // assume this is an integer
     // or if Student is missing a course, construct and
     // then throw the missing Course as a referenceable object
-    // throw *(new Course("Intro. to Programming", 1234)); 
     // or throw a string containing a diagnostic message
     // throw (“Does not meet requirements”); 
 
-    throw *(new StudentException(5));
+    throw StudentException(5);
 }
 
 
@@ -280,10 +279,8 @@ int main()
     catch (const Student::StudentException &err)
     {
         cout << "Error: " << err.GetNum() << endl;
-        // if you can correct the error and continue the application, be    
-        // sure to deallocate heap memory for err using:
-        // delete &err;  // take addr of the ref to delete
-        exit(5);   // Heap memory will be reclaimed if you choose to exit
+        // if you can correct the error, continue the application
+        exit(5);  // otherwise exit 
     }
     catch (...) 
     {

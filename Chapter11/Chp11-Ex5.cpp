@@ -30,7 +30,7 @@ public:
     // Base class destructor (exception) is virtual. Override at this level if you have work to do.
     // We can omit the default destructor prototype
     // ~StudentException() override = default;     
-    const char *what() const throw() override   // note: what() returns a const char * (we must override with the same signature)
+    const char *what() const noexcept override   // note: what() returns a const char * (we must override with the same signature)
     {
         return "Student Exception";
     }
@@ -240,9 +240,9 @@ bool Student::TakePrerequisites()
 void Student::Graduate()
 {
    // if something goes wrong, instantiate a StudentException,
-   // pack it with relevant data during construction, and then
-   // throw the dereferenced pointer as a referenceable object
-   throw *(new StudentException("Missing Credits", 4));
+   // pack it with relevant data during construction, and then 
+   // throw the StudentException (it will be caught as a referenceable object)
+   throw StudentException("Missing Credits", 4);
 }
 
 int main()
@@ -260,10 +260,8 @@ int main()
         cout << e.what() << endl;
         cout << e.GetCode() << " " << e.GetDetails() << endl;
         // Grab useful info from e and try to fix the problem
-        // if we can fix the problem, and continue the application,
-        // be sure to deallocate heap memory for e using:
-        // delete &e;  // take the addr of the ref
-        exit(1);  // only exit if necessary!  Memory will be reclaimed upon exit.
+        // if we can fix the problem, and continue the application
+        exit(1);  // only exit if necessary!  
     }
 
 

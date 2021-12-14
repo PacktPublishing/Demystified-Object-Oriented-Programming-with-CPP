@@ -246,7 +246,9 @@ void Student::Graduate()
     // throw numCreditsMissing;  // assume this is an integer
     // or if Student is missing a course, construct and
     // then throw the missing Course as a referenceable object
-    throw *(new Course("Intro. to Programming", 1234)); 
+    throw Course("Intro. to Programming", 1234); 
+    // Note: had we dynamically allocated the Course to be thrown on the heap, it would look like this:
+    // throw *(new Course("Intro. to Programming", 1234));  // but, we'd then need to remember to delete it in our catch! 
     // or throw a string containing a diagnostic message
     // throw string(“Does not meet requirements”); 
 }
@@ -276,8 +278,10 @@ int main()
     {
         cout << "Needs to take: " << err.GetTitle() << endl;
         cout << "Course #: " << err.GetCourseNum() << endl;
-        // if we fis the problem and don't exit, be sure to:
-        // delete &err; // we're taking address of a ref for delete
+        // NOTE APPLICABLE ONLY if we dynamically allocated the Course that was thrown (you can see why it would not be recommended)
+        // if we fix the problem and don't exit, be sure to:
+        // delete &err; // we're taking address of a ref for delete -- again, this isn't applicable unless Course was a heap object
+        // END OF NOTE: this is an example as to why a smart pointer may be helpful! 
         exit(3);  // otherwise, memory will be reclaimed upon exit()
     }
     catch (const string &err)
