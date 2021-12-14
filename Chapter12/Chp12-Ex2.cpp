@@ -32,13 +32,12 @@ private:
    // These member functions should not be part of the public interface
    // It is only appropriate for them to be used within the scope of LinkList,
    // who is a friend class of LinkListElement.
-   void *GetData() { return data; }
-   LinkListElement *GetNext() { return next; }
+   void *GetData() const { return data; }
+   LinkListElement *GetNext() const { return next; }
    void SetNext(LinkListElement *e) { next = e; }
-
 public:
-   // All member functions of LinkList are friend functions of LinkListElement 
    friend class LinkList;   
+   // All member functions of LinkList are friend functions of LinkListElement 
    LinkListElement() = default;  // in class init will set data and next 
    LinkListElement(Item *i) : data(i), next(nullptr) { }
    ~LinkListElement() { delete static_cast<Item *>(data); next = nullptr; }
@@ -54,8 +53,8 @@ public:
    void InsertAtFront(Item *);
    LinkListElement *RemoveAtFront();
    void DeleteAtFront() { delete RemoveAtFront(); }  // destructor will delete data, set next to NULL
-   int IsEmpty() { return head == nullptr; } 
-   void Print();  
+   bool IsEmpty() const { return head == nullptr; } 
+   void Print() const;  
    ~LinkList() { while (!IsEmpty()) DeleteAtFront(); }
 };
 
@@ -83,17 +82,36 @@ LinkListElement *LinkList::RemoveAtFront()
    return remove;
 }
  
-void LinkList::Print()
+// Print written as a non-const method, using current to traverse the list
+// See preferred implementation, as a const method (just below this method)
+/*
+void LinkList::Print() 
 {
    if (!head)
       cout << "<EMPTY>" << endl;
    current = head;
    while (current)
    {
-      Item output;   // localize the output temporary variable
-      output = *(static_cast<Item *>(current->GetData()));
+      Item output = *(static_cast<Item *>(current->GetData()));  // localize the output temporary variable
       cout << output << " ";
       current = current->GetNext();
+   }
+   cout << endl;
+}
+*/
+
+// Print written as a const method using a local variable to traverse list (Preferred)
+void LinkList::Print() const
+{
+   if (!head)
+      cout << "<EMPTY>" << endl;
+
+   LinkListElement *traverse = head;
+   while (traverse)
+   {
+      Item output = *(static_cast<Item *>(traverse->GetData()));
+      cout << output << ' ';
+      traverse = traverse->GetNext();
    }
    cout << endl;
 }
