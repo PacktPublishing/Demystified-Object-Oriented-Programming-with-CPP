@@ -93,6 +93,8 @@ Person &Person::operator=(const Person &p)
       firstName = p.firstName;
       lastName = p.lastName;
       middleInitial = p.middleInitial;
+      // Note: a pointer is used for title to demo the necessary steps to implement a deep assignment
+      // (Otherwise, we would implement title using string)
       title = new char[strlen(p.title) + 1];  // memory allocatinon for ptr member
       strcpy(title, p.title);
    }
