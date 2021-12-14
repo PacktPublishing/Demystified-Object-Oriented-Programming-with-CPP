@@ -207,7 +207,7 @@ bool operator==(const Student &s1, const Student &s2)
 
 struct comparison   // This struct represents a ‘functor’
 {                   // that is, a ‘function object’
-    bool operator() (string key1, string key2) const
+    bool operator() (const string &key1, const string &key2) const
     {   
         int ans = key1.compare(key2);
         if (ans >= 0) 
@@ -226,9 +226,8 @@ int main()
     Student s2("Sara", "Kato", 'B', "Dr.", 3.9, "C++", "272PSU"); 
     Student s3("Jill", "Long", 'R', "Dr.", 3.7, "C++", "234PSU"); 
 
-    // Now, map is maintained in sorted order per comparison functor using operator()
+    // Now, map is maintained in sorted (decreasing) order per comparison functor using operator()
     map<string, Student, comparison> studentBody;
-    map<string, Student, comparison>::iterator mapIter;
 
     // create three pairings of ids to Students
     pair<string, Student> studentPair1(s1.GetStudentId(), s1); 
@@ -239,6 +238,10 @@ int main()
     studentBody.insert(studentPair2);
     studentBody.insert(studentPair3);
     
+    // Let's first see a traditional way to iterate through a map using an iterator -- we'll compare to a range-for below
+    // This method shows how we explicitly declare the iterator and access each element in the pair.
+    // The next method further below is simpler, but let's appreciate the evolution here.
+    map<string, Student, comparison>::iterator mapIter;
     mapIter = studentBody.begin();
     while (mapIter != studentBody.end())
     {
@@ -246,8 +249,14 @@ int main()
         Student &tempS = temp.second;  // get second item in the 'pair' (a Student)
         cout << temp.first << " " << temp.second.GetFirstName();    // access using mapIter
         cout << " " << tempS.GetLastName() << endl;  // or access using temp Student
-        mapIter++;
+        ++mapIter;
     } 
+
+    // Now, let's use a range-for and auto to go thru set - simpler! Also notice decomposition in []'s
+    // You may need to compile with a special flag to get the decomposition (breaking from first, second) w certain compilers
+    // For example: g++ -std=gnu++1z Chp14-Ex7.cpp
+    for (auto &[id, student] : studentBody)
+        cout << id << " " << student.GetFirstName() << " " << student.GetLastName() << endl;
 
     return 0;
 }
