@@ -15,7 +15,7 @@ template <class Type1, class Type2>    // template preamble
 Type2 ChooseFirst(Type1 x, Type2 y)    // template function
 {
     if (x < y) 
-        return x;
+        return static_cast<Type2>(x);   // Note: cast here is optional - it will happen automatically with return statement
     else
         return y;
 }
