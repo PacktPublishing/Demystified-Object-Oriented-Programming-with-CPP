@@ -35,23 +35,20 @@ Person::Person(const Person &p): firstName(p.firstName), lastName(p.lastName), m
 // left hand object overtakes the dynamically allocated data members of right hand object
 // Then null out right hand objects pointers (we've relinquished those members). Non-pointer data is just copied.
 // Non-pointer data members (such as string or single char) are simply copied (string ensures a deep copy with =)
-Person::Person(Person &&p)
+Person::Person(Person &&p): firstName(p.firstName), lastName(p.lastName), middleInitial(p.middleInitial),
+                            title(p.title)  // note destination pointer takes over source pointer's memory
 {
     cout << "Person Move copy constructor" << endl;
-    firstName = p.firstName;    
     p.firstName.clear();     // set source object member to empty string
-    lastName = p.lastName;
     p.lastName.clear(); 
-    middleInitial = p.middleInitial;
     p.middleInitial = '\0';   // set source object member to null character
-    title = p.title;     // here, destinatation pointer takes over source pointer's memory
     p.title = nullptr;         // null out source pointer since memory should not be shared (it now belong to destination object)
 }
 
 Person::~Person()
 {
     cout << "Person destructor" << endl;
-    delete title;
+    delete [] title;
 }
 
 void Person::ModifyTitle(const string &newTitle)
@@ -102,7 +99,7 @@ Person &Person::operator=(const Person &p)
    if (this != &p)
    {
       // delete memory for dynamically allocated data members
-      delete title;   // or call ~Person(); -- unusual
+      delete [] title;   // or call ~Person(); -- unusual
 
       // re-allocate memory for pointer data members
       // copy each data member from source to destination object
@@ -124,7 +121,7 @@ Person &Person::operator=(Person &&p)
    if (this != &p)
    {
       // delete lhs original memory for pointer data members 
-      delete title;    // or call ~Person() - unusual
+      delete [] title;    // or call ~Person() - unusual
 
       // Take over rhs object's data members (at least those which are pointers)
       // Once pointer data members are taken over by lhs, null out the rhs object's pointer to them

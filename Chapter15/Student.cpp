@@ -56,15 +56,14 @@ Student::Student(const Student &s) : Person(s), gpa(s.gpa), currentCourse(s.curr
 // move copy constructor
 // left hand object overtakes the dynamically allocated data memberse of right hand object
 // Then null out right hand objects pointer members (we've relinquished those members). Non-pointer data is just copied.
-Student::Student(Student &&s) : Person(move(s))   // make sure we call base class Move copy constructor
+Student::Student(Student &&s) : Person(move(s)),  // make sure we call base class Move copy constructor
+                                gpa(s.gpa), currentCourse(s.currentCourse),
+                                studentId(s.studentId) // take over source objects's resource
 {
     cout << "Student move copy constructor" << endl;
-    gpa = s.gpa;   // copy then
     s.gpa = 0.0;   // zero out source object member
-    currentCourse = s.currentCourse;
     s.currentCourse.clear();   // clear out original object's value
-    // for ptr data member, destination data member takes over source data member's memory
-    studentId = s.studentId;  // data is constant, pointer is not so assignment is ok
+    // for ptr data member, destination data member takes over source data member's memory (done in member init list above)
     s.studentId = nullptr;    // then null out source pointer data member 
     numStudents++;    // It is a design choice whether you want to increment the counter here. After all, the source object is now
                       // a shell of an instance with zeroed out values. Nonetheless, the source instance still exists in memory.
@@ -74,7 +73,10 @@ Student::Student(Student &&s) : Person(move(s))   // make sure we call base clas
 Student::~Student()
 {
     cout << "Student destructor" << endl;
-    delete const_cast<char *>(studentId);    // fix cast
+    // On some older compilers, below cast is necessary (delete complains with a const char * so we cast constness away)
+    // delete const_cast<char *>(studentId);    
+    // On newer compilers, below is fine!
+    delete [] studentId;
     numStudents--;
 }
 
@@ -126,7 +128,7 @@ Student &Student::operator=(const Student &s)
       Person::operator=(s);  // call base class operator= for help
 
       // delete memory for existing destination data members that are pointers
-      delete studentId;
+      delete [] studentId;
 
       // for ptr data members, make a deep assignment -- reallocate memory then copy.
       // for non-ptr data members, an assignment is just fine
@@ -150,7 +152,7 @@ Student &Student::operator=(Student &&s)
       Person::operator=(move(s));  // call base class operator= for help
 
       // delete lhs original data members that are pointers
-      delete studentId;
+      delete [] studentId;
 
       // Take over rhs object's data members (at least those which are pointers)
       // Once data members are taken over by lhs, null out the rhs object's pointer to them
