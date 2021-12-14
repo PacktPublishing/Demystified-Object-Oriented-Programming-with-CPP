@@ -15,8 +15,8 @@ private:
    Type *data = nullptr;   // in-class initialization
    LinkListElement *next = nullptr;
    // private access methods to be used in scope of friend 
-   Type *GetData() { return data; } 
-   LinkListElement *GetNext() { return next; }
+   Type *GetData() const { return data; } 
+   LinkListElement *GetNext() const { return next; }
    void SetNext(LinkListElement *e) { next = e; }
 public:
    friend class LinkList<Type>;   
@@ -39,8 +39,8 @@ public:
    void InsertAtFront(Type *);
    LinkListElement<Type> *RemoveAtFront();  
    void DeleteAtFront()  { delete RemoveAtFront(); }
-   int IsEmpty() { return head == nullptr; } 
-   void Print(); 
+   int IsEmpty() const { return head == nullptr; } 
+   void Print() const; 
    ~LinkList() { while (!IsEmpty()) DeleteAtFront(); }
 };
 
@@ -71,17 +71,16 @@ LinkListElement<Type> *LinkList<Type>::RemoveAtFront()
 }
  
 template <class Type>
-void LinkList<Type>::Print() 
+void LinkList<Type>::Print() const
 {
    if (!head)
       cout << "<EMPTY>" << endl;
-   current = head;
-   while (current)
+   LinkListElement<Type> *traverse = head;
+   while (traverse)
    {
-      Type output;   // localize the output temp variable
-      output = *(current->GetData());
-      cout << output << " ";
-      current = current->GetNext();
+      Type output = *(traverse->GetData());
+      cout << output << ' ';
+      traverse = traverse->GetNext();
    }
    cout << endl;
 }
