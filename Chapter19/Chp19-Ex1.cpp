@@ -23,19 +23,21 @@ Singleton *Singleton::theInstance = nullptr;
 Singleton::Singleton() 
 { 
     cout << "Constructor" << endl; 
-    // theInstance = nullptr;    // not necessary -- set above
+    // theInstance = nullptr;    // not necessary -- set above with static initialization
 }  
 
 Singleton::~Singleton()
-{ 
-    cout << "Destructor" << endl; // note: this message will appear twice if you delete the Singleton. 
-    if (theInstance != nullptr)      // Second call (print) is on delete temp; before this check of theInstance != NULL to stop the recursion
+{
+    cout << "Destructor" << endl; // note: this message will appear twice if you delete the Singleton.
+    if (theInstance != nullptr)      // Second ~ call is on delete temp; before this check of theInstance != NULL to stop the recursion
     {
        Singleton *temp = theInstance;
-       theInstance = nullptr;   // removes pointer to actual Singleton 
-       temp->theInstance = nullptr;  // prevents recursion
+       theInstance = nullptr;        // removes pointer to actual Singleton and prevents recursion
+       // temp->theInstance = nullptr;  // actually, since theInstance is static, this assignment is duplicative and not necessary
        delete temp;   // makes for a recursive destructor call if you'd just call 'delete theInstance;'
-    }                 // which is why we need to use a temp pointer and first null out 'theInstance' to stop the recursion 
+                      // which is why we need to use a temp pointer and first null out 'theInstance' to stop the recursion
+       // delete theInstance;  // Note: this call alone (without temp stuff here) would cause recursion
+     }
 }
 
 // If you extend the Singleton with a Target class, you will want to move instance() to the Target class.

@@ -95,7 +95,8 @@ protected:
 public:
    Person() = default;   // default constructor
    Person(const string &, const string &, char, const string &);  // alternate constructor
-   Person(const Person &) = default;  // copy constructor
+   // Remember, it is not necessary to prototype the default copy constructor
+   // Person(const Person &) = default;  // copy constructor
    Person &operator=(const Person &); // overloaded assignment operator
    virtual ~Person();  // virtual destructor
    const string &GetFirstName() const { return firstName; }  // firstName returned as reference to const string
@@ -168,7 +169,7 @@ private:
     President(const string &, const string &, char, const string &);
     // No default constructor - rare
 public:
-    ~President() override; // { destroyer.setSingleton(NULL); cout << "President destructor" << endl; }
+    ~President() override; // { destroyer.setSingleton(nullptr); cout << "President destructor" << endl; }
     President(const President &) = delete;  // disallow copies
     President &operator=(const President &) = delete;
     static President *instance(const string &, const string &, char, const string &);
