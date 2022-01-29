@@ -23,7 +23,8 @@ protected:
 public:
    Person() = default;   // default constructor
    Person(const string &, const string &, char, const string &);  // alternate constructor
-   Person(const Person &) = default;  // copy constructor
+   // Default copy constructor does not need to be prototyped
+   // Person(const Person &) = default;  // copy constructor
    Person &operator=(const Person &); // overloaded assignment operator
    virtual ~Person() = default;  // virtual destructor
    const string &GetFirstName() const { return firstName; }  // firstName returned as reference to const string  
@@ -95,9 +96,11 @@ protected:
 public:
    Humanoid() = default;   
    Humanoid(const string &, const string &, const string &, const string &); 
-   Humanoid(const Humanoid &h) = default; // if we wrote copy constructor ourselves, we'd add : Person(h) { }  
+   // Remember, it's unnecessary to prototype default copy constructor
+   // Humanoid(const Humanoid &h) = default; // if we wrote copy constructor ourselves, we'd add : Person(h) { }  
    Humanoid &operator=(const Humanoid &h) { return dynamic_cast<Humanoid &>(Person::operator=(h)); }  
-   ~Humanoid() override = default;   
+   // Since destructor has been indicated as virtual in base class, we don't need to protytpe it here if we're using default
+   // ~Humanoid() override = default;   
    // Added interfaces for the Adapter class - due to private inheritance, inherited interfaces are hidden outside the scope of Humaniod
    const string &GetSecondaryName() const { return GetFirstName(); }  
    const string &GetPrimaryName() const { return GetLastName(); } 
@@ -125,9 +128,11 @@ class Orkan: public Humanoid
 public:
    Orkan() = default;   // default constructor
    Orkan(const string &n2, const string &n1, const string &t) : Humanoid(n2, n1, t, "Nanu nanu") { } 
-   Orkan(const Orkan &h) = default;  // If we instead wrote copy constructor ourselves, we'd add : Humanoid(h) { } 
+   // Remember, it's unnecessary to prototype default copy constructor
+   // Orkan(const Orkan &h) = default;  // If we instead wrote copy constructor ourselves, we'd add : Humanoid(h) { } 
    Orkan &operator=(const Orkan &h) { return dynamic_cast<Orkan &>(Humanoid::operator=(h)); }
-   ~Orkan() override = default;  // virtual destructor
+   // Since destructor has been indicated as virtual in base class, we don't need to protytpe it here if we're using default
+   // ~Orkan() override = default;  // virtual destructor
    const string &Converse() override;  // We must override this method if we want Orkan to be a concrete class
 };
 
@@ -143,9 +148,11 @@ class Romulan: public Humanoid
 public:
    Romulan() = default;   // default constructor
    Romulan(const string &n2, const string &n1, const string &t) : Humanoid(n2, n1, t, "jolan'tru") { } 
-   Romulan(const Romulan &h) = default;  // If we instead wrote copy constructor ourselves, we'd add : Humanoid(h) { } 
+   // Remember, it's unnecessary to prototype default copy constructor
+   // Romulan(const Romulan &h) = default;  // If we instead wrote copy constructor ourselves, we'd add : Humanoid(h) { } 
    Romulan &operator=(const Romulan &h) { return dynamic_cast<Romulan &>(Humanoid::operator=(h)); }
-   ~Romulan() override = default; // virtual destructor
+   // Since destructor has been indicated as virtual in base class, we don't need to protytpe it here if we're using default
+   // ~Romulan() override = default; // virtual destructor
    const string &Converse() override;  // We must override this method if we want Romulan to be a concrete class
 };
 
@@ -161,9 +168,11 @@ class Earthling: public Humanoid
 public:
    Earthling() = default;   // default constructor
    Earthling(const string &n2, const string &n1, const string &t) : Humanoid(n2, n1, t, "Hello") { } 
-   Earthling(const Earthling &h) = default;  // If we instead wrote copy constructor, we'd add : Humanoid(h) { }  
+   // Remember, it's unnecessary to prototype default copy constructor
+   // Earthling(const Earthling &h) = default;  // If we instead wrote copy constructor, we'd add : Humanoid(h) { }  
    Earthling &operator=(const Earthling &h) { return dynamic_cast<Earthling &>(Humanoid::operator=(h)); }
-   ~Earthling() { }  // virtual destructor
+   // Since destructor has been indicated as virtual in base class, we don't need to protytpe it here if we're using default
+   // ~Earthling() { }  // virtual destructor
    const string &Converse() override;  // We must override this method if we want Romulan to be a concrete class
 };
 
@@ -189,13 +198,14 @@ int main()
    allies.push_back(r1);
    allies.push_back(e1);
 
-   // Create a list iterator and set to first item in the list
+   // Create a list iterator and set to first item in the list - notice type of iterator (base class type) versus auto. 
+   // We're collecting by the base class type (generalizing)
    list <Humanoid *>::iterator listIter = allies.begin();
    while (listIter != allies.end())
    {
        (*listIter)->GetInfo();
        cout << (*listIter)->Converse() << endl;
-       listIter++;
+       ++listIter;   // pre-increment preferred (efficiency)
    }
 
    // Though each type of Humanoid has a default Salutation, each may expand their language skills and choose an alternate language

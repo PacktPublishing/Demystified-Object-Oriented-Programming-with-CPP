@@ -20,9 +20,10 @@ protected:
 public:
    Person() = default;   // default constructor
    Person(const string &, const string &, char, const string &);  // alternate constructor
+   // Default copy constructor does not need to be prototyped
    Person(const Person &) = default;  // copy constructor
    Person &operator=(const Person &); // overloaded assignment operator
-   virtual ~Person() = default;  // destructor
+   virtual ~Person() = default;  // virtual destructor
    const string &GetFirstName() const { return firstName; }  // firstName returned as reference to const string
    const string &GetLastName() const { return lastName; }    // so is lastName (via implicit cast)
    const string &GetTitle() const { return title; }
