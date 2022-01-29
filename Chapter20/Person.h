@@ -1,5 +1,6 @@
 // (c) Dorothy R. Kirk. All Rights Reserved.
 // Purpose: Person class header file for pImpl pattern (with raw pointers)
+// Note: not to worry, we'll next implement it with smart pointers!
 
 #ifndef _PERSON_H
 #define _PERSON_H
@@ -10,7 +11,7 @@ class Person
 {
 private: 
     class PersonImpl;  // forward declaration to nested class
-    PersonImpl *pImpl; // pointer to implementation of class
+    PersonImpl *pImpl = nullptr; // pointer to implementation of class
 protected:
     void ModifyTitle(const string &); 
 public:

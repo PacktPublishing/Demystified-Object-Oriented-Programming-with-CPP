@@ -1,5 +1,6 @@
 // (c) Dorothy R. Kirk. All Rights Reserved.
 // Purpose: To illustrate pImpl pattern, version using native (raw) pointers 
+// Note: not to worry, we'll next implement it with smart pointers!
 
 #include <iostream>
 #include <iomanip>
@@ -15,13 +16,13 @@ class Person::PersonImpl
 private: 
     string firstName;
     string lastName;
-    char middleInitial;
+    char middleInitial = '\0';  // in-class initialization -- value to be used in default constructor
     string title;  // Mr., Ms., Mrs., Miss, Dr., etc.
 public:
-    PersonImpl();   
+    PersonImpl() = default;   
     PersonImpl(const string &, const string &, char, const string &);  
-    PersonImpl(const PersonImpl &);  // copy constructor
-    virtual ~PersonImpl();  
+    PersonImpl(const PersonImpl &) = default;  // copy constructor
+    virtual ~PersonImpl() = default;   // virtual destructor
     const string &GetFirstName() const { return firstName; }  
     const string &GetLastName() const { return lastName; }    
     const string &GetTitle() const { return title; } 
@@ -36,23 +37,32 @@ public:
 
 // Nested class member functions
 
-Person::PersonImpl::PersonImpl() : firstName(""), lastName(""), middleInitial('\0'), title("")
+// Remember, we're using system-supplied default constructor, but if we wrote it, it would look like:
+/*
+Person::PersonImpl::PersonImpl()   // remember middleInitial is set with in-class initialization and strings are empty by default 
 {
 }
+*/
 
 Person::PersonImpl::PersonImpl(const string &fn, const string &ln, char mi, const string &t) : 
                                firstName(fn), lastName(ln), middleInitial(mi), title(t)
 {
 }
 
+// We are using default copy constructor, but if we wrote it, it would look like:
+/*
 Person::PersonImpl::PersonImpl(const Person::PersonImpl &p) : firstName(p.firstName), lastName(p.lastName),
                                                               middleInitial(p.middleInitial), title(p.title)
 {
 }
+*/
 
+// We are using system-supplied default destructor, but if we wrote it, it would look like:
+/*
 Person::PersonImpl::~PersonImpl()
 {
 }
+*/
 
 void Person::PersonImpl::ModifyTitle(const string &newTitle)
 {
@@ -66,6 +76,7 @@ void Person::PersonImpl::Print() const
     cout << lastName << endl;
 }
 
+// Default assignment operator looks the same, but let's see what it would look like to write it:
 Person::PersonImpl &Person::PersonImpl::operator=(const PersonImpl &p)
 {
    // make sure we're not assigning an object to itself

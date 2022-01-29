@@ -16,9 +16,9 @@ template <class Type>
 class SmartPointer
 {
 private:
-    Type *pointer;
+    Type *pointer = nullptr;  // in-class initialization
 public:
-    SmartPointer(Type *ptr = nullptr) { pointer = ptr; }
+    SmartPointer(Type *ptr = nullptr): pointer(ptr) { }  // handles default constructor case as well
     virtual ~SmartPointer() { cout << "SmartPtr Destructor" << endl; delete pointer; }
     Type *operator->() { return pointer; }
     Type &operator*() { return *pointer; }
