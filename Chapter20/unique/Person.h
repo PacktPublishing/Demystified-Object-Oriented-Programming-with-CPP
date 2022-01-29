@@ -7,7 +7,7 @@
 
 using std::string;
 
-class Person
+class Person 
 {
 private: 
     class PersonImpl;  // forward declaration to nested class
