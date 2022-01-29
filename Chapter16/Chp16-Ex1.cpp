@@ -24,7 +24,7 @@ private:
     int observerState = 0;   // in-class initialization
 protected:
     Observer() = default;    // default constructor will use in-class initialization 
-    Observer(int s) { observerState = s; }
+    Observer(int s): observerState(s) { }
     void SetState(int s) { observerState = s; }
 public: 
     int GetState() const { return observerState; }
@@ -41,7 +41,7 @@ private:
     list<Observer *>::iterator newIter;
 protected:
     Subject() = default;  // default constructor will use initialization 
-    Subject(int s) { subjectState = s; numObservers = 0; }
+    Subject(int s): subjectState(s) { } // note: numObservers set to 0 in in-class initialization
     void SetState(int s) { subjectState = s; }
 public:
     int GetState() const { return subjectState; }
@@ -98,14 +98,15 @@ class Course: public Subject   // over-simplified Course class
 private:
     string title;
     int number = 0;   // in-class initialization will be over-written with alt. constructor
-    Student *students[MAXSTUDENTS];  // List of Students enrolled in Course -- will be set to nullptr in constructor
+    Student *students[MAXSTUDENTS] = { };  // List of Students enrolled in Course -- could alternately be set to nullptrs in constructor
     int totalStudents = 0;
 public:
     Course(const string &title, int num): number(num), totalStudents(0)
     {
         this->title = title;   // or use different parameter name and set in member init list
-        for (int i = 0; i < MAXSTUDENTS; i++)
-            students[i] = nullptr;
+        // note: in-class initialization is in-lieu of below:
+        // for (int i = 0; i < MAXSTUDENTS; i++)
+            // students[i] = nullptr;
     }
     // Note: destructor body shown to provide a place to add the more work required -- see note below (hence why not = default)
     ~Course() override { }  // More work needed - don't forget to remove Students from Course!
@@ -190,7 +191,7 @@ private:
     float gpa = 0.0;   // in-class initialization
     const string studentId;  
     int currentNumCourses = 0;
-    Course *courses[MAXCOURSES]; // will be set to nullptr in constructor
+    Course *courses[MAXCOURSES] = { }; // or can set each element to nullptr in constructor
     Course *waitList = nullptr;  // Course we'd like to take - we're on the waitlist -- this is our Subject in specialized form
     static int numStudents;
 public:
@@ -222,8 +223,9 @@ int Student::numStudents = 0;  // notice initial value of 0
 // Remember, gpa, currentNumCourses and waitList have already been set with in-class initialization
 Student::Student() : studentId (to_string(numStudents + 100) + "Id")
 {
-    for (int i = 0; i < MAXCOURSES; i++)
-        courses[i] = nullptr;
+    // Note: courses have been nulled out with in-class initialization. Alternatively, do this here:
+    // for (int i = 0; i < MAXCOURSES; i++)
+        // courses[i] = nullptr;
     // again, remember, waitList = nullptr; has already been set using in-class initialization
     numStudents++;
 }
@@ -232,8 +234,9 @@ Student::Student() : studentId (to_string(numStudents + 100) + "Id")
 Student::Student(const string &fn, const string &ln, char mi, const string &t, float avg, const string &id, Course *c) : 
                  Person(fn, ln, mi, t), Observer(), gpa(avg), studentId(id), currentNumCourses(0)
 {
-    for (int i = 0; i < MAXCOURSES; i++)
-        courses[i] = nullptr;
+    // Note: courses have been nulled out with in-class initialization. Alternatively, do this here:
+    // for (int i = 0; i < MAXCOURSES; i++)
+        // courses[i] = nullptr;
     waitList = c;      // Set waitlist to Course (Subject) 
     c->Register(this); // Add the Student (Observer) to the Subject's list
     numStudents++;
@@ -244,8 +247,9 @@ Student::Student(const string &fn, const string &ln, char mi, const string &t, f
                  Person(fn, ln, mi, t), Observer(), gpa(avg), studentId(id), currentNumCourses(0)
 {
     waitList = nullptr;   // no Course on waitlist 
-    for (int i = 0; i < MAXCOURSES; i++)
-        courses[i] = nullptr;
+    // Note: courses have been nulled out with in-class initialization. Alternatively, do this here:
+    // for (int i = 0; i < MAXCOURSES; i++)
+        // courses[i] = nullptr;
     numStudents++;
 }
 
@@ -321,7 +325,7 @@ void Student::Update()
 void Student::PrintCourses() const
 {
     cout << "Student: (" << GetFirstName() << " " << GetLastName() << ") enrolled in: " << endl;
-    for (int i = 0; i < MAXCOURSES && courses[i] != 0; i++)
+    for (int i = 0; i < MAXCOURSES && courses[i] != nullptr; i++)
         cout << "\t" << courses[i]->GetTitle() << endl; 
 }
 
@@ -329,7 +333,7 @@ void Student::PrintCourses() const
 void Course::PrintStudents() const
 {
     cout << "Course: (" << GetTitle() << ") has the following students: " << endl;
-    for (int i = 0; i < MAXSTUDENTS && students[i] != 0; i++)
+    for (int i = 0; i < MAXSTUDENTS && students[i] != nullptr; i++)
         cout << "\t" << students[i]->GetFirstName() << " " << students[i]->GetLastName() << endl; 
 }
 
