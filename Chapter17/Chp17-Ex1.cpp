@@ -27,7 +27,8 @@ protected:
 public:
     Person() = default;   // default constructor
     Person(const string &, const string &, char, const string &);
-    Person(const Person &) = default;  // copy constructor
+    // prototyping default copy constructor is not necessary
+    // Person(const Person &) = default;  // copy constructor
     virtual ~Person() = default;  // virtual destructor
 
     const string &GetFirstName() const { return firstName; }
@@ -165,8 +166,10 @@ public:
     // member function prototypes
     GradStudent() = default;  // default constructor
     GradStudent(const string &, const string &, const string &, char, const string &, float, const string &, const string &); 
-    GradStudent(const GradStudent &) = default;  // copy constructor
-    ~GradStudent() override = default; // virtual destructor
+    // prototyping default copy constructor is not necessary
+    // GradStudent(const GradStudent &) = default;  // copy constructor
+    // Since most base class has virtual specified on destructor, it is not necessary at this level if you want the default
+    // ~GradStudent() override = default; // virtual destructor
     void EarnPhD();    // not virtual because we don't want it overridden. This definition stands. 
     string IsA() const override { return "GradStudent"; }
     void Graduate() override; 
@@ -214,8 +217,10 @@ public:
     UnderGradStudent() = default;  // default constructor
     UnderGradStudent(const string &, const string &, const string &, char, const string &,
                      float, const string &, const string &); 
-    UnderGradStudent(const UnderGradStudent &) = default;  // copy constructor
-    ~UnderGradStudent() override = default; // virtual destructor
+    // prototyping default copy constructor is not necessary
+    // UnderGradStudent(const UnderGradStudent &) = default;  // copy constructor
+    // Since most base class has virtual specified on destructor, it is not necessary at this level if you want the default
+    // ~UnderGradStudent() override = default; // virtual destructor
     string IsA() const override { return "UnderGradStudent"; }
     void Graduate() override; 
 };
@@ -252,8 +257,10 @@ public:
     // member function prototypes
     NonDegreeStudent() = default;  // default constructor
     NonDegreeStudent(const string &, const string &, char, const string &, float, const string &, const string &); 
-    NonDegreeStudent(const NonDegreeStudent &s) = default; // copy constructor, if we chose to write it, we'd add : Student(s) { }  
-    ~NonDegreeStudent() override = default; // destructor
+    // prototyping default copy constructor is not necessary
+    // NonDegreeStudent(const NonDegreeStudent &s) = default; // copy constructor, if we chose to write it, we'd add : Student(s) { }  
+    // Since most base class has virtual specified on destructor, it is not necessary at this level if you want the default
+    // ~NonDegreeStudent() override = default; // destructor
     string IsA() const override { return "NonDegreeStudent"; }
     void Graduate() override; 
 };
@@ -289,7 +296,7 @@ Student *Student::MatriculateStudent(const string &degree, const string &fn, con
 
 int main()
 {
-    Student *scholars[MAX] = {nullptr, nullptr, nullptr};
+    Student *scholars[MAX] = { };  // will be initialized to nullptrs
 
     // Student is now abstract....can not instantiate directly
     // Student("Sara", "Kato", 'B', "Dr.", 3.9, "C++", "272PSU"); 
@@ -298,13 +305,26 @@ int main()
     scholars[1] = Student::MatriculateStudent("BS", "Ana", "Sato", 'U', "Ms.", 3.8, "C++", "178PSU"); 
     scholars[2] = Student::MatriculateStudent("None", "Elle", "LeBrun", 'R', "Miss", 3.5, "C++", "111BU");
 
-    for (int i = 0; i < MAX; i++)
+    // for (int i = 0; i < MAX; i++)   // older looping style, see below for preferred style
+    // {
+       // scholars[i]->Graduate();
+       // scholars[i]->Print();
+    // } 
+
+    for (auto *oneStudent : scholars)   // preferred looping style
     {
-       scholars[i]->Graduate();
-       scholars[i]->Print();
-    } 
-    for (int i = 0; i < MAX; i++)
-       delete scholars[i];   // engage virtual dest. sequence
+       oneStudent->Graduate();
+       oneStudent->Print(); 
+    }
+
+    // less modern style for below loop
+    // for (int i = 0; i < MAX; i++)
+       // delete scholars[i];   // engage virtual dest. sequence
+
+    // preferred style
+    for (auto *oneStudent : scholars) 
+       delete oneStudent; // engage virtual dest. sequence
+
 
     return 0;
 }
