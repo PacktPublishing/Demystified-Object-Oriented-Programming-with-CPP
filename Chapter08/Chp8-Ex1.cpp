@@ -81,7 +81,7 @@ public:
    Person();   // programmer supplied default constructor
    Person(const string &, const string &, char, const string &);  
    // Default copy constructor protytpe is not necessary:
-   Person(const Person &) = default;  // copy constructor
+   // Person(const Person &) = default;  // copy constructor
    // Because base class destructor is virtual, ~Person() is automatically virtual (overridden) whether or not explicitly prorotyped
    // ~Person() override = default;  // destructor
    const string &GetFirstName() const { return firstName; }  
