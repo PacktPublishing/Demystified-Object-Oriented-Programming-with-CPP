@@ -21,6 +21,8 @@ int main()
     return 0;
 }
 
+// Remember, it is not typical or recommended to allocate heap memory within a function and return it using a reference.
+// The goal here is to demonstrate syntactically how it is done (with the return by reference) and how the subsequent deletion is done (in main)
 int &CreateId()
 {
     static int count = 100;   // initialize with first id
