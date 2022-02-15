@@ -6,7 +6,7 @@
 using std::cout;    // preferred to: using namespace std;
 using std::endl;
 
-[[nodiscard]] int maximum (double, double);
+[[nodiscard]] int Maximum (double, double);
 
 int main()
 {
@@ -14,14 +14,14 @@ int main()
     int m = 6, n = 10;
     float x = 5.7, y = 9.89;
 
-    result = maximum(x, y);
+    result = Maximum(x, y);
     cout << "Result is: " << result << endl;
-    cout << "The maximum is: " << maximum(m, n) << endl; 
+    cout << "The maximum is: " << Maximum(m, n) << endl; 
 	
     return 0;
 }
 
-[[nodiscard]] int maximum (double a, double b)
+[[nodiscard]] int Maximum (double a, double b)
 {
     return (a > b) ? a : b;
 

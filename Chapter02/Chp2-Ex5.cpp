@@ -6,23 +6,23 @@
 using std::cout;   // preferred to: using namespace std;
 using std::endl;
 
-[[nodiscard]] int minimum(int, int);   // standard function prototype 
+[[nodiscard]] int Minimum(int, int);   // standard function prototype 
 
-void function1(int x)
+void Function1(int x)
 {
-    [[nodiscard]] int minimum(int arg1, int arg2 = 500);  // local prototype with default value
+    [[nodiscard]] int Minimum(int arg1, int arg2 = 500);  // local prototype with default value
    
-    cout << minimum(x) << endl;
+    cout << Minimum(x) << endl;
 }
 
-void function2(int x)
+void Function2(int x)
 {
-    [[nodiscard]] int minimum(int arg1, int arg2 = 90);  // local prototype with default value
+    [[nodiscard]] int Minimum(int arg1, int arg2 = 90);  // local prototype with default value
    
-    cout << minimum(x) << endl;
+    cout << Minimum(x) << endl;
 }
 
-[[nodiscard]] int minimum(int a, int b)  // function definition with formal parameters
+[[nodiscard]] int Minimum(int a, int b)  // function definition with formal parameters
 {
     if (a < b)
         return a;
@@ -32,8 +32,8 @@ void function2(int x)
 
 int main()
 {
-    function1(30);
-    function2(450);
+    Function1(30);
+    Function2(450);
 
     return 0;
 }

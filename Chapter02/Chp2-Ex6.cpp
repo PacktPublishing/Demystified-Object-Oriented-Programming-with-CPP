@@ -24,8 +24,8 @@ public:
    float area;
 };
 
-void display(Circle);     // function prototypes
-void display(Rectangle);  // These functions are overloaded
+void Display(Circle);     // function prototypes
+void Display(Rectangle);  // These functions are overloaded
                           // since they differ in signature
 
 int main()
@@ -45,20 +45,20 @@ int main()
    mySquare.width = 4.0;
    mySquare.area = mySquare.length * mySquare.width;
 
-   display(myCircle);
-   display(myRect);
-   display(mySquare);
+   Display(myCircle);
+   Display(myRect);
+   Display(mySquare);
 
    return 0;
 }
 
-void display (Circle c)
+void Display (Circle c)
 {
    cout << "Circle with radius " << c.radius << " has an area of ";
    cout << c.area << endl; 
 }
    
-void display (Rectangle r)
+void Display (Rectangle r)
 {
    cout << "Rectangle with length " << r.length << " and width "; 
    cout << r.width << " has an area of " << r.area << endl; 

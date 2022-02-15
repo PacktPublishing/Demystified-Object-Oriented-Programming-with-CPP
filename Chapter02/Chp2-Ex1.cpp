@@ -14,9 +14,9 @@ using std::setw;
 
 const int MAX = 50;  // simple const variable declaration and initialization
 
-constexpr int largest = 50;  // simple constexpr variable declaration and initialization
+constexpr int LARGEST = 50;  // simple constexpr variable declaration and initialization
  
-constexpr int minimum(int a, int b)   // function's return value is a constexpr
+constexpr int Minimum(int a, int b)   // function's return value is a constexpr
 {
     return (a < b) ? a : b;
 }
@@ -24,22 +24,22 @@ constexpr int minimum(int a, int b)   // function's return value is a constexpr
 int main()
 {
     int x = 0, y = 0;
-    constexpr int a = 10, b = 15;   
+    constexpr int a = 10, b = 15;   // note: const applies to both a and b; note: variables not being used in
+                                    // same sense as a #define, so not capitalized here out of convention 
     cout << "Enter two <int> values: ";
     cin >> x >> y;
-    const int MIN = minimum(x, y);  // const variable initialized with a function's return value
-    cout << "Minimum is: " << MIN << endl;
+    const int min = Minimum(x, y);  // const variable initialized with a function's return value
+    cout << "Minimum is: " << min << endl;
 
-    constexpr int smallest = minimum(a, b);  // constexpr variable initialized with return value of constexpr fn, 
-                                             // but values in fn parameters are literals 
+    constexpr int smallest = Minimum(a, b);  // constexpr variable initialized with return value of constexpr fn
     cout << "Smallest of " << a << " " << b << " is: " << smallest << endl;
  
     char bigName[MAX] = {""};   // const variable used to size an array
-    char largeName[largest] = {""};  // constexpr used to size an array
+    char largeName[LARGEST] = {""};  // constexpr used to size an array
     cout << "Enter two names: ";
-    cin >> setw(MAX) >> bigName >> setw(largest) >> largeName;
-    const int NAMELEN = strlen(bigName);   // a const can be initialized with a calculated value
-    cout << "Length of name 1: " << NAMELEN << endl;
+    cin >> setw(MAX) >> bigName >> setw(LARGEST) >> largeName;
+    const int namelen = strlen(bigName);   // a const can be initialized with a calculated value
+    cout << "Length of name 1: " << namelen << endl;
     cout << "Length of name 2: " << strlen(largeName) << endl;
 
     return 0;
