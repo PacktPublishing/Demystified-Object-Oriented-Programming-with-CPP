@@ -16,7 +16,7 @@ public:
    LinkListElement() = default; 
    LinkListElement(Item *i) : data(i), next(nullptr) { }
    ~LinkListElement() { delete static_cast<Item *>(data); next = nullptr; }
-   void *GetData() { return data; }
+   void *GetData() const { return data; }
    LinkListElement *GetNext() const { return next; }
    void SetNext(LinkListElement *e) { next = e; }
 };
@@ -45,7 +45,7 @@ public:
    void DeleteAtEnd();
 
    int IsEmpty() const { return head == nullptr; } 
-   void Print();  
+   void Print() const;  
 };
 
 // User supplied default constructor is not necessary due to in-class initialization. 
@@ -140,6 +140,9 @@ void LinkList::DeleteAtEnd()
    // add implementation
 }
 
+// Print written as a non-const method, using current to traverse the list
+// See preferred implementation, as a const method (just below this method)
+/*
 void LinkList::Print()
 {
    if (!head)
@@ -151,6 +154,23 @@ void LinkList::Print()
       output = *(static_cast<Item *>(current->GetData()));
       cout << output << " ";
       current = current->GetNext();
+   }
+   cout << endl;
+}
+*/
+
+// Print written as a const method using a local variable to traverse list (Preferred)
+void LinkList::Print() const
+{
+   if (!head)
+      cout << "<EMPTY>" << endl;
+
+   LinkListElement *traverse = head;
+   while (traverse)
+   {
+      Item output = *(static_cast<Item *>(traverse->GetData()));
+      cout << output << ' ';
+      traverse = traverse->GetNext();
    }
    cout << endl;
 }
