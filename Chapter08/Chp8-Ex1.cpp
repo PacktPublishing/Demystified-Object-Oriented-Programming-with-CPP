@@ -231,7 +231,7 @@ int main()
    // Notice that we are creating an array of POINTERS to
    // LifeForms.  Since LifeForm cannot be instantiated, 
    // we could not create an array of LifeForm (s).
-   LifeForm *entity[MAX] = {nullptr, nullptr, nullptr, nullptr, nullptr};
+   LifeForm *entity[MAX] = { };  // initialize with nullptrs
   
    entity[0] = new Person("Joy", "Lin", 'M', "Ms.");
    entity[1] = new Student("Renee", "Alexander", 'Z', "Dr.", 3.95, "C++", "21-MIT"); 
