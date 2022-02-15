@@ -7,7 +7,7 @@ using std::cin;    // preferred to: using namespace std;
 using std::cout;
 using std::endl;
 
-int minimum (int a, int b)
+int Minimum (int a, int b)
 {
     if (a < b)
         return a;
@@ -21,7 +21,7 @@ int main()
 
     cout << "Enter two integers: ";
     cin >> x >> y;
-    cout << "The minimum is: " << minimum(x, y) << endl; 
+    cout << "The minimum is: " << Minimum(x, y) << endl; 
 	
     return 0;
 }
