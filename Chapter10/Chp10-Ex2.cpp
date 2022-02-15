@@ -21,7 +21,7 @@ private:
    string name;
    static constexpr int MAX = 25;  // maximum students supported by university
    // Association to many students
-   Student *studentBody[MAX] = { };    // initializes all pointerse to 0; could alternatively init all pointers in constructors to nullptr
+   Student *studentBody[MAX] = { };    // initializes all pointerse to nullptr; could alternatively init all pointers in constructors to nullptr
    int currentNumStudents = 0;    // in-class initialization
 public:
    University();
