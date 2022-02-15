@@ -13,13 +13,13 @@ using std::endl;
 
 char suffix = 'A';
 
-const char *genId(const char *);  // function prototype
+const char *GenId(const char *);  // function prototype
 
 int main()    
 {
    const char *newId1 = nullptr, *newId2 = nullptr;
-   newId1 = genId("Group");  // fn call will allocate memory 
-   newId2 = genId("Group");  // fn call will allocate memory 
+   newId1 = GenId("Group");  // fn call will allocate memory 
+   newId2 = GenId("Group");  // fn call will allocate memory 
    cout << "New ids: " << newId1 << " " << newId2 << endl;
    delete [] newId1;   // notice that we are deallocating in a different scope than we allocated.
    delete [] newId2;   // this will give us motivation later to use a smart pointer for safety.
@@ -28,7 +28,7 @@ int main()
    return 0;
 }
 
-const char *genId(const char *base)
+const char *GenId(const char *base)
 {
    char *temp = new char[strlen(base) + 2]; // One extra space for suffix plus null
    strcpy(temp, base);
