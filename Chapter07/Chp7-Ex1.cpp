@@ -201,7 +201,7 @@ void Student::IsA() const
 
 int main()
 {
-    Person *people[MAX] = { nullptr, nullptr, nullptr, nullptr, nullptr };
+    Person *people[MAX] = { };  // will be initialized to nullptrs
 
     people[0] = new Person("Juliet", "Martinez", 'M', "Ms.");
     people[1] = new Student("Hana", "Sato", 'U', "Dr.", 3.8,
