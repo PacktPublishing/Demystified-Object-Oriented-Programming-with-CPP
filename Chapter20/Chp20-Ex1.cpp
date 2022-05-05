@@ -16,7 +16,7 @@ constexpr int MAX = 3;
 int main()
 {
     Person *people[MAX] = { }; // initialized to nullptrs 
-    people[0] = new Person("Giselle", "LeBrun", 'R', "Ms.");   
+    people[0] = new Person("Elle", "LeBrun", 'R', "Ms.");   
     people[1] = new Person("Zack", "Moon", 'R', "Dr."); 
     people[2] = new Person("Gabby", "Doone", 'A', "Dr.");
 
