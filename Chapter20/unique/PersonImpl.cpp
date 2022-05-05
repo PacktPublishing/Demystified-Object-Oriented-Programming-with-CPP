@@ -123,10 +123,9 @@ Person::Person(const Person &p): pImpl(new PersonImpl(*(p.pImpl)))
     // pImpl = new PersonImpl(*(p.pImpl));  // call PersonImpl copy constructor with new nested object creation
 }
 
-Person::~Person()
-{
-    // delete on pImpl no longer required
-}
+// Note: Person destructor no longer needs to delete pImpl member
+// and hence this simply can be the default destructor! Prototyped with virtual, but set with =default in implementation file
+Person::~Person() = default;   // delete on pImpl no longer required
 
 const string &Person::GetFirstName() const
 {
