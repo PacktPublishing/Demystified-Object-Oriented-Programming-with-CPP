@@ -21,8 +21,10 @@ public:
    Person() = default;   // default constructor
    Person(const string &, const string &, char, const string &);  // alternate constructor
    // Default copy constructor does not need to be prototyped
-   Person(const Person &) = default;  // copy constructor
-   Person &operator=(const Person &); // overloaded assignment operator
+   // Person(const Person &) = default;  // copy constructor
+   // We will review the overloaded assignment operator (needed for upcoming example), so let's see the prototype below
+   // in case we'd need to write it ourselves (of course, the default op= suffices in this example, so this is commented out)
+   // Person &operator=(const Person &); // overloaded assignment operator
    virtual ~Person() = default;  // virtual destructor
    const string &GetFirstName() const { return firstName; }  // firstName returned as reference to const string
    const string &GetLastName() const { return lastName; }    // so is lastName (via implicit cast)
@@ -51,12 +53,18 @@ Person::Person(const Person &p) : firstName(p.firstName), lastName(p.lastName),
 }
 */
 
+// Here, let's just review how you'd overload the assignment operator in case you'd need to.
+// We'll see such a scenario in an upcoming example, so it is nice to review what the default implementation would look like
+// Note: this version is equivalent to the default implementation, but we can easily see where you'd add more if so needed
+/*
 Person &Person::operator=(const Person &p)
 {
    // make sure we're not assigning an object to itself
    if (this != &p)
    {
       // Note: there's no dynamically allocated data members, so implementing = is straightforward
+      // If there were dynamicalled data members, you'd reallocate the memory to be the proper size in the destination object,
+      // before copying from the source object. You'd also need to remember to release the original memory in the destination object.
       firstName = p.firstName;
       lastName = p.lastName;
       middleInitial = p.middleInitial;
@@ -65,6 +73,7 @@ Person &Person::operator=(const Person &p)
    }
    return *this;  // allow for cascaded assignments
 }
+*/
 
 void Person::ModifyTitle(const string &newTitle)
 {

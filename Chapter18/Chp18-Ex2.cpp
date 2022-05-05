@@ -52,12 +52,17 @@ Person::Person(const Person &p) : firstName(p.firstName), lastName(p.lastName),
 }
 */
 
+// Here, let's again review how you'd overload the assignment operator in case you'd need to.
+// We'll see the need in a derived class below, so it is nice to review what the default implementation would look like
+// Note: this version is equivalent to the default implementation, but we can easily see where you'd add more if so needed
 Person &Person::operator=(const Person &p)
 {
    // make sure we're not assigning an object to itself
    if (this != &p)
    {
       // Note: there's no dynamically allocated data members, so implementing = is straightforward
+      // If there were dynamicalled data members, you'd reallocate the memory to be the proper size in the destination object,
+      // before copying from the source object. You'd also need to remember to release the original memory in the destination object.
       firstName = p.firstName;
       lastName = p.lastName;
       middleInitial = p.middleInitial;
@@ -95,15 +100,15 @@ protected:
 public:
    Humanoid() = default;  // note: in-class init sets life = nullptr; 
    Humanoid(const string &, const string &, const string &, const string &); 
-   Humanoid(const Humanoid &h);   // we have work in our copy constructor!
+   Humanoid(const Humanoid &h);   // we have work in our copy constructor! See implementatino below.
    Humanoid &operator=(const Humanoid &h); 
-   virtual ~Humanoid() { delete life; life = nullptr; }  // virtual destructor -- note: class is not derived from Person
+   virtual ~Humanoid() { delete life; life = nullptr; }  // virtual destructor -- note: class is NOT derived from Person
    // Added interfaces for the Adapter class
    const string &GetSecondaryName() const { return life->GetFirstName(); }  
    const string &GetPrimaryName() const { return life->GetLastName(); }    // so is lastName (via implicit cast)
    const string &GetTitle() const { return life->GetTitle(); } 
    void SetSalutation(const string &m) { life->SetGreeting(m); }
-   virtual void GetInfo() { life->Print(); }
+   virtual void GetInfo() const { life->Print(); }
    virtual const string &Converse() = 0;  // Pure virtual function prototype
 };
 
@@ -122,6 +127,7 @@ Humanoid::Humanoid(const Humanoid &h)
    life->SetGreeting(h.life->Speak());  // Remember, life member is a Person *
 }
 
+// Now, we do need to implement operator= ourselves. Let's see how (and thank goodness we reviewed basic implementation above)
 Humanoid &Humanoid::operator=(const Humanoid &h)
 {  // there's only one data member, life, to worry about for a deep assignment
    if (this != &h)
@@ -143,9 +149,14 @@ public:
    Orkan(const string &n2, const string &n1, const string &t) : Humanoid(n2, n1, t, "Nanu nanu") { } 
    // Remember, it's unnecessary to prototype default copy constructor
    // Orkan(const Orkan &h) = default;  // if we wrote copy constructor ourselves, we'd add : Humanoid(h) { }  // copy constructor
-   Orkan &operator=(const Orkan &h) { return (Orkan &) Humanoid::operator=(h); }
+
+   // Note: op= implementation is same as default op= at this level (but notice how we needed to implement it ourselves at Humanoid level)
+   // Notice necessary downcast because Orkan::op= requires derived type as return value 
+   Orkan &operator=(const Orkan &h) { return dynamic_cast<Orkan &>(Humanoid::operator=(h)); }
+
    // Since destructor has been indicated as virtual in base class, we don't need to protytpe it here if we're using default
    // ~Orkan() override = default;  // virtual destructor
+
    const string &Converse() override;  // We must override this method if we want Orkan to be a concrete class
 };
 
@@ -163,9 +174,14 @@ public:
    Romulan(const string &n2, const string &n1, const string &t) : Humanoid(n2, n1, t, "jolan'tru") { } 
    // Remember, it's unnecessary to prototype default copy constructor
    // Romulan(const Romulan &h) = default;  // if we wrote copy constructor ourselves, we'd add : Humanoid(h) { }  // copy constructor
-   Romulan &operator=(const Romulan &h) { return (Romulan &) Humanoid::operator=(h); }
+
+   // Note: op= implementation is same as default op= at this level (but notice how we needed to implement it ourselves at Humanoid level)
+   // Notice necessary downcast because Romulan::op= requires derived type as return value 
+   Romulan &operator=(const Romulan &h) { return dynamic_cast<Romulan &>(Humanoid::operator=(h)); }
+
    // Since destructor has been indicated as virtual in base class, we don't need to protytpe it here if we're using default
    // ~Romulan() override = default;  // virtual destructor
+
    const string &Converse() override;  // We must override this method if we want Romulan to be a concrete class
 };
 
@@ -183,9 +199,14 @@ public:
    Earthling(const string &n2, const string &n1, const string &t) : Humanoid(n2, n1, t, "Hello") { } 
    // Remember, it's unnecessary to prototype default copy constructor
    Earthling(const Earthling &h) = default; // if we wrote copy constructor ourselves, we'd add : Humanoid(h) { }  // copy constructor
-   Earthling &operator=(const Earthling &h) { return (Earthling &) Humanoid::operator=(h); }
+
+   // Note: op= implementation is same as default op= at this level (but notice how we needed to implement it ourselves at Humanoid level)
+   // Notice necessary downcast because earthling::op= requires derived type as return value 
+   Earthling &operator=(const Earthling &h) { return dynamic_cast<Earthling &>(Humanoid::operator=(h)); }
+
    // Since destructor has been indicated as virtual in base class, we don't need to protytpe it here if we're using default
    // ~Earthling() override = default;  // virtual destructor
+
    const string &Converse() override;  // We must override this method if we want Romulan to be a concrete class
 };
 
@@ -211,7 +232,25 @@ int main()
    allies.push_back(r1);
    allies.push_back(e1);
 
+   // Let's loop through the list of allies (which are Humanoid *'s)
+   for (auto *entity : allies)
+   {
+       entity->GetInfo();
+       cout << entity->Converse() << endl;
+   }
+
+   // Another option for the aforementioned loop
+   /*
+   for (auto &entity : allies)    // allies is a list of Humanoid *'s, so we will need to dereference entity to get data
+   {                              // that is, entity will reference a Humanoid * so we still need to derererence it
+       (*entity).GetInfo();
+       cout << (*entity).Converse() << endl;
+   }
+   */
+
+   // Another looping option instead of the aforementioned loops
    // Create a list iterator and set to first item in the list -- note: we're using the base class type (not auto) to show we're generalizing derived class types
+   /*
    list <Humanoid *>::iterator listIter = allies.begin();
    while (listIter != allies.end())
    {
@@ -219,6 +258,7 @@ int main()
        cout << (*listIter)->Converse() << endl;
        ++listIter;  //  prefer pre-increment for efficiency
    }
+   */
 
    // Though each type of Humanoid has a default Salutation, each may expand their language skills and choose an alternate language
    e1->SetSalutation("Bonjour");
