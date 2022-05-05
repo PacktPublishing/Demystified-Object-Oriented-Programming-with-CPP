@@ -327,6 +327,8 @@ int main()
     for (auto *oneStudent : scholars)
        delete oneStudent; // engage virtual dest. sequence
 
+    delete UofD;  // delete the factory that creates various types of students
+
     return 0;
 }
 
