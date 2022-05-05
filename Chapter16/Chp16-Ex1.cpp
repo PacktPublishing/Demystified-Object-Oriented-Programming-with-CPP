@@ -15,13 +15,20 @@ using std::list;
 
 constexpr int MAXCOURSES = 5, MAXSTUDENTS = 5;
 
+// More enumerators within the states are created here than are currently used; they exist for expansion of example
+// Note that more specialized states are based on a more generic state; we could have also built a hierarchy of states, but let's keep it easy
+// As such, to ease comparision between these states, they will be stored as integers (otherwise, we'd have type conversion issues)
+enum State { Initial = 0, Success = 1, Failure = 2 };
+enum StudentState { AddSuccess = State::Success, AddFailure = State::Failure };  
+enum CourseState { OpenForEnrollment = State::Success, NewSpaceAvailable = State::Success, Full = State::Failure };
+
 class Subject;  // forward declarations
 class Student;
 
 class Observer
 {
 private:
-    int observerState = 0;   // in-class initialization
+    int observerState = State::Initial;   // in-class initialization
 protected:
     Observer() = default;    // default constructor will use in-class initialization 
     Observer(int s): observerState(s) { }
@@ -35,9 +42,9 @@ public:
 class Subject
 {
 private:
-    list<class Observer *> observers;  // List of Observers will be Students on wait-list
+    list<class Observer *> observers;  // List of Observers (in our application, this will be Students on wait-list)
     int numObservers = 0;    // in-class initialization
-    int subjectState = 0;
+    int subjectState = State::Initial;
     list<Observer *>::iterator newIter;
 protected:
     Subject() = default;  // default constructor will use initialization 
@@ -61,10 +68,12 @@ void Subject::Register(Observer *ob)
 void Subject::Release(Observer *ob)
 {
     bool found = false;
-    for (list<Observer *>::iterator iter = observers.begin(); iter != observers.end() && !found; iter++)
+
+    // note: auto iter below will be: list<Observer *>::iterator  We can also use: 
+    // for (list<Observer *>::iterator iter = observers.begin(); iter != observers.end() && !found; iter++) 
+    for (auto iter = observers.begin(); iter != observers.end() && !found; ++iter)
     {
-        Observer *temp = *iter;
-        if (temp == ob)    // if we found observer which we seek
+        if (*iter == ob)    // if we found observer which we seek
         {
             // erase element, iterator is now corrupt; save off good iterator, we'll need it later
             newIter = observers.erase(iter);  
@@ -76,16 +85,19 @@ void Subject::Release(Observer *ob)
 
 void Subject::Notify()
 {
-    for (list<Observer *>::iterator iter = observers.begin(); iter != observers.end(); iter++)
+    // note: auto iter below will be: list<Observer *>::iterator  We can also use: 
+    // for (list<Observer *>::iterator iter = observers.begin(); iter != observers.end(); iter++)
+    for (auto iter = observers.begin(); iter != observers.end(); ++iter)
     {
         // cout << " list size: " << observers.size() << endl;
-        Observer *temp = *iter;
-        temp->Update();      // same as (*iter)->Update();
-        // State 1 means we added course, got off waitlist (so waitlist had a removal), so update the iterator
-        if (temp->GetState() == 1)  
+        (*iter)->Update();      
+        // State 'Success' below is represented generically, below, for an Observer 
+        // because at this level, we have no knowledge of how the Subject and Observer have been specialized
+        // In our application, this means a Student (observer) added a course, got off waitlist (so waitlist had a removal), so update the iterator
+        if ((*iter)->GetState() == State::Success)  
             iter = newIter;  // update the iterator, as once we do an erase(), our iterator is corrupted
     }
-    if (observers.size() != 0)
+    if (!observers.empty())          // same as: if (observers.size() != 0)
     {
         Observer *last = *newIter;   // Update last item on waitlist
         last->Update();
@@ -113,7 +125,11 @@ public:
     int GetCourseNum() const { return number; }
     const string &GetTitle() const { return title; }
     bool AddStudent(Student *);
-    void Open() { SetState(1); Notify(); } // Once a course is Open for enrollment, we Notify() the Observers (Students) 
+    void Open() 
+    { 
+        SetState(CourseState::OpenForEnrollment); 
+        Notify();  // Once a course is Open for enrollment, we Notify() the Observers (Students) 
+    }
     void PrintStudents() const;
 }; 
 
@@ -192,7 +208,7 @@ private:
     const string studentId;  
     int currentNumCourses = 0;
     Course *courses[MAXCOURSES] = { }; // or can set each element to nullptr in constructor
-    Course *waitList = nullptr;  // Course we'd like to take - we're on the waitlist -- this is our Subject in specialized form
+    Course *waitListedCourse = nullptr;  // Course we'd like to take - we're on the waitlist -- this is our Subject in specialized form
     static int numStudents;
 public:
     Student();  // default constructor
@@ -220,33 +236,38 @@ public:
 // definition for static data member (which is implemented as external variable)
 int Student::numStudents = 0;  // notice initial value of 0
 
-// Remember, gpa, currentNumCourses and waitList have already been set with in-class initialization
+// Remember, gpa, currentNumCourses and waitListedCourse have already been set with in-class initialization
+// Also remember, the default base class constructors will also be called implicitly 
 Student::Student() : studentId (to_string(numStudents + 100) + "Id")
 {
     // Note: courses have been nulled out with in-class initialization. Alternatively, do this here:
     // for (int i = 0; i < MAXCOURSES; i++)
         // courses[i] = nullptr;
-    // again, remember, waitList = nullptr; has already been set using in-class initialization
+    // again, remember, waitListedCourse = nullptr; has already been set using in-class initialization
     numStudents++;
 }
 
 // Alternate constructor member function definition
+// Note, the base Observer() default constructor is called automatically - thus it is not needed in init list below (shown as a reminder that it's called)
 Student::Student(const string &fn, const string &ln, char mi, const string &t, float avg, const string &id, Course *c) : 
-                 Person(fn, ln, mi, t), Observer(), gpa(avg), studentId(id), currentNumCourses(0)
+                 Person(fn, ln, mi, t), //  Observer(),
+                 gpa(avg), studentId(id), currentNumCourses(0)
 {
     // Note: courses have been nulled out with in-class initialization. Alternatively, do this here:
     // for (int i = 0; i < MAXCOURSES; i++)
         // courses[i] = nullptr;
-    waitList = c;      // Set waitlist to Course (Subject) 
+    waitListedCourse = c;      // Set waitlist to Course (Subject) 
     c->Register(this); // Add the Student (Observer) to the Subject's list
     numStudents++;
 }
 
 // Another alternate constructor member function definition
+// Note, the base Observer() default constructor is called automatically - thus it is not needed in init list below (shown as a reminder that it's called)
 Student::Student(const string &fn, const string &ln, char mi, const string &t, float avg, const string &id) : 
-                 Person(fn, ln, mi, t), Observer(), gpa(avg), studentId(id), currentNumCourses(0)
+                 Person(fn, ln, mi, t), // Observer(), 
+                 gpa(avg), studentId(id), currentNumCourses(0)
 {
-    waitList = nullptr;   // no Course on waitlist 
+    waitListedCourse = nullptr;   // no Course on waitlist 
     // Note: courses have been nulled out with in-class initialization. Alternatively, do this here:
     // for (int i = 0; i < MAXCOURSES; i++)
         // courses[i] = nullptr;
@@ -294,7 +315,7 @@ bool Student::AddCourse(Course *c)
     {
         // Add Student (Observer) to the Course's Waitlist (in the Subject base class)
         c->Register(this);
-        waitList = c;
+        waitListedCourse = c;
         return false;
     }
 }
@@ -308,14 +329,15 @@ void Student::Graduate()
 
 void Student::Update()
 {
-    if (waitList->GetState() == 1)  // Course state changed to 'Open' so we can now add it.
+    if ((waitListedCourse->GetState() == CourseState::OpenForEnrollment) ||
+       (waitListedCourse->GetState() == CourseState::NewSpaceAvailable))  // Course state changed to 'Open' or 'SpaceAvail' so we can now add it.
     {
-        if (AddCourse(waitList))    // if success in Adding (I mean, it could have failed for several reasons) 
+        if (AddCourse(waitListedCourse))    // if success in Adding (I mean, it could have failed for several reasons) 
         {
-            cout << GetFirstName() << " " << GetLastName() << " removed from waitlist and added to " << waitList->GetTitle() << endl;
-            SetState(1);  // set Observer's state to 1 (e.g. we were able to add Course)
-            waitList->Release(this);  // Remove Observer (Student = this) from Subject (Course's waitlist)
-            waitList = 0;  // Set our link to Subject to Null
+            cout << GetFirstName() << " " << GetLastName() << " removed from waitlist and added to " << waitListedCourse->GetTitle() << endl;
+            SetState(StudentState::AddSuccess);  // set Observer's state to 'AddSuccess' (e.g. we were able to add Course)
+            waitListedCourse->Release(this);  // Remove Observer (Student = this) from Subject (Course's waitlist)
+            waitListedCourse = 0;  // Set our link to Subject to Null; that is, we no longer have a waitListedCourse (we added it!)
         }
     }
     // cout << "Update for : " << GetFirstName() << " " << GetLastName() << " complete" << endl;
@@ -342,15 +364,16 @@ int main()
 {
     Course *c1 = new Course("C++", 230);  // Instantiate Courses (Title and number)
     Course *c2 = new Course("Advanced C++", 430);  
-    Course *c3 = new Course("Design Patterns in C++", 550);  
+    Course *c3 = new Course("C++ Design Patterns", 550);  
     // Instantiate Students and select a course they'd like to be on the waitlist for -- to be added as soon as registration starts
-    Student s1("Anne", "Chu", 'M', "Ms.", 3.9, "555CU", c1); 
+    Student s1("Anne", "Chu", 'M', "Ms.", 3.9, "66TU", c1); 
     Student s2("Joley", "Putt", 'I', "Ms.", 3.1, "585UD", c1); 
     Student s3("Goeff", "Curt", 'K', "Mr.", 3.1, "667UD", c1); 
-    Student s4("Ling", "Mau", 'I', "Ms.", 3.1, "55UD", c1); 
-    Student s5("Jiang", "Wu", 'Q', "Dr.", 3.8, "883TU", c1); 
+    Student s4("Ling", "Mau", 'I', "Ms.", 3.1, "55TU", c1); 
+    Student s5("Jiang", "Wu", 'Q', "Dr.", 3.8, "88TU", c1); 
 
-    cout << "Registration is Open. Waitlist Students to be added to Courses" << endl;
+    cout << "Registration is Open" << "\n";
+    cout << "Waitlist Students to be added to Courses" << endl;
     c1->Open();   // Sends a message to Students that Course is Open. Students on wait-list will automatically be Added (as room allows)
     c2->Open();
     c3->Open();
