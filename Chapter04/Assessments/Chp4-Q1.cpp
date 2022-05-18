@@ -17,7 +17,7 @@ using std::cin;
 using std::endl;
 using std::string;
 
-const int MAX = 5;
+constexpr int MAX = 5;
 
 class Student
 {
