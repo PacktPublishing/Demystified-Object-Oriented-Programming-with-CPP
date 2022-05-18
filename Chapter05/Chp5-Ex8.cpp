@@ -40,7 +40,7 @@ public:
 
 inline void Student::SetCurrentCourse(const char *c)
 {
-    delete currentCourse;     // delete existing course
+    delete [] currentCourse;     // delete existing course
     currentCourse = new char [strlen(c) + 1];   // copy in new one
     strcpy(currentCourse, c); 
 }
@@ -85,7 +85,7 @@ Student::Student(const Student &s)
 // Member function definition
 Student::~Student()
 {
-    delete currentCourse;
+    delete [] currentCourse;
 }
    
 // Member function definition

@@ -65,7 +65,7 @@ Student::Student(const Student &s)
 // Member function definition
 void Student::CleanUp()
 {
-    delete currentCourse;   // deallocate the memory for data members that are pointers
+    delete [] currentCourse;   // deallocate the memory for data members that are pointers
 }
    
 // Member function definition

@@ -74,8 +74,8 @@ int main()
     s1.Print();
     s2->Print(); 
 
-    delete s1.currentCourse;   // delete dynamically allocated data members
-    delete s2->currentCourse;
+    delete [] s1.currentCourse;   // delete dynamically allocated data members
+    delete [] s2->currentCourse;
     delete s2;    // delete dynamically allocated instance
 
     return 0;
