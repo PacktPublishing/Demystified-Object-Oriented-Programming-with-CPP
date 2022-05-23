@@ -53,7 +53,7 @@ public:
 
 // Remember, we're using system supplied default constructor. Data members middleInitial and title will be set using in-class initialization.
 
-Person::Person(const string &fn, const string &ln, char mi, const char *t) : firstName(fn), lastName(ln), middleInitial(mi)
+Person::Person(const string &fn, const string &ln, char mi, const char *t): firstName(fn), lastName(ln), middleInitial(mi)
 {
     // allocate memory for ptr data member, then fill with appropriate value
     title = new char [strlen(t) + 1];
