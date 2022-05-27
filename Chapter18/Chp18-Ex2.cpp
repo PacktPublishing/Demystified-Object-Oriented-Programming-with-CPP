@@ -249,7 +249,8 @@ int main()
    */
 
    // Another looping option instead of the aforementioned loops
-   // Create a list iterator and set to first item in the list -- note: we're using the base class type (not auto) to show we're generalizing derived class types
+   // Create a list iterator and set to first item in the list 
+   // note: we're using the base class type (not auto) to show we're generalizing derived class types
    /*
    list <Humanoid *>::iterator listIter = allies.begin();
    while (listIter != allies.end())
