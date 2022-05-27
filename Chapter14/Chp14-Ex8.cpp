@@ -254,7 +254,7 @@ int main()
 
     // Now, let's use a range-for and auto to go thru set - simpler! Also notice decomposition in []'s
     // You may need to compile with a special flag to get the decomposition (breaking from first, second) w certain compilers
-    // For example: g++ -std=gnu++1z Chp14-Ex7.cpp
+    // For example: g++ -std=gnu++1z Chp14-Ex8.cpp
     for (auto &[id, student] : studentBody)
         cout << id << " " << student.GetFirstName() << " " << student.GetLastName() << endl;
 
