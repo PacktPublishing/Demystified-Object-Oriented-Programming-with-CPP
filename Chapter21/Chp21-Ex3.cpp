@@ -10,9 +10,14 @@ using std::endl;
 using std::weak_ptr;
 using std::shared_ptr;
 
+// Note: could also include: using std::make_shared; if you don't want to qualify use below with std::
+
 int main()
 {
-    shared_ptr<Person> pers1(new Person("Gabby", "Doone", 'A', "Miss"));
+    shared_ptr<Person> pers1 = std::make_shared<Person>("Gabby", "Doone", 'A', "Miss");
+    // Above line is equivalanet to:
+    // shared_ptr<Person> pers1(new Person("Gabby", "Doone", 'A', "Miss"));
+
     pers1->Print(); // or alternatively use: (*pers1).Print();
 
     weak_ptr<Person> wpers1(pers1);   // Downgrade pers1 to a weak pointer

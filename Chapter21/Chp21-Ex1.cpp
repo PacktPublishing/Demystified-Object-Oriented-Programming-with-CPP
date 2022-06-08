@@ -10,10 +10,14 @@ using std::endl;
 using std::unique_ptr;
 using std::make_unique;
 
+// We will create unique pointers, with and without using the make_unique (safe wrapper) interface
+
 int main()
 {
-    unique_ptr<int> p1(new int());
-    *p1 = 100;
+    unique_ptr<int> p1(new int(100));
+    // equivalant to:
+    // unique_ptr<int> p1(new int());
+    // *p1 = 100;
     cout << *p1 << endl;
 
     unique_ptr<Person> pers1(new Person("Renee", "Alexander", 'K', "Dr."));
