@@ -57,5 +57,7 @@ int main()
     cout << s1 << " " << s2 << endl;
     
     // delete s1;   // delete s1 will ensure the destructor is called, 
-}                   // but this is not typical that a Singleton will be deleted explicitly, 
+                    // but this is not typical that a Singleton will be deleted explicitly, 
                     // so depending on this is a poor design choice
+    return 0;
+}
