@@ -136,8 +136,8 @@ public:
     CitizenDataBase(const CitizenDataBase &) = delete ;  // prohibit copies 
     CitizenDataBase &operator=(const CitizenDataBase &) = delete;  // prohibit assignment 
     virtual ~CitizenDataBase();  // destructor
-    Person &Read(const string &);
-    const string &Write(Person &);
+    inline Person &Read(const string &);
+    inline const string &Write(Person &);
 };
 
 
