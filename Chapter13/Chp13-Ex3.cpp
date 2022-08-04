@@ -39,7 +39,7 @@ public:
    void InsertAtFront(Type *);
    LinkListElement<Type> *RemoveAtFront();  
    void DeleteAtFront()  { delete RemoveAtFront(); }
-   int IsEmpty() const { return head == nullptr; } 
+   bool IsEmpty() const { return head == nullptr; } 
    void Print() const; 
    ~LinkList() { while (!IsEmpty()) DeleteAtFront(); }
 };
