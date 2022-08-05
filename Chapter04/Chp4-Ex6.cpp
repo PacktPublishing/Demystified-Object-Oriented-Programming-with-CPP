@@ -15,7 +15,7 @@ struct collection
    float y;
 };
 
-void Update(collection *);
+void Update(collection &);
 void Print(const collection &);
 
 int main()
@@ -25,8 +25,8 @@ int main()
    // allocate memory for collect2 from the heap
    collect2 = new collection;  
 
-   Update(&collect1);
-   Update(collect2);
+   Update(collect1);   // a reference to the object is passes
+   Update(*collect2);  // same here because *collect2 is also an object
 
    Print(collect1);  
    Print(*collect2);
@@ -37,10 +37,10 @@ int main()
    return 0;
 }
 
-void Update(collection *c)
+void Update(collection &c)
 {
    cout << "Enter <int> and <float> members: ";
-   cin >> c->x >> c->y;
+   cin >> c.x >> c.y;
 }
     
 void Print(const collection &c)
