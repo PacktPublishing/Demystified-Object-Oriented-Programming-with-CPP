@@ -102,8 +102,8 @@ public:
 
     virtual void Graduate() = 0;  // Now Student is abstract
     // Creates a derived Student type based on the degree the seek
-    static Student *MatriculateStudent(const string &degree, const string &fn, const string &ln, char mi, 
-                                       const string &t, float avg, const string &course, const string &id); 
+    static Student *MatriculateStudent(const string &, const string &, const string &, char, 
+                                       const string &, float, const string &, const string &); 
 
     static int GetNumStudents() { return numStudents; }
 };
