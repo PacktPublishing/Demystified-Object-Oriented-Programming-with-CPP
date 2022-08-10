@@ -139,8 +139,8 @@ void Person::ModifyTitle(const string &newTitle)
 
 void Person::Print() const
 {
-   cout << GetTitle() << " " << GetFirstName() << " ";
-   cout << GetMiddleInitial() << ". " << GetLastName() << endl;
+   cout << title << " " << firstName << " ";
+   cout << middleInitial << ". " << lastName << endl;
 }
 
 string Person::IsA() const
