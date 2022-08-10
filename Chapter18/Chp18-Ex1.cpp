@@ -176,7 +176,7 @@ public:
    // Prototype and definition for op= shown so we can review how we'd write it if need be 
    // Notice that we are calling the base class op= for help, but that an explicit downcast is required to match return type of Romulan::op= 
    // (the default implementation suffices here, so it is commented out)
-   Romulan &operator=(const Romulan &h) { return dynamic_cast<Romulan &>(Humanoid::operator=(h)); }
+   // Romulan &operator=(const Romulan &h) { return dynamic_cast<Romulan &>(Humanoid::operator=(h)); }
 
    // Since destructor has been indicated as virtual in base class, we don't need to protytpe it here if we're using default
    // ~Romulan() override = default; // virtual destructor
@@ -201,7 +201,7 @@ public:
    // Prototype and definition for op= shown so we can review how we'd write it if need be 
    // Notice that we are calling the base class op= for help, but that an explicit downcast is required to match return type of Earthling::op= 
    // (the default implementation suffices here, so it is commented out)
-   Earthling &operator=(const Earthling &h) { return dynamic_cast<Earthling &>(Humanoid::operator=(h)); }
+   // Earthling &operator=(const Earthling &h) { return dynamic_cast<Earthling &>(Humanoid::operator=(h)); }
 
    // Since destructor has been indicated as virtual in base class, we don't need to protytpe it here if we're using default
    // ~Earthling() { }  // virtual destructor
