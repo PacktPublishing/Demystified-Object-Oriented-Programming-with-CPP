@@ -113,7 +113,7 @@ private:
     Student *students[MAXSTUDENTS] = { };  // List of Students enrolled in Course -- could alternately be set to nullptrs in constructor
     int totalStudents = 0;
 public:
-    Course(const string &title, int num): number(num), totalStudents(0)
+    Course(const string &title, int num): number(num)  // note: totalStudents initialized in in-class initalization above to 0
     {
         this->title = title;   // or use different parameter name and set in member init list
         // note: in-class initialization is in-lieu of below:
