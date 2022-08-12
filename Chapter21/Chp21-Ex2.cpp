@@ -11,7 +11,7 @@ using std::shared_ptr;
 
 int main()
 {
-    std::shared_ptr<int> p1 = std::make_shared<int>(100);
+    shared_ptr<int> p1 = std::make_shared<int>(100);
     // alternative to preferred, above line of code:
     // shared_ptr<int> p1(new int(100));
     
