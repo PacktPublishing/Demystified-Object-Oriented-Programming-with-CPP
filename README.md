@@ -65,3 +65,7 @@ Please visit the following to check the CiA vides: https://bit.ly/2P1UXlI
 ## Get to Know the Author
 **Dorothy R. Kirk** has specialized in OO technologies since nearly their inception. She began as an early adopter of C++ at General Electric in R&D. After working on various projects, she was one of 10 charter members to start GE's Advanced Concepts Center to commercially utilize OO technologies. She later started her own OO Training and Consulting business, specializing in OOP using C++ and Java. She additionally programs in Python. Ms. Kirk has many OO courses and has clients spanning industries such as finance, transportation, software, embedded systems, manufacturing, and medical imaging.
 Ms. Kirk earned a B.S. in Computer and Information Sciences from the University of Delaware and an M.S. in Computer Science from Temple University.
+### Download a free PDF
+
+ <i>If you have already purchased a print or Kindle version of this book, you can get a DRM-free PDF version at no cost.<br>Simply click on the link to claim your free PDF.</i>
+<p align="center"> <a href="https://packt.link/free-ebook/9781788296229">https://packt.link/free-ebook/9781788296229 </a> </p>
