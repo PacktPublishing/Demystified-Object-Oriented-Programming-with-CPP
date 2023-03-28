@@ -165,9 +165,11 @@ int main()
    // pop elements from stack, one by one
    while (!(stack1.IsEmpty()))
    {
-      stack1.Pop();
+      Item *item = stack1.Pop();
       cout << "Stack 1 after popping an item: ";
       stack1.Print();
+      cout << "Popped item: " << *item << endl;
+      delete item;
    }
 
    return 0;
